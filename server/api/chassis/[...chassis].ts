@@ -10,4 +10,30 @@ router.get('/list', defineEventHandler(async (event) => {
     return Chassis.find({})
 }))
 
+router.put('/hide/:id', defineEventHandler(async (event) => {
+    const user = event.context.user
+    if (!user && user.isAdmin) throw createError({statusCode: 403, message: 'Доступ запрещён',})
+    const {id} = event.context.params as Record<string, string>
+    const chassis = await Chassis.findById(id)
+    if (!chassis) throw createError({statusCode: 404, message: event.context.$t('Chassis not found'),})
+    chassis.hidden = !chassis.hidden
+    await chassis.save()
+}))
+
+router.post('/upload/:id', defineEventHandler(async (event) => {
+    const user = event.context.user
+    if (!user && !user.isAdmin) throw createError({statusCode: 403, message: event.context.$t('Access denied'),})
+
+    const {id} = event.context.params as Record<string, string>
+    const chassis = await Chassis.findById(id)
+    if (!chassis) throw createError({statusCode: 404, message: event.context.$t('Chassis not found'),})
+    let formData = await readMultipartFormData(event)
+    const storage = useStorage("uploads");
+    if (formData) {
+        const r = await storage.setItemRaw(`${chassis.partNumber}.jpg`, formData[0].data);
+    }
+
+}))
+
+
 export default useBase('/api/chassis', router.handler)

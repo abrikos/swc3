@@ -1,15 +1,20 @@
 <script setup lang="ts">
+import {storeToRefs} from "pinia";
+import {useCustomStore} from "~/store/custom-store";
+
 const route = useRoute()
-const list = ref()
-const columns = [
-  {field: 'email', label: 'Email'},
-  {name: 'actions', label: ''},
-]
+const {loggedUser} = storeToRefs(useCustomStore())
+const list = ref([])
+const {$listen} = useNuxtApp()
+$listen('chassis:reload', ()=>{
+  load()
+})
+
 onMounted(load)
 
 async function load() {
   if(route.query.tab) {
-    list.value = await useNuxtApp().$GET('/chassis/list')
+    list.value = await useNuxtApp().$GET('/chassis/list') as never[]
   }else{
     navigateTo({query:{tab:'G2'}})
   }
@@ -34,23 +39,16 @@ const listByPlatform = computed(() => list.value?.filter((i: any) => i.platform 
 <template lang="pug">
   Tabs(:items="tabs")
   div.flex.justify-center
-    div.chassis(v-for="item in listByPlatform" :key="item.name" )
-      img(:src="`/chassis/${item.id}.png`" onerror="this.src='/logo.png'")
-      strong {{item.partNumber}} 22
-      small {{item.params}}
+    ChassisCard(v-for="item in listByPlatform.filter((i: any) => !i.hidden)" :chassis="item")
+  div(v-if="loggedUser.isAdmin")
+    h4.text-center Скрытые
+    div.flex.justify-center
+      ChassisCard(v-for="item in listByPlatform.filter((i: any) => i.hidden)" :chassis="item")
+      //ChassisCard(v-for="item in listByPlatform.filter((i: any) => !i.hidden)" :key="item.name" )
+
 
 
 </template>
 
 <style scoped lang="sass">
-.chassis
-  border: 1px solid silver
-  margin: 5px
-  width: 200px
-  padding: 5px
-  text-align: center
-  img
-    max-width: 100%
-  strong, small
-    display: block
 </style>
