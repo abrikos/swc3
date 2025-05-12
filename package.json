@@ -1,0 +1,33 @@
+{
+  "name": "nuxt-app",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare"
+  },
+  "dependencies": {
+    "@nuxt/fonts": "^0.11.3",
+    "@nuxt/icon": "^1.12.0",
+    "@nuxt/image": "^1.10.0",
+    "@pinia/nuxt": "^0.11.0",
+    "@quasar/extras": "^1.16.17",
+    "@types/nodemailer": "^6.4.17",
+    "moment": "^2.30.1",
+    "nodemailer": "^7.0.3",
+    "nuxt": "^3.17.2",
+    "nuxt-mongoose": "^1.0.6",
+    "nuxt-quasar-ui": "^2.1.12",
+    "nuxt-snackbar": "^1.3.0",
+    "pug": "^3.0.3",
+    "quasar": "^2.18.1",
+    "sass": "^1.88.0",
+    "typescript": "^5.8.3",
+    "vue": "^3.5.13",
+    "vue-router": "^4.5.1",
+    "xlsx": "^0.18.5"
+  }
+}

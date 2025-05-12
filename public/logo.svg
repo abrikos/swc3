@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   inkscape:export-ydpi="30.33"
+   inkscape:export-xdpi="30.33"
+   inkscape:export-filename="/home/abrikos/Документы/logo100.png"
+   sodipodi:docname="logo.svg"
+   width="744.09448819"
+   height="1052.3622047"
+   id="svg2"
+   version="1.1"
+   inkscape:version="1.0 (6e3e5246a0, 2020-05-07)">
+  <defs
+     id="defs4" />
+  <sodipodi:namedview
+     inkscape:document-rotation="0"
+     inkscape:window-maximized="1"
+     inkscape:window-y="1051"
+     inkscape:window-x="0"
+     inkscape:window-height="1336"
+     inkscape:window-width="2560"
+     showgrid="false"
+     inkscape:current-layer="layer1"
+     inkscape:document-units="px"
+     inkscape:cy="689.35495"
+     inkscape:cx="262.22296"
+     inkscape:zoom="0.49497475"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0.0"
+     borderopacity="1.0"
+     bordercolor="#666666"
+     pagecolor="#ffffff"
+     id="base" />
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     id="layer1"
+     inkscape:groupmode="layer"
+     inkscape:label="Layer 1">
+    <path
+       inkscape:export-ydpi="90"
+       inkscape:export-xdpi="90"
+       inkscape:export-filename="/home/abrikos/Документы/logo1024.png"
+       sodipodi:nodetypes="ccccc"
+       inkscape:connector-curvature="0"
+       id="path3496"
+       d="M 557.51394,46.099636 C 527.24225,332.3028 455.01618,618.50595 388.32202,904.70911 l 47.43699,-4.74369 c 49.57873,-283.5122 97.8317,-567.81978 164.44822,-850.703332 z"
+       style="fill:#ff9955;stroke:none;stroke-width:0.907233" />
+    <path
+       inkscape:export-ydpi="90"
+       inkscape:export-xdpi="90"
+       inkscape:export-filename="/home/abrikos/Документы/logo1024.png"
+       sodipodi:nodetypes="sccsccs"
+       inkscape:connector-curvature="0"
+       id="path3498"
+       d="M 263.62939,800.06281 C 579.09902,701.28051 793.81516,347.46053 431.01534,482.51988 l 11.53177,31.24101 C 794.22496,358.52536 499.5128,700.77446 270.71202,765.33184 -223.45024,904.76234 452.39232,180.58789 722.35749,188.8059 l 0.61528,-50.10826 C 464.42776,145.36446 -356.87612,994.36026 263.62939,800.06281 Z"
+       style="fill:#ff9955;stroke:none;stroke-width:0.907233" />
+    <rect
+       inkscape:export-ydpi="90"
+       inkscape:export-xdpi="90"
+       inkscape:export-filename="/home/abrikos/Документы/logo1024.png"
+       y="12.098278"
+       x="-79.269188"
+       height="929.00671"
+       width="929.00671"
+       id="rect2984"
+       style="fill:none;stroke:none;stroke-width:0.907233" />
+  </g>
+</svg>
