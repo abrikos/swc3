@@ -11,7 +11,8 @@ async function switchHide() {
 </script>
 
 <template lang="pug">
-  q-btn(@click="switchHide" :icon="chassis.hidden ? 'layers':'layers_clear'" title="Скрыть/Показать" color="secondary" round )
+  q-btn(@click="switchHide" :icon="chassis.hidden ? 'layers':'layers_clear'" color="secondary" round )
+    q-tooltip Скрыть/Показать
 </template>
 
 <style scoped>

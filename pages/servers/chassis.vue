@@ -13,14 +13,13 @@ $listen('chassis:reload', ()=>{
 onMounted(load)
 
 async function load() {
-  if(route.query.tab) {
-    list.value = await useNuxtApp().$GET('/chassis/list') as never[]
-  }else{
-    navigateTo({query:{tab:'G2'}})
+  if(!route.query.platform) {
+    navigateTo({query:{platform:'G2'}})
   }
+  list.value = await useNuxtApp().$GET('/chassis/list') as never[]
 }
 
-watch(()=>route.query.tab, load)
+//watch(()=>route.query.tab, load)
 
 const tabs = [
   {label: 'Intel Gen2', name: 'G2'},
@@ -32,12 +31,12 @@ const tabs = [
   {label: 'Intel Gen4', name: 'G4'},
 ]
 
-const listByPlatform = computed(() => list.value?.filter((i: any) => i.platform === (route.query.tab || 'G2')))
+const listByPlatform = computed(() => list.value?.filter((i: any) => i.platform === (route.query.platform || 'G2')))
 
 </script>
 
 <template lang="pug">
-  Tabs(:items="tabs")
+  Tabs(:items="tabs" param="platform")
   div.flex.justify-center
     ChassisCard(v-for="item in listByPlatform.filter((i: any) => !i.hidden)" :chassis="item")
   div(v-if="loggedUser.isAdmin")

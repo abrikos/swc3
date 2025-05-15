@@ -1,4 +1,5 @@
 import {defineStore} from 'pinia';
+import type {ISettings} from "~/server/models/settings.model";
 
 
 interface UserPayloadInterface {
@@ -8,10 +9,11 @@ interface UserPayloadInterface {
 }
 
 export const useCustomStore = defineStore('auth', {
-    state: (): { loading: boolean, loggedUser: UserPayloadInterface | undefined, redirect: string } => ({
+    state: (): { loading: boolean, loggedUser: IUser | undefined, redirect: string, settings: ISettings|undefined } => ({
         loggedUser: undefined,
         loading: false,
-        redirect:''
+        redirect: '',
+        settings: undefined,
     }),
     actions: {
         setRedirect(path: string) {
@@ -23,12 +25,15 @@ export const useCustomStore = defineStore('auth', {
         unsetLoading() {
             this.loading = false
         },
-        async getUser(): Promise<UserPayloadInterface | undefined> {
+        async getUser(): Promise<IUser | undefined> {
             if (!this.loggedUser) {
-                const data = await useNuxtApp().$GET('/user/checkAuth')
-                this.loggedUser = data as UserPayloadInterface
+                this.loggedUser = await useNuxtApp().$GET('/user/checkAuth') as IUser;
             }
             return this.loggedUser
+        },
+        async getSettings(){
+            this.settings = await useNuxtApp().$GET('/admin/settings') as ISettings
+            return this.settings
         },
         async authenticateUser(body: UserPayloadInterface) {
             const config = useRuntimeConfig()
@@ -49,5 +54,6 @@ export const useCustomStore = defineStore('auth', {
             this.loggedUser = undefined
             navigateTo('/login')
         },
+
     },
 });

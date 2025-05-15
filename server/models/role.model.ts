@@ -11,7 +11,7 @@ export interface IRole extends mongoose.Document {
 
 const Schema = mongoose.Schema;
 
-const schema = new Schema({
+const schema = new Schema<IRole>({
     name: {type: String},
     deleted: {type: Boolean, default: false},
 

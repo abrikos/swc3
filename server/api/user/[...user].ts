@@ -79,7 +79,7 @@ router.put('/signup', defineEventHandler(async (event) => {
 
 }))
 //User.deleteMany().then(console.log)
-//User.find().then(console.log)
+//User.findById('636376c6a98e169787cf0a99').then(console.log)
 router.post('/login', defineEventHandler(async (event) => {
     const {email, password} = await readBody(event)
     const user = await User.findOne({email});
@@ -99,15 +99,16 @@ router.get('/:_id/toggle-admin', defineEventHandler(async (event) => {
 }))
 
 router.post('/update', defineEventHandler(async (event) => {
-    const {name, email, avatarImage} = await readBody(event)
+    const bodyUser = await readBody(event)
     const user = event.context.user
     if (!user) throw createError({statusCode: 403, message: 'Доступ запрещён'})
     const found = await User.findById(user.id)
     if (!found) throw createError({statusCode: 403, message: 'STRANGE: user not found: ' + user.id,})
-    if (!validateEmail(email)) throw createError({statusCode: 403, message: 'Wrong email'})
-    found.email = email
-    found.name = name
-    found.avatarImage = avatarImage
+    if (!validateEmail(bodyUser.email)) throw createError({statusCode: 403, message: 'Wrong email'})
+    const fields = ['name', 'email', 'avatarImage', 'currency']
+    for (const field of fields) {
+        found[field] = bodyUser[field]
+    }
     try {
         await found.save()
     } catch (e: any) {

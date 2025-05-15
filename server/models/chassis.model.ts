@@ -48,8 +48,9 @@ schema.virtual('date')
 schema.virtual('parseDigits')
     .get(function () {
         const dig = this.partNumber.split('-')[1]
-        const match = this.platform === 'JBOD' ? dig.match(/(\d)(\d\d)/) : dig.match(/(\d)(\d)(\d\d)(\d\d)/)
-        if (match) {
+        const matchStr = this.platform === 'JBOD' ? dig.match(/(\d)(\d\d)/) : dig.match(/(\d)(\d)(\d\d)(\d\d)/)
+        if (matchStr) {
+            const match = matchStr.map(d=>parseInt(d))
             return {units: match[1], cpu: match[2], disks: match[3] || match[2], ether: match[4]}
         }
     })
