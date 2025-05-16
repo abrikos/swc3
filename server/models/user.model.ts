@@ -5,17 +5,27 @@ import {IRole, Role} from "~/server/models/role.model";
 
 export interface IUser extends mongoose.Document {
     [key: string]: any
-
-    name: string;
-    avatarImage: string;
-    passwordHash: string;
-    password: string;
-    restorePassword: string
-    email: string;
-    checkPasswd: (passwd: string) => boolean
-    isAdmin: boolean
-    createdAt: string
-    _doc: any
+    type: string
+    firstName: string
+    lastName: string
+    middleName: string
+    inn: string
+    company: string
+    jobTitle: string
+    phone: string
+    parent: string
+    code2fa: string
+    //isNetwork: {type: Boolean, default: false},
+    //isSuperUser: {type: Boolean, default: false},
+    email: string
+    logged: number,
+    course: number
+    blocked: boolean
+    passwordHash: string
+    resetCode: string
+    currency: string
+    roles: IRole[]
+    order: IOrder
 }
 
 
@@ -59,7 +69,7 @@ const schema = new Schema<IUser>({
     resetCode: {type: String},
     currency: {type: String, default: 'Рубли'},
     roles: [{type: mongoose.Schema.Types.ObjectId, ref: Role}],
-    order: {type: mongoose.Schema.Types.ObjectId, ref: 'order'},
+    order: {type: mongoose.Schema.Types.ObjectId, ref: Order},
 }, {
     timestamps: {createdAt: 'createdAt'},
     toObject: {virtuals: true},

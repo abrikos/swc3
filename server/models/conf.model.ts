@@ -28,6 +28,7 @@ export interface IConf extends mongoose.Document {
     riserMaxCount:number
     riserIsX16:boolean
     anybayCount:number
+    priceTotal: number
 
 }
 
@@ -41,9 +42,9 @@ const Schema = mongoose.Schema;
 const schema = new Schema<IConf>({
     name: {type: String},
     count: {type: Number, default: 1, min: 0},
-    user: {type: mongoose.Schema.Types.ObjectId, ref: User},
-    chassis: {type: mongoose.Schema.Types.ObjectId, ref: Chassis},
-    service: {type: mongoose.Schema.Types.ObjectId, ref: Service},
+    user: {type: mongoose.Schema.Types.ObjectId, ref: 'user'},
+    chassis: {type: mongoose.Schema.Types.ObjectId, ref: 'chassis'},
+    service: {type: mongoose.Schema.Types.ObjectId, ref: 'service'},
     draft: {type: Boolean, default: true},
     brokenStorageService: {type: Boolean, default: false}
 }, {

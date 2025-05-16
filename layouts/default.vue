@@ -11,7 +11,7 @@ const leftDrawerOpen = ref(true);
 const pages = [
   {to: '/network/choose', label: 'Сетевое оборудование', icon: 'language'},
   {to: '/servers/chassis', label: 'Сервера', icon: 'catching_pokemon'},
-  {to: '/servers/specs', label: 'Спецификации', icon: 'settings'},
+  {to: '/servers/spec/list', label: 'Спецификации', icon: 'settings'},
 ]
 </script>
 
