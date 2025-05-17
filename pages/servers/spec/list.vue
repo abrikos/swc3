@@ -6,21 +6,24 @@ if (!route.query.specs) {
   navigateTo({query: {specs: 'Мои'}})
 }
 
-watch(() => route.query.specs, ()=>{
+watch(() => route.query.specs, makeFilter)
+onMounted(makeFilter)
+
+function makeFilter() {
   switch (route.query.specs) {
     case 'Мои':
       filter.value = {shared: {$eq: null}}
-          break
+      break
     case 'Общие':
       filter.value = {shared: {$ne: null}}
-          break;
+      break;
     default:
-      filter.value = {all:true}
+      filter.value = {all: true}
   }
 
-})
+}
 
-const filter = ref({shared: {$eq: null}})
+const filter = ref()
 </script>
 
 <template lang="pug">

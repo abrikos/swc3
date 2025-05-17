@@ -54,7 +54,7 @@ const schema = new Schema<IProject>({
     toJSON: {virtuals: true}
 })
 
-interface IProjectModel extends mongoose.Model<IConf> {
+interface IProjectModel extends mongoose.Model<IProject> {
     getPopulation: () => {}
 }
 

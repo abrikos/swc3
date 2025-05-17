@@ -21,7 +21,7 @@ export interface IDevice extends mongoose.Document {
     trans: IDevice[];
 }
 
-interface IDeviceModel extends mongoose.Model<IConf> {
+interface IDeviceModel extends mongoose.Model<IDevice> {
     getPopulation: ()=>{}
 }
 

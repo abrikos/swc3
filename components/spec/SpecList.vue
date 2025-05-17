@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import {storeToRefs} from "pinia";
 import {useCustomStore} from "~/store/custom-store";
+import ExcelButton from "~/components/spec/ExcelButton.vue";
 
 const {loggedUser, settings} = storeToRefs(useCustomStore())
 
@@ -22,7 +23,6 @@ const columns = computed(() => {
   if (route.query.specs !== 'Все') {
     headers.push({label: 'Сумма, ' + loggedUser.value?.currency, field: 'price', width: '150px'})
   }
-  headers.push({label: 'Тип', field: 'types', width: '110px'})
   headers.push({label: '', field: 'controls', width: '180px'})
   return headers.map((h: any) => ({...h, name: h.field}))
 })
@@ -34,6 +34,7 @@ const response = ref({specs: [], count: 0})
 watch(() => filter.value, () => {
   onRequest({pagination})
 })
+//onMounted(()=>onRequest({pagination}))
 
 async function onRequest(props: any) {
   const {page, rowsPerPage, sortBy, descending} = props.pagination
@@ -53,10 +54,25 @@ async function onRequest(props: any) {
 
 <template lang="pug">
   q-table(:rows="response.specs" :columns="columns" row-key="id" v-model:pagination="paginationModel" :loading="loading" ref="tableRef" @request="onRequest")
+    template(v-slot:body-cell-controls="{row}")
+      q-td
+        ExcelButton(:spec="row.id")
+        ExcelButton(:spec="row.id" :confidential="true")
+        q-btn(icon="mdi-clipboard-outline")
+          q-tooltip Копировать
+        q-btn(icon="mdi-delete" color="red" )
+          q-tooltip Удалить
     template(v-slot:body-cell-shared="{row}")
       q-td {{row.shared?.email}}
     template(v-slot:body-cell-user="{row}")
       q-td {{row.user?.email}}
+    template(v-slot:body-cell-price="{row}")
+      q-td  {{$priceFormat($priceByCurrencyServer(row.priceServer) + $priceByCurrencyServer(row.priceNet))}}
+    template(v-slot:body-cell-name="{row}")
+      q-td
+        span {{row.name}}&nbsp;
+          q-badge(v-if="row.configurations.length" color="orange" outline) SRV
+          q-badge(v-if="row.orders.length" color="green" outline) NET
 </template>
 
 <style scoped>

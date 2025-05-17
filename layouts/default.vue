@@ -9,9 +9,9 @@ const {loggedUser} = storeToRefs(useCustomStore())
 await getSettings()
 const leftDrawerOpen = ref(true);
 const pages = [
-  {to: '/network/choose', label: 'Сетевое оборудование', icon: 'language'},
-  {to: '/servers/chassis', label: 'Сервера', icon: 'catching_pokemon'},
-  {to: '/servers/spec/list', label: 'Спецификации', icon: 'settings'},
+  {to: '/network/choose', label: 'Сетевое оборудование', icon: 'mdi-network-outline'},
+  {to: '/servers/chassis', label: 'Сервера', icon: 'mdi-server-outline'},
+  {to: '/servers/spec/list', label: 'Спецификации', icon: 'mdi-list-box-outline'},
 ]
 </script>
 

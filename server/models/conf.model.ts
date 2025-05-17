@@ -29,6 +29,9 @@ export interface IConf extends mongoose.Document {
     riserIsX16:boolean
     anybayCount:number
     priceTotal: number
+    description: string
+    priceService: number
+    storagePrice: number
 
 }
 

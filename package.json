@@ -16,6 +16,7 @@
     "@pinia/nuxt": "^0.11.0",
     "@quasar/extras": "^1.16.17",
     "@types/nodemailer": "^6.4.17",
+    "exceljs": "^4.4.0",
     "moment": "^2.30.1",
     "nodemailer": "^7.0.3",
     "nuxt": "^3.17.2",

@@ -18,7 +18,7 @@ export interface ISpec extends mongoose.Document {
     date: string
 }
 
-interface ISpecModel extends mongoose.Model<IConf> {
+interface ISpecModel extends mongoose.Model<ISpec> {
     getPopulation: ()=>any
 }
 
