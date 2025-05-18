@@ -11,7 +11,7 @@ async function download() {
 </script>
 
 <template lang="pug">
-  q-btn(icon="mdi-microsoft-excel" @click="download" :color="confidential? 'red': 'green'" )
+  q-btn(icon="mdi-microsoft-excel" @click.stop="download" :color="confidential? 'red': 'green'" )
     //a.q-btn(:href="`/api/spec/${spec}/excel?confidential=${confidential?1:0}`")
     //q-icon(name="mdi-microsoft-excel")
     q-tooltip {{confidential ? 'Выгрузить в Excel конфидециально':'Выгрузить в Excel'}}

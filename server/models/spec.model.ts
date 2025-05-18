@@ -12,7 +12,7 @@ export interface ISpec extends mongoose.Document {
     configurations: IConf[],
     orders: IOrder[],
     user: IUser
-    createdAt: string
+    createdAt: Date
     priceNet: number
     priceServer: number
     date: string

@@ -11,7 +11,7 @@ const leftDrawerOpen = ref(true);
 const pages = [
   {to: '/network/choose', label: 'Сетевое оборудование', icon: 'mdi-network-outline'},
   {to: '/servers/chassis', label: 'Сервера', icon: 'mdi-server-outline'},
-  {to: '/servers/spec/list', label: 'Спецификации', icon: 'mdi-list-box-outline'},
+  {to: '/servers/spec', label: 'Спецификации', icon: 'mdi-list-box-outline'},
 ]
 </script>
 

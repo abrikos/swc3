@@ -24,7 +24,7 @@ export interface IProject extends mongoose.Document {
     year: number
     emails: string
     expireDate: Date
-    createdAt: string
+    createdAt: Date
     specsAttached: ISpec[]
 
 }

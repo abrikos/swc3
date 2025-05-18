@@ -21,7 +21,7 @@ export interface IComponent extends mongoose.Document {
     unitMin: number
     unitFix: number
     deleted: boolean
-    createdAt: string
+    createdAt: Date
     description: string
     isDiskSAS:boolean
     isDiskSATA:boolean

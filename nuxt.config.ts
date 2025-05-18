@@ -40,7 +40,9 @@ export default defineNuxtConfig({
                 }
             }
         },
-        iconSet: 'mdi-v7'
+        iconSet: 'mdi-v7',
+        lang: 'ru'
+
     },
     nitro: {
         storage: {

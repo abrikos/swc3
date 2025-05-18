@@ -7,7 +7,7 @@ const model = 'configuration'
 
 export interface IConf extends mongoose.Document {
     name: string;
-    createdAt: string;
+    createdAt: Date;
     count: number;
     price: number;
     priceComponents: number;

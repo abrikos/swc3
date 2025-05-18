@@ -9,7 +9,7 @@ export interface IOrder extends mongoose.Document {
     name: string
     count: number
     user: IUser
-    createdAt: string
+    createdAt: Date
     sum:number
     total:number
     items: IOrderItem[]

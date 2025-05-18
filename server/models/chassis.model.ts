@@ -10,7 +10,7 @@ export interface IChassis extends mongoose.Document {
     [key: string]: any
 
     partNumber: string
-    createdAt: string
+    createdAt: Date
     parseDigits: { disks: number, units: number }
     _doc: any
 }

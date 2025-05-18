@@ -5,6 +5,7 @@ import {IRole, Role} from "~/server/models/role.model";
 
 export interface IUser extends mongoose.Document {
     [key: string]: any
+
     type: string
     firstName: string
     lastName: string
@@ -15,8 +16,8 @@ export interface IUser extends mongoose.Document {
     phone: string
     parent: string
     code2fa: string
-    //isNetwork: {type: Boolean, default: false},
-    //isSuperUser: {type: Boolean, default: false},
+    isNetwork: boolean,
+    isSuperUser: boolean,
     email: string
     logged: number,
     course: number
@@ -26,6 +27,10 @@ export interface IUser extends mongoose.Document {
     currency: string
     roles: IRole[]
     order: IOrder
+    confs: IConf[]
+    specs: ISpec[]
+    specsCount: number
+    ordersCount: number
 }
 
 
@@ -63,8 +68,8 @@ const schema = new Schema<IUser>({
         match: [/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,4})+$/, 'Please fill a valid email address']
     },
     logged: Number,
-    course: {type:Number, default:1},
-    blocked: {type:Boolean, default: false},
+    course: {type: Number, default: 1},
+    blocked: {type: Boolean, default: false},
     passwordHash: {type: String},
     resetCode: {type: String},
     currency: {type: String, default: 'Рубли'},
@@ -100,40 +105,40 @@ schema.virtual('fio')
     })
 schema.virtual('isAdmin')
     .get(function () {
-        return this.roles?.map((r:IRole)=>r.name).includes('admin');
+        return this.roles?.map((r: IRole) => r.name).includes('admin');
     })
 schema.virtual('isNetwork')
     .get(function () {
-        return !!['admin', 'BDM', 'user'].filter(r=>this.roles?.map((u:IRole)=>u.name).includes(r)).length ;
+        return !!['admin', 'BDM', 'user'].filter(r => this.roles?.map((u: IRole) => u.name).includes(r)).length;
     })
 schema.virtual('isEmployer')
     .get(function () {
-        return !!['Employer', 'BDM', 'Manager', 'admin', 'superuser', 'internal'].filter(r=>this.roles?.map((u:IRole)=>u.name).includes(r)).length ;
+        return !!['Employer', 'BDM', 'Manager', 'admin', 'superuser', 'internal'].filter(r => this.roles?.map((u: IRole) => u.name).includes(r)).length;
     })
 schema.virtual('isProject')
     .get(function () {
-        return !!['admin', 'BDM', 'Manager'].filter(r=>this.roles?.map((u:IRole)=>u.name).includes(r)).length ;
+        return !!['admin', 'BDM', 'Manager'].filter(r => this.roles?.map((u: IRole) => u.name).includes(r)).length;
     })
 schema.virtual('isAnalytic')
     .get(function () {
-        return !!['admin', 'BDM'].filter(r=>this.roles?.map((u:IRole)=>u.name).includes(r)).length ;
+        return !!['admin', 'BDM'].filter(r => this.roles?.map((u: IRole) => u.name).includes(r)).length;
     })
 schema.virtual('isSettings')
     .get(function () {
-        return !!['admin', 'superuser'].filter(r=>this.roles?.map((u:IRole)=>u.name).includes(r)).length ;
+        return !!['admin', 'superuser'].filter(r => this.roles?.map((u: IRole) => u.name).includes(r)).length;
     })
 schema.virtual('isServer')
     .get(function () {
-        return !!['admin', 'BDM', 'user'].filter(r=>this.roles?.map((u:IRole)=>u.name).includes(r)).length ;
+        return !!['admin', 'BDM', 'user'].filter(r => this.roles?.map((u: IRole) => u.name).includes(r)).length;
     })
 schema.virtual('isSuperUser')
     .get(function () {
-        return this.roles?.map((r:IRole)=>r.name).includes('superuser');
+        return this.roles?.map((r: IRole) => r.name).includes('superuser');
     })
 
 schema.virtual('loggedDate')
     .get(function () {
-        if(!this.logged) return '';
+        if (!this.logged) return '';
         return moment.unix(this.logged).format('YYYY-MM-DD HH:mm');
     })
 
@@ -144,20 +149,26 @@ schema.virtual('tokens', {
     foreignField: 'user'
 })
 
-schema.virtual('configurations', {
+schema.virtual('confs', {
     ref: 'configuration',
     localField: '_id',
     foreignField: 'user'
 })
 
-schema.virtual('specifications', {
+schema.virtual('specsCount', {
     ref: 'spec',
     localField: '_id',
     foreignField: 'user',
     count: true
 })
 
-schema.virtual('orders', {
+schema.virtual('specs', {
+    ref: 'spec',
+    localField: '_id',
+    foreignField: 'user',
+})
+
+schema.virtual('ordersCount', {
     ref: 'order',
     localField: '_id',
     foreignField: 'user',
