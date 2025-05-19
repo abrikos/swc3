@@ -8,6 +8,6 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
 
         setRedirect(to.fullPath)
         //abortNavigation();
-        return navigateTo('/login');
+        return navigateTo('/user/login');
     }
 });

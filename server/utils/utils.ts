@@ -5,7 +5,21 @@ import nodemailer from "nodemailer";
 
 const config = useRuntimeConfig()
 
-const {mailUser, mailPassword, telegramBotToken} = useRuntimeConfig()
+const {mailUser, mailPassword,mailUserQ, mailPasswordQ, devMode} = useRuntimeConfig()
+
+const transporterQ = nodemailer.createTransport({
+    host: 'ex.telecorgroup.ru',
+    port: 587,
+    secure: false,
+    auth: {
+        user: mailUserQ,
+        pass: mailPasswordQ,
+    },
+    tls: {
+        ciphers: 'SSLv3'
+    }
+
+});
 
 const transporter = nodemailer.createTransport({
     host: 'smtp.mail.ru',
@@ -17,9 +31,17 @@ const transporter = nodemailer.createTransport({
     },
 });
 
-function sendMail(mailData: any) {
-    mailData.from = mailUser
-    return transporter.sendMail(mailData)
+
+transporter.verify().then(e=>console.log('Mail verify', e)).catch(e=>console.error('mail send ERROR: ', e));
+//sendMail({to:'abrikoz@gmail.com'}).then(console.log)
+
+export function sendMail(mailData: any) {
+    return transporterQ.sendMail({
+        from: mailUserQ,
+        to: devMode ? 'abrikoz@gmail.com' : mailData.to,
+        subject: 'Веб-конфигуратор QTECH: ' + mailData.subject,
+        text: mailData.text + '\n-------------------\nСообщение отправлено ботом веб-конфигуратора'
+    })
 }
 
 export default {

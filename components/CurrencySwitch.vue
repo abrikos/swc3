@@ -13,13 +13,14 @@ async function switchCurrency(currency:string){
 </script>
 
 <template lang="pug">
-  q-option-group(v-if="loggedUser" :options="items"  type="radio" v-model="loggedUser.currency" @update:model-value="switchCurrency" inline dense)
-  span &nbsp ({{settings?.course.toFixed(2)}})
-  //q-btn-dropdown(v-if="loggedUser" :label="loggedUser.currency")
-    q-list
-      q-item(v-for="(item,idx) in items" @click="switchCurrency(item)" clickable v-close-popup)
-        q-item-section
-          q-item-label {{item}}
+  div.flex(v-if="loggedUser")
+    q-option-group(:options="items"  type="radio" v-model="loggedUser.currency" @update:model-value="switchCurrency" inline dense)
+    span &nbsp ({{settings?.course.toFixed(2)}})
+    //q-btn-dropdown(v-if="loggedUser" :label="loggedUser.currency")
+      q-list
+        q-item(v-for="(item,idx) in items" @click="switchCurrency(item)" clickable v-close-popup)
+          q-item-section
+            q-item-label {{item}}
 </template>
 
 <style scoped>

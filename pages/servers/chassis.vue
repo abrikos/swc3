@@ -5,6 +5,7 @@ import {useCustomStore} from "~/store/custom-store";
 const route = useRoute()
 const {loggedUser} = storeToRefs(useCustomStore())
 const list = ref([])
+const showHidden = ref(false)
 const {$listen} = useNuxtApp()
 $listen('chassis:reload', ()=>{
   load()
@@ -40,10 +41,12 @@ const listByPlatform = computed(() => list.value?.filter((i: any) => i.platform 
   div.flex.justify-center
     ChassisCard(v-for="item in listByPlatform.filter((i: any) => !i.hidden)" :chassis="item")
   div(v-if="loggedUser.isAdmin")
-    h4.text-center Скрытые
-    div.flex.justify-center
-      ChassisCard(v-for="item in listByPlatform.filter((i: any) => i.hidden)" :chassis="item")
-      //ChassisCard(v-for="item in listByPlatform.filter((i: any) => !i.hidden)" :key="item.name" )
+    q-toggle(v-model="showHidden" label="Показывать скрытые" )
+    div(v-if="showHidden")
+      h4.text-center Скрытые
+      div.flex.justify-center
+        ChassisCard(v-for="item in listByPlatform.filter((i: any) => i.hidden)" :chassis="item")
+        //ChassisCard(v-for="item in listByPlatform.filter((i: any) => !i.hidden)" :key="item.name" )
 
 
 

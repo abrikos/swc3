@@ -1,3 +1,3 @@
 export default defineAppConfig({
-    guestPages: ['signup', 'password-restore', 'login', 'index']
+    guestPages: ['user-registration','user-registration-done', 'user-password-restore', 'user-password-restore-code', 'user-login', 'index']
 })

@@ -10,8 +10,11 @@ export default defineNuxtConfig({
         modelsDir: 'models',
     },
     runtimeConfig: {
+        mailUserQ: process.env.QTECH_MAIL_USER,
+        mailPasswordQ: process.env.QTECH_MAIL_PASSWORD,
         mailUser: process.env.MAIL_USER,
         mailPassword: process.env.MAIL_PASSWORD,
+        devMode: process.env.NODE_ENV !== 'production',
         public: {
             devMode: process.env.NODE_ENV !== 'production',
             authExpiration: 3600 * 24 * 30,
@@ -29,10 +32,18 @@ export default defineNuxtConfig({
         sassVariables: '~/public/quazar.variables.sass',
         components: {
             defaults: {
+                QCard:{
+                    flat: true,
+                    bordered: true
+                },
                 QBtn: {
                     dense: true,
                     flat: true,
                     noCaps: true
+                },
+                QSelect: {
+                    outlined: true,
+                    dense: true
                 },
                 QInput: {
                     outlined: true,

@@ -32,7 +32,7 @@ export const useCustomStore = defineStore('auth', {
             return this.loggedUser
         },
         async getSettings(){
-            this.settings = await useNuxtApp().$GET('/admin/settings') as ISettings
+            this.settings = await useNuxtApp().$GET('/usd-course') as ISettings
             return this.settings
         },
         async authenticateUser(body: UserPayloadInterface) {

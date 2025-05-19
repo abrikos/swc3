@@ -5,25 +5,30 @@ import {useCustomStore} from '~/store/custom-store';
 const config = useAppConfig()
 const route = useRoute()
 const {logUserOut, getSettings} = useCustomStore(); // use authenticateUser action from  auth store
-const {loggedUser} = storeToRefs(useCustomStore())
+const {loggedUser, loading} = storeToRefs(useCustomStore())
 await getSettings()
 const leftDrawerOpen = ref(true);
 const pages = [
-  {to: '/network/choose', label: 'Сетевое оборудование', icon: 'mdi-network-outline'},
-  {to: '/servers/chassis', label: 'Сервера', icon: 'mdi-server-outline'},
-  {to: '/servers/spec/list', label: 'Спецификации', icon: 'mdi-list-box-outline'},
+  {to: '/', label: 'Начало', icon: 'mdi-home'},
+  {to: '/network/choose', label: 'Сетевое оборудование', icon: 'mdi-network-outline', forLogged: true},
+  {to: '/servers/chassis', label: 'Сервера', icon: 'mdi-server-outline', forLogged: true},
+  {to: '/servers/spec/list', label: 'Спецификации', icon: 'mdi-list-box-outline', forLogged: true},
+]
+const pagesAdmin = [
+  {to: '/admin/user-registrations', label: 'Заявки на регистрацию', icon: 'mdi-network-outline'},
+  {to: '/admin/user-list', label: 'Список пользователей', icon: 'mdi-network-outline'},
 ]
 </script>
 
 <template lang="pug">
   q-layout(view="hHh Lpr lff")
-    NuxtLoadingIndicator
     q-header
+      q-linear-progress#progress(color="orange" indeterminate v-if="loading" )
       q-toolbar.bg-grey-6(inset)
         img(src="/logo.png" style="max-height: 20px;max-width: 230px")
         //q-btn(v-if="loggedUser" flat round dense icon="menu" @click="toggleDrawer")
         q-toolbar-title
-          q-btn(flat to="/")
+          //q-btn(to="/")
         CurrencySwitch
         //q-btn-dropdown(flat label="Admin" v-if="loggedUser?.isAdmin")
           q-list
@@ -32,26 +37,36 @@ const pages = [
             q-item
               q-btn(to="/admin/import" label="Импорт")
         q-space
-        q-btn.flex.la-align-center(flat dense no-caps v-if="loggedUser" to="/user") {{loggedUser.email}}
+        q-btn.flex.la-align-center(flat dense no-caps v-if="loggedUser" to="/user/cabinet") {{loggedUser.email}}
         q-btn(v-if="loggedUser" @click="logUserOut" icon="mdi-logout" )
-        q-btn(v-if="!loggedUser" to="/login" icon="login" )
+        q-btn(v-if="!loggedUser" to="/user/login" icon="mdi-login" )
         //ThemeSwitch
     q-drawer(v-model="leftDrawerOpen" bordered)
-
       q-list
-        q-item(v-for="page in pages" :to="page.to" active-class="active" :active="route.fullPath===page.to || route.path===page.to")
+        q-item(v-for="page in pages.filter(p=>p.forLogged ? p.forLogged === !!loggedUser: true)" :to="page.to")
           q-item-section(avatar)
             q-icon(:name="page.icon")
           q-item-section {{page.label}}
-      //div#progress
-        q-linear-progress(color="blue" indeterminate v-if="loading" )
+        div(v-if="loggedUser?.isAdmin")
+          q-separator
+          q-item.bg-grey-3
+            q-item-section
+              i Служебный раздел:
+          q-item(v-for="page in pagesAdmin" :to="page.to" active-class="active" :active="route.fullPath===page.to || route.path===page.to")
+            q-item-section(avatar)
+              q-icon(:name="page.icon")
+            q-item-section {{page.label}}
 
-    q-page-container {{route.name}}
+    q-page-container
+      div {{route.name}}
       slot
 
 
 </template>
 
-<style scoped>
-
+<style scoped lang="sass">
+#progress
+  position: absolute
+  height: 10px
+  z-index: 100000000
 </style>

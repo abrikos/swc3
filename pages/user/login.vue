@@ -1,35 +1,38 @@
 <script setup lang="ts">
 import {useCustomStore} from '~/store/custom-store';
 
-const {signupUser} = useCustomStore()
+const {loggedUser, authenticateUser} = useCustomStore()
 const config = useRuntimeConfig()
-const user = ref({email: '', password: '', password2: ''})
 
-const res = ref(true)
+const user = ref({email: '', password: ''})
+
 async function submit() {
-  await signupUser(user.value)
+  await authenticateUser(user.value)
 }
+onMounted(()=>{
+  if(loggedUser) {navigateTo('/user')}
+})
 
 function reset() {
-  user.value = {email: '', password: '', password2:''}
+  user.value = {email: '', password: ''}
 }
-
-
 </script>
 
 <template lang="pug">
 q-card.q-pa-sm.fixed-center
   q-toolbar
-    q-toolbar-title Регистрация
+    q-toolbar-title Вход
   q-form(@submit="submit" @reset="reset")
     q-input(v-model="user.email" label="Логин")
+    br
     q-input(v-model="user.password" label="Пароль" type="password" )
-    q-input(v-model="user.password2" label="Подтверждение пароля" type="password" )
     q-card-actions
       q-btn(type="submit" label="Отправить" color="primary" )
       q-btn(type="reset" label="Сбросить")
-      q-btn(to="/login" label="Войти")
-
+    q-card-actions.flex
+      router-link(to="/user/registration") Зарегистрироваться
+      span &nbsp;
+      router-link(to="/user/password-restore") Восстановить пароль
 </template>
 
 <style scoped>

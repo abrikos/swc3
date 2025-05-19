@@ -2,6 +2,7 @@ import crypto from "crypto";
 import mongoose from 'mongoose';
 import moment from "moment";
 import {IRole, Role} from "~/server/models/role.model";
+import {IDevice} from "~/server/models/device.model";
 
 export interface IUser extends mongoose.Document {
     [key: string]: any
@@ -26,11 +27,15 @@ export interface IUser extends mongoose.Document {
     resetCode: string
     currency: string
     roles: IRole[]
-    order: IOrder
+    //order: IOrder
     configurations: IConf[]
     specs: ISpec[]
     specsCount: number
     ordersCount: number
+}
+
+interface IUserModel extends mongoose.Model<IUser> {
+    getPopulation: any
 }
 
 
@@ -73,8 +78,8 @@ const schema = new Schema<IUser>({
     passwordHash: {type: String},
     resetCode: {type: String},
     currency: {type: String, default: 'Рубли'},
-    roles: [{type: mongoose.Schema.Types.ObjectId, ref: Role}],
-    order: {type: mongoose.Schema.Types.ObjectId, ref: Order},
+    roles: [{type: mongoose.Schema.Types.ObjectId, ref: 'role'}],
+    //order: {type: mongoose.Schema.Types.ObjectId, ref: 'order'},
 }, {
     timestamps: {createdAt: 'createdAt'},
     toObject: {virtuals: true},
@@ -86,12 +91,15 @@ const schema = new Schema<IUser>({
 schema.methods.checkPasswd = function (passwd: string) {
     return md5(passwd) === this.passwordHash;
 }
+schema.statics.getPopulation = () => ['specsCount', 'roles']
+
 
 schema.virtual('password')
     .get(function () {
         return '';
     })
     .set(function (value) {
+        //console.log('Password change', value);
         this.passwordHash = md5(value)
     })
 
@@ -174,4 +182,4 @@ schema.virtual('ordersCount', {
     foreignField: 'user',
     count: true
 })
-export const User = mongoose.model<IUser>('user', schema)
+export const User = mongoose.model<IUser, IUserModel>('user', schema)

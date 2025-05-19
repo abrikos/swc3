@@ -5,6 +5,26 @@ import crypto from "crypto";
 //User.deleteMany().then(console.log)
 const router = createRouter()
 
+router.post('/inn', defineEventHandler(async (event) => {
+    const {inn} = await readBody(event)
+    const url = "http://suggestions.dadata.ru/suggestions/api/4_1/rs/findById/party";
+    const token = "257cfbf98eb1c4e3a91808b98089ca998c42e34a";
+    const query = "7707083893";
+    const response = await fetch(url, {
+        method: "POST",
+        mode: "cors",
+        headers: {
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+            "Authorization": "Token " + token
+        },
+        body: JSON.stringify({query: inn})
+    })
+    const org = await response.json()
+    return org.suggestions
+
+}))
+
 router.post('/request-restore-password', defineEventHandler(async (event) => {
     const {email} = await readBody(event)
     const user = await User.findOne({email});
@@ -14,10 +34,11 @@ router.post('/request-restore-password', defineEventHandler(async (event) => {
     }
     user.restorePassword = crypto.createHmac('sha256', '').update(Math.random().toString()).digest('hex')
     await user.save()
+    const host = getHeader(event, 'host')
     const res = await utils.sendMail({
         to: email,
         subject: 'Восстановить пароль',
-        text: `Ссылка для восстановления ${event.node.req.headers.origin}/password-restore-${user.restorePassword}`
+        text: `Ссылка для восстановления ${host}/password-restore-${user.restorePassword}`
     })
     if (!res.messageId) throw createError({statusCode: 500, message: 'Ошибка отправки'})
     return 1
@@ -43,20 +64,6 @@ router.get('/checkAuth', defineEventHandler(async (event) => {
     return event.context.user
 }))
 
-router.get('/list-all', defineEventHandler(async (event) => {
-    const user = event.context.user
-    if (!user || !user.isAdmin) throw createError({statusCode: 403, message: 'Доступ запрещён',})
-    return User.find({}, '-passwordHash')
-}))
-
-router.delete('/:_id', defineEventHandler(async (event) => {
-    const user = event.context.user
-    if (!user || !user.isAdmin) throw createError({statusCode: 403, message: 'Доступ запрещён'})
-    const {_id} = event.context.params as Record<string, string>
-    await User.findByIdAndDelete(_id)
-}))
-
-
 router.get('/logout', defineEventHandler(async (event) => {
     const cookies = parseCookies(event)
     const config = useRuntimeConfig(event)
@@ -64,17 +71,46 @@ router.get('/logout', defineEventHandler(async (event) => {
     deleteCookie(event, config.public.authTokenName)
 }))
 
+router.get('/check-email/:email', defineEventHandler(async (event) => {
+    const {email} = event.context.params as Record<string, string>
+    const reg = await Registration.countDocuments({email})
+    const user = await User.findOne({email})
+    if (user) {
+        return {msg: 'Этот e-mail занят', error: true}
+    }
+    if (reg) {
+        return {msg: `На регистрацию этого e-mail подано заявок: ${reg}`}
+    }
+    return {}
+}))
 
-router.put('/signup', defineEventHandler(async (event) => {
-    const {email, password} = await readBody(event)
+router.post('/registration', defineEventHandler(async (event) => {
+    const body = await readBody(event)
+    const host = getHeader(event, 'host')
+    const exists = await User.findOne({email: body.email})
+    if (exists) throw createError({statusCode: 400, message: 'Такой юзер уже существует'})
+    const user = await Registration.create(body)
+    const users = await User.find().populate('roles')
+    const url = `http://${host}/admin/user-confirm?id=${user.id}`
+    const text = `Для подтверждения/отклонения регистрации пройдите по ссылке ${url}`
+    const subject = 'Заявка на регистрацию нового пользователя'
+    const emails = []
+    for (const user of users) {
+        if (user.isAdmin) {
+            emails.push(user.email)
+        }
+    }
     try {
-        const user = await User.create({email, password});
-        const found = await User.findById(user.id, '-passwordHash')
-        if (!found) return
-        await utils.setAuthToken(event, found)
-        return utils.adaptUser(found)
+        const r = await utils.sendMail({
+            to: emails,
+            subject,
+            text
+        })
+        console.log(r)
+
     } catch (err) {
-        throw createError({statusCode: 400, message: 'Ошибка регистрации'})
+        console.error(err)
+        throw createError({statusCode: 400, message: 'Ошибка уведомления админов'})
     }
 
 }))
@@ -127,7 +163,7 @@ router.post('/password', defineEventHandler(async (event) => {
     if (password && password === password2) {
         user.password = password
         await user.save()
-    }else{
+    } else {
         throw createError({statusCode: 400, message: 'Ошибка смены пароля',})
     }
 }))
