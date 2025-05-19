@@ -2,7 +2,7 @@
 const tabs = ['Мои', 'Общие', 'Все'].map((name: string) => ({name}))
 
 const route = useRoute()
-if (!route.query.specs && !route.query.id) {
+if (!route.query.specs) {
   navigateTo({query: {specs: 'Мои'}})
 }
 
@@ -27,10 +27,8 @@ const filter = ref()
 </script>
 
 <template lang="pug">
-  div(v-if="route.query.id") zzzz
-  div(v-else)
-    Tabs(:items="tabs" param="specs" )
-    SpecList(v-model="filter")
+Tabs(:items="tabs" param="specs" )
+SpecList(v-model="filter")
 </template>
 
 <style scoped>

@@ -3,6 +3,8 @@ import {storeToRefs} from "pinia";
 import {useCustomStore} from "~/store/custom-store";
 import ExcelButton from "~/components/spec/ExcelButton.vue";
 import moment from 'moment'
+import CloneButton from "~/components/spec/CloneButton.vue";
+import DeleteButton from "~/components/spec/DeleteButton.vue";
 
 const {loggedUser, settings} = storeToRefs(useCustomStore())
 
@@ -54,16 +56,10 @@ async function onRequest(props: any) {
   loading.value = false
 }
 
-async function deleteSpec(id: string) {
-  console.log(id)
-  await useNuxtApp().$DELETE(`/spec/${id}`)
-  await onRequest({pagination:paginationDefault})
-}
 
-async function cloneSpec(id: string) {
-  await useNuxtApp().$GET(`/spec/${id}/clone`)
-  await onRequest({pagination:paginationDefault})
-}
+const {$listen} = useNuxtApp()
+$listen('specs:reload', ()=>onRequest({pagination:paginationDefault}))
+
 </script>
 
 <template lang="pug">
@@ -78,7 +74,7 @@ async function cloneSpec(id: string) {
     ref="tableRef"
     @request="onRequest"
     no-data-label="Ни чего не найдено"
-    @row-click="(e,row)=>navigateTo({query:{id:row.id}})"
+    @row-click="(e,row)=>navigateTo(`/servers/spec/${row.id}`)"
     )
     template( v-slot:header)
       q-td(v-for="col of columns.filter(c=>!['controls', 'price', 'shared'].includes(c.field))")
@@ -93,14 +89,9 @@ async function cloneSpec(id: string) {
       q-td
         ExcelButton(:spec="row.id")
         ExcelButton(:spec="row.id" :confidential="true")
-        q-btn(icon="mdi-content-duplicate" @click.stop="cloneSpec(row.id)")
-          q-tooltip Клонировать
-        q-btn(v-if="row.user.id === loggedUser.id" icon="mdi-delete" color="negative" @click.stop)
-          q-tooltip Удалить "{{row.name}}"
-          q-popup-proxy(cover transition-show="scale" transition-hide="scale")
-            q-banner Удалить конфигурацию "{{row.name}}"? &nbsp;
-              q-btn( @click.stop="deleteSpec(row.id)" label="OK" v-close-popup color="negative" )
-              q-btn( @click.stop label="Отмена" v-close-popup)
+        CloneButton(:spec="row.id")
+        DeleteButton(:spec="row")
+
         q-icon(v-if="row.configurations.length" name="mdi-server-outline" color="orange" )
           q-tooltip Серверные конфигурации
         q-icon(v-if="row.orders.length" name="mdi-network-outline" outline color="green")
@@ -114,7 +105,7 @@ async function cloneSpec(id: string) {
       q-td(style="width:150px") {{row.user?.email}}
     template(v-slot:body-cell-price="{row}")
       q-td(style="width:150px")
-        div.text-right {{$priceFormat($priceByCurrencyServer(row.priceServer) + $priceByCurrencyServer(row.priceNet))}}
+        div.text-right {{$priceFormat($priceByCurrencyServer(row.priceServer) + $priceByCurrencyNet(row.priceNet))}}
 </template>
 
 <style scoped>

@@ -11,7 +11,7 @@ const leftDrawerOpen = ref(true);
 const pages = [
   {to: '/network/choose', label: 'Сетевое оборудование', icon: 'mdi-network-outline'},
   {to: '/servers/chassis', label: 'Сервера', icon: 'mdi-server-outline'},
-  {to: '/servers/spec', label: 'Спецификации', icon: 'mdi-list-box-outline'},
+  {to: '/servers/spec/list', label: 'Спецификации', icon: 'mdi-list-box-outline'},
 ]
 </script>
 
@@ -33,7 +33,7 @@ const pages = [
               q-btn(to="/admin/import" label="Импорт")
         q-space
         q-btn.flex.la-align-center(flat dense no-caps v-if="loggedUser" to="/user") {{loggedUser.email}}
-        q-btn(v-if="loggedUser" @click="logUserOut" icon="logout" )
+        q-btn(v-if="loggedUser" @click="logUserOut" icon="mdi-logout" )
         q-btn(v-if="!loggedUser" to="/login" icon="login" )
         //ThemeSwitch
     q-drawer(v-model="leftDrawerOpen" bordered)

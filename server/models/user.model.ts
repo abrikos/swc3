@@ -27,7 +27,7 @@ export interface IUser extends mongoose.Document {
     currency: string
     roles: IRole[]
     order: IOrder
-    confs: IConf[]
+    configurations: IConf[]
     specs: ISpec[]
     specsCount: number
     ordersCount: number
@@ -149,7 +149,7 @@ schema.virtual('tokens', {
     foreignField: 'user'
 })
 
-schema.virtual('confs', {
+schema.virtual('configurations', {
     ref: 'configuration',
     localField: '_id',
     foreignField: 'user'

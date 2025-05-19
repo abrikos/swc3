@@ -9,11 +9,12 @@ router.get('/:_id', defineEventHandler(async (event) => {
     const user = event.context.user
     if (!user || !user.isServer) throw createError({statusCode: 403, message: 'Доступ запрещён',})
     const {_id} = event.context.params as Record<string, string>
-    return  Spec.findOne({_id, user}).populate(Spec.getPopulation())
+    return  Spec.findOne({_id, user}).populate(['user', Spec.getPopulation()])
 
 }))
 
-router.get('/:_id/clone', defineEventHandler(async (event) => {
+router.get('/clone/:_id', defineEventHandler(async (event) => {
+    console.log('spec.id')
     const user = event.context.user
     if (!user || !user.isServer) throw createError({statusCode: 403, message: 'Доступ запрещён',})
     const {_id} = event.context.params as Record<string, string>
@@ -24,6 +25,8 @@ router.get('/:_id/clone', defineEventHandler(async (event) => {
     spec.isNew = true;
     spec.createdAt = new Date();
     spec.save()
+    console.log(spec.id)
+    return spec.id
 }))
 
 router.delete('/:_id', defineEventHandler(async (event) => {
@@ -89,7 +92,6 @@ router.post('/list', defineEventHandler(async (event) => {
         if (!filter.all) {
             filter.user = user.id
         }
-        console.log(filter)
         delete filter.all
         const specs = await Spec.find(filter)
             .limit(perPage)

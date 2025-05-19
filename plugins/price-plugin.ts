@@ -11,7 +11,7 @@ export default defineNuxtPlugin(() => {
                 if(!course) return 0
                 return value * (loggedUser.value?.currency !== 'USD' ? course : 1)
             },
-            priceByCourseNet: (value: number) => {
+            priceByCurrencyNet: (value: number) => {
                 const course = settings.value?.course
                 if(!course) return 0
                 return value * (loggedUser.value?.currency === 'USD' ? 1 / course : 1)
