@@ -333,7 +333,7 @@ schema.virtual('memModuleSize')
 
 schema.virtual('memMaxCount')
     .get(function () {
-        if (['G3', 'G3R'].includes(this.chassis.platform)) {
+        if (['G3', 'G3R', 'G4'].includes(this.chassis.platform)) {
             return this.cpuCount > 1 ? 32 : 16
         }
         return this.chassis.cpu === 'AMD' ? 32 : 24

@@ -1,40 +1,44 @@
 import Excel from "exceljs";
 import logic from "~/plugins/logic/logic-validator"
+import FillPattern from "exceljs/index";
 
 export function servSpec(worksheet:Excel.Worksheet, spec:ISpec, confidential:boolean, user:IUser, course: number) {
     const currName = confidential ? '$' : user.currency
     const numFmt = `_(* #,##0.00_)"${currName === 'Рубли' ? 'Р' : '$'}";_(* (#,##0.00);_(* "-"??_);_(@_)`
 
     const data = [
-        "Серверные конфигурации",
-        "Название",
-        "Количество",
-        "РРЦ, " + currName,
-        "РРЦ стоимость, " + currName,
+        "АРТИКУЛ",
+        "НАИМЕНОВАНИЕ",
+        "КОЛ-ВО",
+        "ЦЕНА РРЦ, " + currName,
+        "СТОИМОСТЬ РРЦ, " + currName,
 
     ]
     if (user.isEmployer) {
-        data.push("Скидка, %",
-            "Цена, " + currName,
-            "Стоимость, " + currName)
+        data.push("СКИДКА, %",
+            "ЦЕНА СО СКИДКОЙ, " + currName,
+            "СТОИМОСТЬ СО СКИДКОЙ, " + currName)
     }
     if (confidential) {
-        data.push('Цена FOB, $')
-        data.push('Цена DDP, $')
-        data.push('Сумма DDP, $')
+        data.push('ЦЕНА FOB, $')
+        data.push('ЦЕНА DDP, $')
+        data.push('СТОИМОСТЬ DDP, $')
     }
     const redRow = worksheet.addRow(data)
     redRow.fill = {type: 'pattern', pattern: 'solid', bgColor: {argb: 'FFFF2238'}, fgColor: {argb: 'FFFF2238'}}
     redRow.font = {color: {argb: 'FFFFFFFF'}, name: 'Arial'}
     redRow.height = 30
     redRow.alignment = {vertical: 'middle'}
+    const fill = {type: 'pattern', pattern: 'solid', bgColor: {argb: 'FFCCCC00'}, fgColor: {argb: 'FFCCCC00'}}  as FillPattern
 
     const summaryRows = []
     for (const conf of spec.configurations) {
         const confRow = worksheet.addRow(['', conf.name])
         confRow.height = 30
         confRow.alignment = {vertical: 'middle'}
-        confRow.fill = {type: 'pattern', pattern: 'solid', bgColor: {argb: 'FFCCCCCC'}, fgColor: {argb: 'FFCCCCCC'}}
+        confRow.getCell(9).fill = fill
+        confRow.getCell(10).fill = fill
+        confRow.getCell(11).fill = fill
 
         const {errors} = logic(conf)
         if (errors.length) {
@@ -54,11 +58,13 @@ export function servSpec(worksheet:Excel.Worksheet, spec:ISpec, confidential:boo
         ]
         const rowSummary = worksheet.addRow(data)
         summaryRows.push(rowSummary.number)
+        rowSummary.height = 50
         rowSummary.getCell(5).value = {formula: `C${rowSummary.number} * D${rowSummary.number}`}
         if (user.isEmployer) {
             rowSummary.getCell(7).value = {formula: `D${rowSummary.number} - D${rowSummary.number} * F${rowSummary.number}`}
             rowSummary.getCell(6).style = {numFmt: '0%'}
             rowSummary.getCell(8).value = {formula: `G${rowSummary.number} * C${rowSummary.number}`}
+            rowSummary.getCell(9).fill = fill
         }
 
         rowSummary.alignment = {wrapText: true, vertical: 'middle'}
@@ -74,8 +80,9 @@ export function servSpec(worksheet:Excel.Worksheet, spec:ISpec, confidential:boo
         chassisRow.getCell(1).alignment = {horizontal: 'right'}
         if (confidential) {
             rowSummary.getCell(11).value = {formula: `J${rowSummary.number}*C${rowSummary.number}`}
-            chassisRow.getCell(9).value = Math.round((conf.chassis.priceFob + Number.EPSILON) * 100) / 100
-            chassisRow.getCell(10).value = Math.round((conf.chassis.priceDdp + Number.EPSILON) * 100) / 100
+            chassisRow.getCell(9).value = Math.round((conf.chassis.priceFob) * 100) / 100
+            chassisRow.getCell(11).fill = fill
+            chassisRow.getCell(10).value = Math.round((conf.chassis.priceDdp) * 100) / 100
             chassisRow.getCell(4).value = {formula: `J${chassisRow.number}/0.85/0.4`}
             chassisRow.getCell(4).font = {color: {argb: gray}}
         }
@@ -95,8 +102,8 @@ export function servSpec(worksheet:Excel.Worksheet, spec:ISpec, confidential:boo
                     data.push('')
                     data.push('')
                     data.push('')
-                    data.push(Math.round((part.component.priceFob + Number.EPSILON) * 100) / 100)
-                    data.push(Math.round((part.component.priceDdp + Number.EPSILON) * 100) / 100)
+                    data.push(Math.round((part.component.priceFob) * 100) / 100)
+                    data.push(Math.round((part.component.priceDdp) * 100) / 100)
                     fob += part.component.price * part.count
                 }
                 const partRow = worksheet.addRow(data)
@@ -107,6 +114,7 @@ export function servSpec(worksheet:Excel.Worksheet, spec:ISpec, confidential:boo
                 partRow.alignment = {wrapText: true}
                 partRow.font = {color: {argb: gray}}
                 partRow.getCell(1).alignment = {horizontal: 'right'}
+                partRow.getCell(11).fill = fill
                 //partRow.getCell(2).alignment = {horizontal: 'center'}
                 if (confidential) {
                     partRow.getCell(5).value = {formula: `C${partRow.number}*D${partRow.number}`}
@@ -160,12 +168,15 @@ export function servSpec(worksheet:Excel.Worksheet, spec:ISpec, confidential:boo
     }
     let formula = []
     let formula2 = []
+    let formula3 = []
     for (const row of summaryRows) {
         formula.push(`H${row}`)
         formula2.push(`K${row}`)
+        formula3.push(`E${row}`)
     }
     const sumServ = worksheet.addRow(['', 'Итого вкл. НДС 20%. ' + (confidential ? '$' : user.currency)])
 
+    sumServ.getCell(5).value = {formula: formula3.join('+')}
     sumServ.getCell(8).value = {formula: formula.join('+')}
     //sumServ.getCell(8).style = {numFmt}
     sumServ.getCell(11).value = {formula: formula2.join('+')}

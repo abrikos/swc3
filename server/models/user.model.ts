@@ -109,7 +109,7 @@ schema.virtual('date')
     })
 schema.virtual('fio')
     .get(function () {
-        return `${this.firstName} ${this.middleName} ${this.lastName}`
+        return `${this.firstName||''} ${this.middleName||''} ${this.lastName||''}`
     })
 schema.virtual('isAdmin')
     .get(function () {
