@@ -13,8 +13,7 @@ async function checkEmail() {
 </script>
 
 <template lang="pug">
-  q-card.q-ma-sm
-    q-card-section 7707083893 {{check}}
+  div 7707083893
       q-input(v-model="user.email" label="E-mail" :rules="[$validateEmail]" @update:model-value="checkEmail" :disable="!!user.id")
       q-input(v-model="user.inn" label="ИНН" :rules="user.id ? [] : [$validateRequired]" @update:model-value="companyByInn" hint="")
       q-option-group(:options="companies" v-model="user.company" option-label="value" @update:model-value="companies=[]" hint="")

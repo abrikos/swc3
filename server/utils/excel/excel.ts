@@ -10,9 +10,10 @@ export const specToXls = async (spec: ISpec, user: IUser, confidential: boolean,
     //     filename: '~/public/logo.png',
     //     extension: 'jpeg',
     // });
-    let total = 0
     const worksheet = workbook.addWorksheet(spec.name.replace(/[\*|\?|:|\\|\/|\[|\]]/g, '-'));
     //worksheet.addImage(imageId1, 'A1:A5');
+
+
     worksheet.columns = [
         {header: '', key: 'PN', width: 40},
         {

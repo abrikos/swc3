@@ -89,6 +89,8 @@ router.post('/registration', defineEventHandler(async (event) => {
     const host = getHeader(event, 'host')
     const exists = await User.findOne({email: body.email})
     if (exists) throw createError({statusCode: 400, message: 'Такой юзер уже существует'})
+    const role = await Role.findOne({name:'user'})
+    body.roles = [role?.id]
     const user = await Registration.create(body)
     const users = await User.find().populate('roles')
     const url = `http://${host}/admin/user-confirm?id=${user.id}`

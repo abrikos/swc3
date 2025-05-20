@@ -73,6 +73,10 @@ router.post('/registration/confirm/:_id', defineEventHandler(async (event) => {
     if (!reg) throw createError({statusCode: 404, message: 'Регистрация не найдена',})
 
     reg.password = Math.random().toString(36).slice(-8)
+    if(!reg.roles.length){
+        const role = await Role.findOne({name:'user'})
+        reg.roles = [role?.id]
+    }
     const user = await User.create(reg.toJSON())
     await Registration.deleteMany({email: user.email})
     const text = `Здравствуйте, ${user.fio}
@@ -98,7 +102,7 @@ router.post('/registration/reject/:_id', defineEventHandler(async (event) => {
     const reg = await Registration.findById(_id)
     if (!reg) throw createError({statusCode: 404, message: 'Регистрация не найдена',})
     const text = `Здравствуйте, ${reg.fio}
-                К сожалению регистрация в Конфигураторе QTECH НЕ ОДОБРЕНА
+                Ваш запрос отклонён, просьба связаться пригласившем сотрудником QTECH и повторно отправить запрос
                 `
     const subject = 'Регистрация НЕ одобрена'
     await utils.sendMail({to: reg.email, subject, text})

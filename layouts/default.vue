@@ -43,7 +43,7 @@ const pagesAdmin = [
         //ThemeSwitch
     q-drawer(v-model="leftDrawerOpen" bordered)
       q-list
-        q-item(v-for="page in pages.filter(p=>p.forLogged ? p.forLogged === !!loggedUser: true)" :to="page.to")
+        q-item(v-for="page in pages" :to="page.to")
           q-item-section(avatar)
             q-icon(:name="page.icon")
           q-item-section {{page.label}}

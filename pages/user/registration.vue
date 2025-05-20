@@ -12,7 +12,7 @@ const res = ref(true)
 async function submit() {
   if(await form.value.validate()) {
     await useNuxtApp().$POST('/user/registration', user.value)
-    //navigateTo('/user/registration-done')
+    navigateTo('/user/registration-done')
   }
 }
 
@@ -20,7 +20,9 @@ async function submit() {
 
 <template lang="pug">
   q-form(v-if="user" ref="form" @submit="submit")
-    q-card
+    q-card.q-ma-sm(style="width:400px")
+      q-card-section
+        div.h1 Регистрация
       q-card-section
         UserForm(v-model="user")
       q-card-actions

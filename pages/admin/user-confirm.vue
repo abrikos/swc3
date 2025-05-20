@@ -10,6 +10,7 @@ async function load() {
 }
 
 async function submit() {
+  return
   const newUser = await useNuxtApp().$POST(`/admin/registration/confirm/${user.value.id}`, user.value) as IUser
   if(!newUser?.id) return
   navigateTo({path: '/admin/user-edit', query: {id: newUser?.id}})
