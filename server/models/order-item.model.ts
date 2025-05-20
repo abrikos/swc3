@@ -7,14 +7,14 @@ const model = 'orderItem';
 
 export interface IOrderItem extends mongoose.Document {
     device: IDevice;
-    powerForDevice: IDevice;
-    transForDevice: IDevice;
-    licenseForDevice: IDevice;
-    order: IOrder,
-    count: number,
-    sortName: string,
-    license: string
-    service: IService
+    powerForDevice?: IDevice;
+    transForDevice?: IDevice;
+    licenseForDevice?: IDevice;
+    order?: IOrder,
+    count?: number,
+    sortName?: string,
+    license?: string
+    service?: IService
 
 }
 

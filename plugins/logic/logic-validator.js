@@ -81,6 +81,10 @@ export default function (configuration) {
         result.errors.push(`Для дополнительного количества LFF дисков (${configuration.diskLFFCount - configuration.chassis.disks}) недостаточное количество LFF корзин (${configuration.rearBayLFFCount})`)
     }
 
+    if(!configuration.power ){
+        result.errors.push(`Выберите блок питания`)
+    }
+
     if (configuration.powerConsumption > configuration.power) {
         result.errors.push(`Недостаточно мощности PSU`)
     }

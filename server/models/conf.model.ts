@@ -83,11 +83,11 @@ schema.statics.createCustom = async function (chassisId, user) {
         }
     }
 
-    const partNumber = chassis.platform === 'G2R' ?
-        (['QSRV-160812-E-R', 'QSRV-160402-E-R', 'QSRV-160412-E-R', 'QSRV-160802-E-R'].includes(chassis.partNumber) ? 'PSU065R' : 'PSU08R') :
-        chassis.platform === 'G4' ? 'PSU08R' : 'PSU05R'
-    const componentPower = await Component.findOne({partNumber})
-    await Part.create({component: componentPower, configuration, count: 1})
+    // const partNumber = chassis.platform === 'G2R' ?
+    //     (['QSRV-160812-E-R', 'QSRV-160402-E-R', 'QSRV-160412-E-R', 'QSRV-160802-E-R'].includes(chassis.partNumber) ? 'PSU065R' : 'PSU08R') :
+    //     chassis.platform === 'G4' ? 'PSU08R' : 'PSU05R'
+    // const componentPower = await Component.findOne({partNumber})
+    // await Part.create({component: componentPower, configuration, count: 1})
     if (['QSRV-181000'].includes(chassis.partNumber)) {
         const riser1 = await Component.findOne({partNumber: 'x16riser1U5.0'})
         const riser2 = await Component.findOne({partNumber: 'x8riser1ULP5.0'})

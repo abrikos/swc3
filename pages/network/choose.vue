@@ -1,21 +1,17 @@
 <script setup lang="ts">
-import NetworkCategories from "~/components/network/NetworkCategories.vue";
-const route = useRoute()
-const devices = ref<IDevice[]>([])
-async function load(){
-  devices.value = await useNuxtApp().$GET('/order/devices/'+route.query.sub) as IDevice[]
-}
-watch(()=>route.query.sub, (newVal, oldVal) => {
-  load()
-})
-onMounted(load)
+import DeviceChoose from "~/components/order/DeviceChoose.vue";
+import OrderBasket from "~/components/order/OrderBasket.vue";
+
+const items = ref<{device:IDevice, count:number}[]>([])
 </script>
 
 <template lang="pug">
-div.row
-  div.col
-    NetworkCategories
-  div.col {{devices}}
+  div.row
+    div.col.q-px-sm
+      DeviceChoose(v-model="items")
+    div.col-4.q-px-sm
+      OrderBasket(v-model="items")
+
 </template>
 
 <style scoped>

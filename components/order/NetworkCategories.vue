@@ -27,7 +27,9 @@ const tree = computed(()=>{
       label: category.name,
       selectable: true,
       handler:(e:any)=>{ expanded.value=[category.name]},
-      children: category.subcategories.map((c:ISubCategory)=>({id:c.id, label:c.name, handler, selectable:true, disabled:c.id===route.query.sub})),
+      children: category.subcategories
+          .filter((c:ISubCategory)=>!c.deleted)
+          .map((c:ISubCategory)=>({id:c.id, label:c.name, handler, selectable:true, disabled:c.id===route.query.sub})),
     })
   }
   return t

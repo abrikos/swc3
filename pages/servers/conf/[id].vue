@@ -2,7 +2,7 @@
 import getTabs from './tabs'
 import {storeToRefs} from "pinia";
 import {useCustomStore} from "~/store/custom-store";
-import Basket from "~/components/conf/Basket.vue";
+import ConfBasket from "~/components/conf/ConfBasket.vue";
 import confValidator from "~/plugins/logic/logic-validator";
 
 const {loggedUser} = storeToRefs(useCustomStore())
@@ -84,7 +84,7 @@ const tabsType = computed(() => {
               td {{ conf.power }}
               td {{ conf.powerCoefficient.toFixed(0) }}%
 
-        Basket(:conf="conf")
+        ConfBasket(:conf="conf")
   div(v-else)
     h1.text-red.text-center {{error404}}
 </template>
