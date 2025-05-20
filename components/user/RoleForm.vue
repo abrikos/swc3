@@ -11,7 +11,7 @@ const types = ['Дистрибутор', 'Партнер', 'Заказчик']
 <template lang="pug">
   q-card.q-ma-sm
     q-card-section
-      q-select(v-model="user.type" :options="types" label="Тип пользователя" :rules="[$validateRequired]")
+      q-select(v-model="user.type" :options="types" label="Тип пользователя")
       q-option-group(v-if="roles" :options="roles" option-label="name" option-value="id" v-model="user.roles" type="toggle")
 </template>
 
