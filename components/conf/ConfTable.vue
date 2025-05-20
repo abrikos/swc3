@@ -39,6 +39,7 @@ const rowClassFn = (row:any)=>row.count>0 ? 'selected' : ''
       q-td
         select(v-if="!(row.countDisabled && !calcCount(row))" @change="(e)=>addPart(e,row)")
           option(v-for="val of componentCount(conf, route.query)" :value="val" :selected="val===calcCount(row)") {{val}}
+        div(v-else) Доступна только 1 позиция
     template(v-slot:body-cell-price="props")
       q-td {{$priceFormat($priceByCurrencyServer(props.row.price))}}
 </template>

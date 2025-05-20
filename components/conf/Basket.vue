@@ -39,7 +39,7 @@ q-card
 
         tr(v-for="part of conf.partsSorted" )
           td
-            q-btn(size="sm" icon="close" color="red" @click="deletePart(part)")
+            q-btn(size="sm" icon="mdi-close" color="red" @click="deletePart(part)")
             span {{part.component.category}} {{part.component.type}}
           td {{part.component.partNumber}}
           td.text-center {{part.count}}

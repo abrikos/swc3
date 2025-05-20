@@ -70,6 +70,7 @@ export default (configuration, tab) => {
             if (['QSRV-260802-E-R'].includes(configuration.chassis.partNumber)) {
                 return [0, 1, 2]
             }
+
             const trimode8Adds = configuration.raidTrimode8iCount * 2
             const trimode16Adds = configuration.raidTrimode16iCount * 4
             //return Array.from(Array(5 + trimode8Adds + trimode16Adds).keys());
@@ -77,10 +78,12 @@ export default (configuration, tab) => {
             if (['QSRV-181000'].includes(configuration.chassis.partNumber)) {
                 return Array.from(Array(11).keys())
             }
+
             if (['QSRV-281200'].includes(configuration.chassis.partNumber)) {
                 return configuration.cpuCount === 2 ? Array.from(Array(13).keys()) : Array.from(Array(7).keys())
             }
-            return Array.from(Array(M2expnvmeCount + configuration.additionalNvmeDisksByBackplane + (configuration.chassis.units === 1 ? 1 : 5)).keys());
+            console.log('fffff', M2expnvmeCount , configuration.additionalNvmeDisksByBackplane , (configuration.chassis.units === 1 ? 1 : 5))
+            return Array.from(Array(M2expnvmeCount + configuration.additionalNvmeDisksByBackplane + (configuration.chassis.units === 1 ? 1 : 5) + 1).keys());
         case 'HDD':
             if (configuration.chassis.partNumber === 'QSRV-260802-E-R') return [0, 1, 2, 3, 4, 5, 6, 7, 8]
             if (configuration.chassis.partNumber === 'QSRV-261202-E-R') return [0, 1, 2, 3, 4, 5, 6, 7, 8, 10, 12]

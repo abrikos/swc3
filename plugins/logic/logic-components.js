@@ -71,7 +71,6 @@ export default (configuration, components, tab) => {
                         return true
                     }
                 case 'Rear bay':
-                    console.log('zzzzzz', configuration.chassis)
                     //if (configuration.chassis.partNumber === 'QSRV-260802-P-R') return false
                     if (configuration.chassis.partNumber === 'QSRV-463612-E-R') return false
                     if (configuration.chassis.units === 1) return false

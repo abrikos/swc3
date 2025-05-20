@@ -51,6 +51,11 @@ export default function (configuration) {
     if (configuration.chassis.partNumber === 'QSRV-260802-E-R') {
         disksAvail = 12
     }
+
+    if(!configuration.diskCount){
+        result.warnings.push('Необходимо выбрать дисковые накопители')
+    }
+
     //console.log(configuration.chassis.disks, configuration.rearBayAllSFFCount * 2 , configuration.rearBayLFFCount * 2 , configuration.additionalNvmeDisksByBackplane)
     if (configuration.diskCount > disksAvail) {
         if (configuration.chassis.partNumber === 'QSRV-463612-E-R') {
