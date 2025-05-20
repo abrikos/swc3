@@ -55,7 +55,7 @@ const schema = new Schema<IProject>({
 })
 
 interface IProjectModel extends mongoose.Model<IProject> {
-    getPopulation: () => {}
+    getPopulation: () => []
 }
 
 schema.statics.getPopulation = () => [

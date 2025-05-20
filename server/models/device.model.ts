@@ -22,7 +22,7 @@ export interface IDevice extends mongoose.Document {
 }
 
 interface IDeviceModel extends mongoose.Model<IDevice> {
-    getPopulation: ()=>{}
+    getPopulation: ()=>[]
 }
 
 

@@ -16,7 +16,7 @@ export interface IOrder extends mongoose.Document {
 }
 
 interface IOrderModel extends mongoose.Model<IOrder> {
-    getPopulation: ()=>{}
+    getPopulation: ()=>[]
 }
 
 

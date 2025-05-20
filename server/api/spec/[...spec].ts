@@ -9,7 +9,7 @@ router.get('/:_id', defineEventHandler(async (event) => {
     const user = event.context.user
     if (!user || !user.isServer) throw createError({statusCode: 403, message: 'Доступ запрещён',})
     const {_id} = event.context.params as Record<string, string>
-    return  Spec.findOne({_id, user}).populate(['user', Spec.getPopulation()])
+    return  Spec.findOne({_id, user}).populate(['user', ...Spec.getPopulation()])
 
 }))
 

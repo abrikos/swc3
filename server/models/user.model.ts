@@ -35,7 +35,7 @@ export interface IUser extends mongoose.Document {
 }
 
 interface IUserModel extends mongoose.Model<IUser> {
-    getPopulation: any
+    getPopulation: ()=>[]
 }
 
 

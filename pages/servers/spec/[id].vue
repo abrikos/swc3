@@ -50,11 +50,14 @@ div(v-if="spec")
       tr
         td.text-right(colspan="3") Итого:
         td.text-right {{$priceFormat($priceByCurrencyServer(spec.priceServer))}}
+
+
     tbody(v-if="spec.orders.length")
       tr
         th Сетевое
       tr(v-for="order of spec.orders" :key="order.id")
-        td {{order.name || order.id}}
+        td
+          router-link(:to="`/network/order/${order.id}`") {{order.name || order.id}}
         td
           q-input(v-model="order.count" type="number" min="1")
         td.text-right {{$priceFormat($priceByCurrencyNet(order.sum))}}

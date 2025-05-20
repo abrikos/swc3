@@ -19,7 +19,7 @@ export interface ISpec extends mongoose.Document {
 }
 
 interface ISpecModel extends mongoose.Model<ISpec> {
-    getPopulation: ()=>any
+    getPopulation: ()=>[]
 }
 
 
