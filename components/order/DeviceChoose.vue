@@ -8,9 +8,9 @@ const items = defineModel<{device:IDevice, count:number}[]>()
 
 <template lang="pug">
   div.row
-    div.col-5
+    div.col-5-sm
       NetworkCategories
-    div.col
+    div.col-sm
       DeviceTable(v-model="items" )
 </template>
 

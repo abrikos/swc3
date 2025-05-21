@@ -7,9 +7,9 @@ const items = ref<{device:IDevice, count:number}[]>([])
 
 <template lang="pug">
   div.row
-    div.col.q-px-sm
+    div.col-sm.q-px-sm
       DeviceChoose(v-model="items")
-    div.col-4.q-px-sm
+    div.col-4-sm.q-px-sm
       OrderBasket(v-model="items")
 
 </template>

@@ -25,7 +25,8 @@ const pagesAdmin = [
   q-layout(view="hHh Lpr lff")
     q-header
       q-linear-progress#progress(color="orange" indeterminate v-if="loading" )
-      q-toolbar.bg-grey-6(inset)
+      q-toolbar.bg-grey-6
+        q-btn( flat @click="leftDrawerOpen = !leftDrawerOpen" round dense icon="mdi-menu")
         img(src="/logo.png" style="max-height: 20px;max-width: 230px")
         //q-btn(v-if="loggedUser" flat round dense icon="menu" @click="toggleDrawer")
         q-toolbar-title
