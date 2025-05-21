@@ -48,6 +48,7 @@ async function createConfiguration(chassis: any) {
 
     img
       max-width: 100%
+      max-height: 110px
 
   strong, small
     display: block
