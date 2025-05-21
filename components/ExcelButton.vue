@@ -1,11 +1,13 @@
 <script setup lang="ts">
-const {confidential, spec} = defineProps({
+const {confidential, id, path} = defineProps({
   confidential: {type: Boolean},
-  spec: {type: String},
+  id: {type: String, required: true},
+  path: {type: String, required: true},
+
 })
 
 async function download() {
-  document.location.href = (`/api/spec/${spec}/excel?confidential=${confidential?1:0}`)
+  document.location.href = (`/api/excel${path}/${id}?confidential=${confidential?1:0}`)
 }
 
 </script>

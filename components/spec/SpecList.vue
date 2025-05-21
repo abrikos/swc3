@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import {storeToRefs} from "pinia";
 import {useCustomStore} from "~/store/custom-store";
-import ExcelButton from "~/components/spec/ExcelButton.vue";
+import ExcelButton from "~/components/ExcelButton.vue";
 import moment from 'moment'
-import CloneButton from "~/components/spec/CloneButton.vue";
-import DeleteButton from "~/components/spec/DeleteButton.vue";
+import CloneButton from "~/components/CloneButton.vue";
+import DeleteButton from "~/components/DeleteButton.vue";
 
 const {loggedUser, settings} = storeToRefs(useCustomStore())
 

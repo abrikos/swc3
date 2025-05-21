@@ -10,13 +10,13 @@ export interface IOrder extends mongoose.Document {
     count: number
     user: IUser
     createdAt: Date
-    sum:number
-    total:number
+    sum: number
+    total: number
     items: IOrderItem[]
 }
 
 interface IOrderModel extends mongoose.Model<IOrder> {
-    getPopulation: ()=>[]
+    getPopulation: () => []
 }
 
 
@@ -43,13 +43,13 @@ schema.virtual('date')
 
 schema.virtual('sum')
     .get(function () {
-        return this.items.reduce(function (sum:number, item) {
-            return sum + ((item.device?.price||0) + (item.service?.price||0)) * item.count
+        return this.items.reduce(function (sum: number, item) {
+            return sum + ((item.device?.price || 0) + (item.service?.price || 0)) * (item.count || 0)
         }, 0);
     })
 schema.virtual('total')
     .get(function () {
-        return this.sum *  this.count;
+        return this.sum * this.count;
     })
 // schema.virtual('totalFixed')
 //     .get(function () {

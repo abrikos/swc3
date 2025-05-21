@@ -71,7 +71,7 @@ router.post('/list', defineEventHandler(async (event) => {
                 } else if (k === 'user') {
                     const f = {email: prepareRegex(search[k])}
                     const users = await User.find(f)
-                        .populate({path: 'specs', populate: ['user', Spec.getPopulation()]})
+                        .populate({path: 'specs', populate: ['user', ...Spec.getPopulation()]})
                         .limit(perPage)
                         .skip(page)
                         .sort({createdAt: 'desc'})

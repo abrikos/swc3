@@ -17,6 +17,7 @@ export interface IDevice extends mongoose.Document {
     powerNames: string[]
     powerCount: number
     subcategory: ISubCategory
+    services: INetService[]
     powers: IDevice[]
     trans: IDevice[];
 }

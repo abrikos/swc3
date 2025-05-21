@@ -1,8 +1,11 @@
 <script setup lang="ts">
-import ExcelButton from "~/components/spec/ExcelButton.vue";
-import CloneButton from "~/components/spec/CloneButton.vue";
-import DeleteButton from "~/components/spec/DeleteButton.vue";
+import ExcelButton from "~/components/ExcelButton.vue";
+import CloneButton from "~/components/CloneButton.vue";
+import DeleteButton from "~/components/DeleteButton.vue";
+import {storeToRefs} from "pinia";
+import {useCustomStore} from "~/store/custom-store";
 
+const {loggedUser} = storeToRefs(useCustomStore())
 const route = useRoute()
 const error404 = ref()
 const spec = ref()
@@ -26,10 +29,10 @@ div(v-if="spec")
     div
       strong Всего: {{$priceFormat($priceByCurrencyServer(spec.priceServer) + $priceByCurrencyNet(spec.priceNet))}}
     div
-      ExcelButton(:spec="spec.id")
-      ExcelButton(:spec="spec.id" :confidential="true")
+      ExcelButton(:id="spec.id" path="/spec" )
+      ExcelButton(:id="spec.id" path="/spec" :confidential="true")
       CloneButton(:spec="spec.id")
-      DeleteButton(:spec="spec")
+      DeleteButton(v-if="spec.user.id === loggedUser.id"  :id="spec.id" :name="spec.name" path="/spec" event="spec:reload" )
 
   table.fit
     tbody(v-if="spec.configurations.length")

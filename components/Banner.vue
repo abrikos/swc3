@@ -17,7 +17,7 @@ const cls = computed(()=>{
 </script>
 
 <template lang="pug">
-  q-banner.text-white(:class="cls" rounded)
+  q-banner.text-white.q-ma-sm(:class="cls" rounded)
     slot
 </template>
 

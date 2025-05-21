@@ -7,14 +7,15 @@ const model = 'orderItem';
 
 export interface IOrderItem extends mongoose.Document {
     device: IDevice;
-    powerForDevice?: IDevice;
-    transForDevice?: IDevice;
-    licenseForDevice?: IDevice;
-    order?: IOrder,
-    count?: number,
-    sortName?: string,
-    license?: string
-    service?: IService
+    powerForDevice: IDevice;
+    transForDevice: IDevice;
+    licenseForDevice: IDevice;
+    order: IOrder,
+    count: number,
+    sortName: string,
+    license: string
+    service: INetService
+    notDevice: boolean
 
 }
 
@@ -41,6 +42,11 @@ const schema = new Schema<IOrderItem>({
     toJSON: {virtuals: true}
 })
 
-schema.statics.getPopulation = () => [{path: 'device', populate: Device.getPopulation()}, 'powerForDevice']
+schema.virtual('notDevice')
+    .get(function(){
+        return this.licenseForDevice || this.transForDevice || this.powerForDevice || this.service
+    })
+
+schema.statics.getPopulation = () => [{path: 'device', populate: Device.getPopulation()}, 'service', 'powerForDevice']
 
 export const OrderItem = mongoose.model<IOrderItem, IOrderItemModel>(model, schema)
