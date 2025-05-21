@@ -28,7 +28,7 @@ router.post('/upload/:id', defineEventHandler(async (event) => {
     const chassis = await Chassis.findById(id)
     if (!chassis) throw createError({statusCode: 404, message: ('Chassis not found'),})
     let formData = await readMultipartFormData(event)
-    const storage = useStorage("uploads");
+    const storage = useStorage("chassis");
     if (formData) {
         const r = await storage.setItemRaw(`${chassis.partNumber}.jpg`, formData[0].data);
     }

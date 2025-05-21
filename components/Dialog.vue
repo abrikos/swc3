@@ -6,8 +6,8 @@ const {title} = defineProps({
 </script>
 
 <template lang="pug">
-  q-dialog(v-model="dialog")
-    q-card
+  q-dialog(v-model="dialog" )
+    q-card(style="width: 1200px; max-width: 80vw;")
       q-card-section.flex.justify-between
         strong {{title}}
         q-btn(icon="mdi-close" @click="dialog = false" )

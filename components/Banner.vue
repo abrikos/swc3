@@ -10,6 +10,8 @@ const cls = computed(()=>{
       return 'bg-orange'
     case 'success':
       return 'bg-green'
+    case 'info':
+      return 'bg-blue-4'
     default:
       return 'bg-grey'
   }

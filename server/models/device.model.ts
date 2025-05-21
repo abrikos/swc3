@@ -49,7 +49,7 @@ const schema = new Schema<IDevice>({
     toObject: {virtuals: true},
     toJSON: {virtuals: true}
 })
-schema.statics.getPopulation = () => ['powers', 'services', 'trans']
+schema.statics.getPopulation = () => ['powers', 'services', 'trans', 'subcategory']
 
 schema.virtual('services', {
     ref: 'netservice',

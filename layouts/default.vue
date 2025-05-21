@@ -15,8 +15,9 @@ const pages = [
   {to: '/servers/spec/list', label: 'Спецификации', icon: 'mdi-list-box-outline', forLogged: true},
 ]
 const pagesAdmin = [
-  {to: '/admin/user-registrations', label: 'Заявки на регистрацию', icon: 'mdi-network-outline'},
-  {to: '/admin/user-list', label: 'Список пользователей', icon: 'mdi-network-outline'},
+  {to: '/admin/user-registrations', label: 'Заявки на регистрацию', icon: 'mdi-account-alert'},
+  {to: '/admin/user-list', label: 'Список пользователей', icon: 'mdi-text-account'},
+  {to: '/admin/import', label: 'Импорт данных', icon: 'mdi-import'},
 ]
 </script>
 

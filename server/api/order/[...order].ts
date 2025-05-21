@@ -28,7 +28,19 @@ router.post('/update/:_id', defineEventHandler(async (event) => {
 }))
 
 //OrderItem.findOne({powerForDevice:{$ne:null}}).populate(OrderItem.getPopulation()).then(console.log)
-Device.findOne({name:'QSW-6910-26F'}).populate('subcategory').then(console.log)
+//Device.findOne({name:'QSW-6910-26F'}).populate('subcategory').then(console.log)
+
+router.get('/wifi-servers', defineEventHandler(async (event) => {
+    const user = event.context.user
+    if (!user || !user.isNetwork) throw createError({statusCode: 403, message: 'Доступ запрещён',})
+    const subcats = await SubCategory.find({name: 'Серверы для Wi-Fi'})
+    return  Device.find({subcategory: {$in: subcats.map(s => s.id)}});
+}))
+router.get('/wifi-licenses', defineEventHandler(async (event) => {
+    const user = event.context.user
+    if (!user || !user.isNetwork) throw createError({statusCode: 403, message: 'Доступ запрещён',})
+    return Device.find({name: {$in: ['QWC-WM', 'QWC-WMAP', 'QWC-WMHM']}});
+}))
 
 router.get('/categories', defineEventHandler(async (event) => {
     const user = event.context.user

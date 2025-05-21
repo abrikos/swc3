@@ -57,9 +57,13 @@ export default defineNuxtConfig({
     },
     nitro: {
         storage: {
-            uploads: {
+            chassis: {
                 driver: "fs",
                 base: "./public/chassis",
+            },
+            excel: {
+                driver: "fs",
+                base: "./upload_excel",
             },
         },
     },

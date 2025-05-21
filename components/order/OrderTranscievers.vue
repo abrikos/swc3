@@ -37,7 +37,7 @@ const showDialog = ref(false)
 
 <template lang="pug">
   Banner(color="success" v-for="item of itemsWithoutTrans" )
-    div.flex.justify-between
+    div.flex.justify-between.items-center
       div Для "{{ item.device.name }}" доступны транссиверы
       q-btn(label="Добавить трансивер" @click="showDialog=true; selected = item")
   Dialog(v-model="showDialog")

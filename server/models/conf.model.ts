@@ -83,6 +83,11 @@ schema.statics.createCustom = async function (chassisId, user) {
         }
     }
 
+    if(chassis.platform === 'G2R'){
+        const partNumber = (['QSRV-160812-E-R', 'QSRV-160402-E-R', 'QSRV-160412-E-R', 'QSRV-160802-E-R'].includes(chassis.partNumber) ? 'PSU065R' : 'PSU08R')
+        const componentPower = await Component.findOne({partNumber})
+        await Part.create({component: componentPower, configuration, count: 1})
+    }
     // const partNumber = chassis.platform === 'G2R' ?
     //     (['QSRV-160812-E-R', 'QSRV-160402-E-R', 'QSRV-160412-E-R', 'QSRV-160802-E-R'].includes(chassis.partNumber) ? 'PSU065R' : 'PSU08R') :
     //     chassis.platform === 'G4' ? 'PSU08R' : 'PSU05R'

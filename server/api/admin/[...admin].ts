@@ -1,6 +1,15 @@
 import {Settings} from "~/server/models/settings.model";
 import mongoose from "mongoose";
 import {User} from "~/server/models/user.model";
+import fs from "fs";
+import {
+    parseNetTrans,
+    parseNetworkXLS,
+    parseServiceXLS,
+    parseComponentXLS,
+    parseManagers,
+    parseNetServices
+} from "~/server/utils/import";
 
 const router = createRouter()
 
@@ -73,8 +82,8 @@ router.post('/registration/confirm/:_id', defineEventHandler(async (event) => {
     if (!reg) throw createError({statusCode: 404, message: 'Регистрация не найдена',})
 
     reg.password = Math.random().toString(36).slice(-8)
-    if(!reg.roles.length){
-        const role = await Role.findOne({name:'user'})
+    if (!reg.roles.length) {
+        const role = await Role.findOne({name: 'user'})
         reg.roles = [role?.id]
     }
     const user = await User.create(reg.toJSON())
@@ -107,6 +116,32 @@ router.post('/registration/reject/:_id', defineEventHandler(async (event) => {
     const subject = 'Регистрация НЕ одобрена'
     await utils.sendMail({to: reg.email, subject, text})
     await Registration.deleteOne({_id})
+}))
+
+Manager.updateOne({id:1}).then(console.log)
+
+router.post('/import/:type', defineEventHandler(async (event) => {
+    checkAdmin(event.context.user)
+    const {type} = event.context.params as Record<string, string>
+    let formData = await readMultipartFormData(event)
+    const storage = useStorage("excel");
+    if (formData) {
+        await storage.setItemRaw(formData[0].name as string, formData[0].data);
+        switch (type) {
+            case 'net':
+                return parseNetworkXLS(formData[0].data)
+            case 'serv':
+                return parseComponentXLS(formData[0].data)
+            case 'service':
+                return parseServiceXLS(formData[0].data)
+            case 'trans':
+                return parseNetTrans(formData[0].data)
+            case 'manager':
+                return parseManagers(formData[0].data)
+            default:
+        }
+    }
+
 }))
 
 
