@@ -11,7 +11,7 @@ async function cloneSpec() {
 </script>
 
 <template lang="pug">
-  q-btn(icon="mdi-content-duplicate" @click.stop="cloneSpec")
+  q-btn(icon="mdi-content-duplicate" @click.stop="cloneSpec" round)
     q-tooltip Клонировать
 
 </template>

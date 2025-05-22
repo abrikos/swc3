@@ -9,12 +9,12 @@ router.get('/:_id', defineEventHandler(async (event) => {
     const user = event.context.user
     if (!user || !user.isServer) throw createError({statusCode: 403, message: 'Доступ запрещён',})
     const {_id} = event.context.params as Record<string, string>
-    return  Spec.findOne({_id, user}).populate(['user', ...Spec.getPopulation()])
+    const filter = user.isAdmin ? {_id} : {_id,user}
+    return  Spec.findOne(filter).populate(['user', ...Spec.getPopulation()])
 
 }))
 
 router.get('/clone/:_id', defineEventHandler(async (event) => {
-    console.log('spec.id')
     const user = event.context.user
     if (!user || !user.isServer) throw createError({statusCode: 403, message: 'Доступ запрещён',})
     const {_id} = event.context.params as Record<string, string>
@@ -25,7 +25,6 @@ router.get('/clone/:_id', defineEventHandler(async (event) => {
     spec.isNew = true;
     spec.createdAt = new Date();
     spec.save()
-    console.log(spec.id)
     return spec.id
 }))
 
@@ -34,6 +33,13 @@ router.delete('/:_id', defineEventHandler(async (event) => {
     if (!user || !user.isServer) throw createError({statusCode: 403, message: 'Доступ запрещён',})
     const {_id} = event.context.params as Record<string, string>
     return Spec.deleteOne({_id, user})
+}))
+
+router.post('/:_id', defineEventHandler(async (event) => {
+    const user = event.context.user
+    if (!user || !user.isServer) throw createError({statusCode: 403, message: 'Доступ запрещён',})
+    const {_id} = event.context.params as Record<string, string>
+    return Spec.updateOne({_id, user}, await readBody(event))
 }))
 
 router.get('/:id/excel', defineEventHandler(async (event) => {
@@ -49,11 +55,41 @@ router.get('/:id/excel', defineEventHandler(async (event) => {
     return specToXls(spec, user, user.isAdmin && confidential !== '0', settings?.course || 0)
 }))
 
-router.post('/list', defineEventHandler(async (event) => {
-    function prepareRegex(str: string) {
-        return {$regex: new RegExp(str.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&')), $options: 'i'}
-    }
+function prepareRegex(str: string) {
+    return {$regex: new RegExp(str.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&')), $options: 'i'}
+}
 
+
+router.get('/list', defineEventHandler(async (event) => {
+    const user = event.context.user
+    if (!user || !user.isServer) throw createError({statusCode: 403, message: 'Доступ запрещён',})
+    return Spec.find({user})
+        .sort({createdAt: -1})
+        .populate(Spec.getPopulation())
+}))
+
+
+router.post('/share/:id', defineEventHandler(async (event) => {
+    const user = event.context.user
+    if (!user || !user.isServer) throw createError({statusCode: 403, message: 'Доступ запрещён',})
+    const {id} = event.context.params as Record<string, string>
+    const spec = await Spec.findById(id)
+    if (!spec) throw createError({statusCode: 404, message: ('Конфигурация не найдена'),})
+    const emails = await readBody(event)
+    const res = []
+    for (const email of emails) {
+        const shared = await User.findOne({email}) as IUser
+        if(!shared) continue
+        spec._id = new mongoose.Types.ObjectId;
+        spec.shared = shared
+        spec.isNew = true;
+        spec.createdAt = new Date();
+        await spec.save()
+        res.push(email)
+    }
+    return res
+}))
+router.post('/listBak', defineEventHandler(async (event) => {
     try {
         const user = event.context.user
         if (!user || !user.isServer) throw createError({statusCode: 403, message: 'Доступ запрещён',})
@@ -75,7 +111,7 @@ router.post('/list', defineEventHandler(async (event) => {
                         .limit(perPage)
                         .skip(page)
                         .sort({createdAt: 'desc'})
-
+                    console.log(users.length)
                     //return {specs:[], count:0}
                     const specs = []
                     for(const user of users){
@@ -83,7 +119,9 @@ router.post('/list', defineEventHandler(async (event) => {
                     }
                     const count = await User.countDocuments(f)
                     return {specs, count}
-                } else if (k === 'shared') {
+                } else if (k === 'id') {
+                    delete filter.id
+                    filter._id = search[k]
                 }else {
                     filter[k] = prepareRegex(search[k])
                 }
@@ -105,6 +143,5 @@ router.post('/list', defineEventHandler(async (event) => {
         return {count: 0, specs: []}
     }
 }))
-//Spec.countDocuments({user:'636376c6a98e169787cf0a99'}).populate(['project', {path:'configurations', populate:Conf.getPopulation()},'orders']).then(console.log)
 
 export default useBase('/api/spec', router.handler)

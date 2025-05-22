@@ -118,8 +118,6 @@ router.post('/registration/reject/:_id', defineEventHandler(async (event) => {
     await Registration.deleteOne({_id})
 }))
 
-Manager.updateOne({id:1}).then(console.log)
-
 router.post('/import/:type', defineEventHandler(async (event) => {
     checkAdmin(event.context.user)
     const {type} = event.context.params as Record<string, string>

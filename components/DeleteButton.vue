@@ -16,7 +16,7 @@ async function deleteSpec() {
 </script>
 
 <template lang="pug">
-  q-btn(icon="mdi-delete" color="negative" @click.stop)
+  q-btn(icon="mdi-delete" color="negative" @click.stop round)
     q-tooltip Удалить "{{name}}"
     q-popup-proxy(cover transition-show="scale" transition-hide="scale")
       q-banner Удалить "{{name}}"? &nbsp;
