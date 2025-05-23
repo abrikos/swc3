@@ -120,7 +120,7 @@ router.post('/registration', defineEventHandler(async (event) => {
 //User.findById('636376c6a98e169787cf0a99').then(console.log)
 router.post('/login', defineEventHandler(async (event) => {
     const {email, password} = await readBody(event)
-    const user = await User.findOne({email});
+    const user = await User.findOne({email}).populate('roles');
     if (user?.checkPasswd(password)) {
         await utils.setAuthToken(event, user)
         return utils.adaptUser(user)

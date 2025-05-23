@@ -52,7 +52,7 @@ export const useCustomStore = defineStore('auth', {
         async logUserOut() {
             await useNuxtApp().$GET(`/user/logout`)
             this.loggedUser = undefined
-            navigateTo('/login')
+            navigateTo('/user/login')
         },
 
     },
