@@ -17,6 +17,12 @@ router.get('/create/chassis/:id', defineEventHandler(async (event) => {
     return conf
 }))
 
+Conf.findById('683015bc073ec4c37090c742')
+    .populate(Conf.getPopulation())
+    .then(c=>{
+
+    })
+
 router.get('/:cid/to-spec/:sid', defineEventHandler(async (event) => {
     const user = event.context.user
     if (!user && user.isServer) throw createError({statusCode: 403, message: 'Доступ запрещён',})
@@ -39,7 +45,6 @@ router.get('/view/:id', defineEventHandler(async (event) => {
     const conf = await Conf.findById(id).populate(Conf.getPopulation())
     if (!conf) throw createError({statusCode: 404, message: ('Конфигурация не найдена'),})
     const components = await Component.find({deleted: false}).sort({price: 1})
-    console.log(conf.id)
     const specs = (await Spec.find()).filter((s:ISpec) => s.configurations.includes(conf.id));
     return {conf, components, specs}
 }))
@@ -57,19 +62,21 @@ router.post('/update/:_id', defineEventHandler(async (event) => {
     await conf.save()
 }))
 
-router.post('/:_id/component/:cid', defineEventHandler(async (event) => {
+router.post('/component-count/:_id', defineEventHandler(async (event) => {
     const user = event.context.user
     if (!user && !user.isServer) throw createError({statusCode: 403, message: ('Доступ запрещён'),})
-    const {_id, cid} = event.context.params as Record<string, string>
+    const {_id} = event.context.params as Record<string, string>
     const configuration = await Conf.findOne({_id, user}).populate(Conf.getPopulation()) as IConf
     if (!configuration) throw createError({statusCode: 404, message: ('Конфигурация не найдена'),})
-    const count = await readBody(event)
+    const [cid,count] = await readBody(event)
     const component = await Component.findById(cid);
     if (!component) throw createError({statusCode: 404, message: ('Компонент не найден'),})
-    if (count * 1)
+    if (count * 1) {
         await Part.updateOne({component, configuration}, {count}, {upsert: true})
-    else
+    }
+    else {
         await Part.deleteOne({component, configuration})
+    }
 
 }))
 

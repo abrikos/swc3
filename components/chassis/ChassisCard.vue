@@ -14,7 +14,7 @@ $listen('chassis:reload-images', () => {
 })
 
 async function createConfiguration(chassis: any) {
-  const conf = await useNuxtApp().$GET(`/conf/create/chassis/${chassis.id}?spec=${route.query.spec}`) as IConf
+  const conf = await useNuxtApp().$GET(`/conf/create/chassis/${chassis.id}?spec=${route.query.spec||''}`) as IConf
   if (conf) {
     navigateTo({path:'/servers/conf/' +conf.id, query:{category:'CPU'}})
   }

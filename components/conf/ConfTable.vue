@@ -24,7 +24,7 @@ function calcCount(item:any) {
 }
 
 async function addPart(e:any, item:any){
-  await useNuxtApp().$POST(`/conf/${conf.id}/component/${item.id}`, e.target.value)
+  await useNuxtApp().$POST(`/conf/component-count/${conf.id}`, [item.id,e.target.value])
   $event('conf:reload')
 }
 
