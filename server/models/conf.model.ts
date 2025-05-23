@@ -24,10 +24,10 @@ export interface IConf extends mongoose.Document {
     powerConsumption: number
     power: number
     cpuCount: number
-    riserSlots:number
-    riserMaxCount:number
-    riserIsX16:boolean
-    anybayCount:number
+    riserSlots: number
+    riserMaxCount: number
+    riserIsX16: boolean
+    anybayCount: number
     priceTotal: number
     description: string
     priceService: number
@@ -37,7 +37,8 @@ export interface IConf extends mongoose.Document {
 
 interface IConfModel extends mongoose.Model<IConf> {
     getPopulation(): any
-    createCustom(chassisId:string, user:IUser): IConf
+
+    createCustom(chassisId: string, user: IUser): IConf
 }
 
 const Schema = mongoose.Schema;
@@ -83,7 +84,7 @@ schema.statics.createCustom = async function (chassisId, user) {
         }
     }
 
-    if(chassis.platform === 'G2R'){
+    if (chassis.platform === 'G2R') {
         const partNumber = (['QSRV-160812-E-R', 'QSRV-160402-E-R', 'QSRV-160412-E-R', 'QSRV-160802-E-R'].includes(chassis.partNumber) ? 'PSU065R' : 'PSU08R')
         const componentPower = await Component.findOne({partNumber})
         await Part.create({component: componentPower, configuration, count: 1})
@@ -125,7 +126,7 @@ schema.statics.createCustom = async function (chassisId, user) {
 
 schema.virtual('description')
     .get(function () {
-        if(!this.chassis) return
+        if (!this.chassis) return
         const anyBayBackplane = this.partsSorted.find(c => c.component.descFull.match('AnyBay'))
         const confName = [this.chassis.name + ' ' + (anyBayBackplane ? 'AnyBay' : 'SASS/SATA')]
         for (const part of this.partsSorted.filter(p => p.component.partNumber !== 'C13-SCH')) {
@@ -141,7 +142,7 @@ schema.virtual('description')
 schema.virtual('partsSorted')
     .get(function () {
         if (!this.parts) return []
-        const x = this.parts.sort((a:any, b:any) => {
+        const x = this.parts.sort((a: any, b: any) => {
             if (a.component.basketOrder < b.component.basketOrder) return -1
             if (a.component.basketOrder > b.component.basketOrder) return 1
             return 0
@@ -156,7 +157,7 @@ schema.virtual('date')
 
 schema.virtual('storagePrice')
     .get(function () {
-        return this.parts.filter((p:IPart) => ['HDD', 'SSD 2.5', 'SSD m.2', 'SSD U.2 NVMe'].includes(p.component.type)).reduce((a, b) => a + b.price, 0) * 0.2;
+        return this.parts.filter((p: IPart) => ['HDD', 'SSD 2.5', 'SSD m.2', 'SSD U.2 NVMe'].includes(p.component.type)).reduce((a, b) => a + b.price, 0) * 0.2;
     })
 
 schema.virtual('priceService')
@@ -501,7 +502,7 @@ schema.virtual('powerCoefficient')
 
 schema.virtual('powerConsumption')
     .get(function () {
-        return this.parts.reduce((a, b) => a + b.component.powerConsumption * b.count, 0)
+        return this.parts.filter(p => p.component.category !== 'Power').reduce((a, b) => a + b.component.powerConsumption * b.count, 0)
     })
 
 schema.virtual('power')

@@ -147,7 +147,8 @@ schema.virtual('lanPorts')
 
 schema.virtual('power')
     .get(function () {
-        const match = this.params?.match(/\*(\d+)W/)
+        if(this.category !== 'Power' && !this.type) return 0
+        const match = this.params?.match(/\s(\d+)W/)
         if(!match) return 0
         return parseInt(match[1])
     })
