@@ -66,7 +66,7 @@ div(v-if="order")
               q-btn(@click="item.count = 0; filterZero()" icon="mdi-close" color="negative")
           tr
             td.text-right(colspan="3") Итого:
-            td.text-right {{$priceFormat($priceByCurrencyNet(order.items.reduce((sum, item)=>sum + item.device?.price||item.service.price||0, 0)))}}
+            td.text-right {{$priceFormat($priceByCurrencyNet(order.items.reduce((sum, item)=>sum + ((item.device?.price||item.service.price) * item.count)||0, 0)))}}
 
       div.flex.justify-between
         q-btn(@click="save" label="Сохранить" color="primary")
