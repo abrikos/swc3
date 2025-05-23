@@ -7,22 +7,22 @@ const {loggedUser} = storeToRefs(useCustomStore())
 const list = ref([])
 const showHidden = ref(false)
 const {$listen} = useNuxtApp()
-$listen('chassis:reload', ()=>{
+$listen('chassis:reload', () => {
   load()
 })
 
 onMounted(load)
 
 async function load() {
-  if(!route.query.platform) {
-    navigateTo({query:{platform:'G2'}})
+  if (!route.query.platform) {
+    navigateTo({query: {platform: 'G2', ...route.query}})
   }
   list.value = await useNuxtApp().$GET('/chassis/list') as never[]
 }
 
 //watch(()=>route.query.tab, load)
 
-const tabs = [
+const tabsList = [
   {label: 'Intel Gen2', name: 'G2'},
   {label: 'Intel Gen3', name: 'G3'},
   {label: 'AMD', name: 'AMD'},
@@ -37,7 +37,7 @@ const listByPlatform = computed(() => list.value?.filter((i: any) => i.platform 
 </script>
 
 <template lang="pug">
-  Tabs(:items="tabs" param="platform")
+  Tabs(:items="tabsList" param="platform")
   div.flex.justify-center
     ChassisCard(v-for="item in listByPlatform.filter((i: any) => !i.hidden)" :chassis="item")
   div(v-if="loggedUser.isAdmin")
@@ -47,7 +47,6 @@ const listByPlatform = computed(() => list.value?.filter((i: any) => i.platform 
       div.flex.justify-center
         ChassisCard(v-for="item in listByPlatform.filter((i: any) => i.hidden)" :chassis="item")
         //ChassisCard(v-for="item in listByPlatform.filter((i: any) => !i.hidden)" :key="item.name" )
-
 
 
 </template>

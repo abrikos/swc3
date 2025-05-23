@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {storeToRefs} from "pinia";
 import {useCustomStore} from "~/store/custom-store";
-
+const route = useRoute()
 const props = defineProps({
   chassis: {type: Object, required: true}
 })
@@ -14,9 +14,9 @@ $listen('chassis:reload-images', () => {
 })
 
 async function createConfiguration(chassis: any) {
-  const conf = await useNuxtApp().$GET('/conf/create/chassis/' + chassis.id) as IConf
+  const conf = await useNuxtApp().$GET(`/conf/create/chassis/${chassis.id}?spec=${route.query.spec}`) as IConf
   if (conf) {
-    navigateTo('/servers/conf/' + conf.id)
+    navigateTo({path:'/servers/conf/' +conf.id, query:{category:'CPU'}})
   }
 }
 </script>

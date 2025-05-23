@@ -6,7 +6,7 @@ const props = defineProps({
 })
 
 function to(v: { name: string}) {
-  const q = props.param==='type' ? {query: {...route.query}} :{query: {}}
+  const q = {query: {...route.query}}
   q.query[props.param] = v.name
   return q
 }

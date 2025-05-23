@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import {storeToRefs} from "pinia";
 import {useCustomStore} from "~/store/custom-store";
+import CloneButton from "~/components/spec/CloneButton.vue";
 
 const {$priceFormat, $priceByCurrencyServer, $priceByCurrencyNet} = useNuxtApp()
 const {loggedUser, settings} = storeToRefs(useCustomStore())

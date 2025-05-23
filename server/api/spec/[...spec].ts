@@ -68,6 +68,13 @@ router.get('/list', defineEventHandler(async (event) => {
         .populate(Spec.getPopulation())
 }))
 
+router.post('/create', defineEventHandler(async (event) => {
+    const user = event.context.user
+    if (!user || !user.isServer) throw createError({statusCode: 403, message: 'Доступ запрещён',})
+    const conf = await readBody(event)
+    return Spec.create({user, name:'Спецификация от ' +moment().format('YYYY-MM-DD HH:mm'), configurations:[conf]})
+}))
+
 
 router.post('/share/:id', defineEventHandler(async (event) => {
     const user = event.context.user
@@ -81,7 +88,8 @@ router.post('/share/:id', defineEventHandler(async (event) => {
         const shared = await User.findOne({email}) as IUser
         if(!shared) continue
         spec._id = new mongoose.Types.ObjectId;
-        spec.shared = shared
+        spec.user = shared
+        spec.shared = user
         spec.isNew = true;
         spec.createdAt = new Date();
         await spec.save()

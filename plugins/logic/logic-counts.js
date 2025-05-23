@@ -38,7 +38,7 @@ export default (configuration, tab) => {
         //if(configuration.riserMaxCount <= 0) return [0]
         // return Array.from(Array(configuration.risersAvailable + 1).keys());
         case 'Power':
-            return [0, 1]
+            return [0, 2]
         case 'Cables':
             return [0, 1, 2]
     }

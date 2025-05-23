@@ -6,9 +6,29 @@ const router = createRouter()
 router.get('/create/chassis/:id', defineEventHandler(async (event) => {
     const user = event.context.user
     if (!user && user.isServer) throw createError({statusCode: 403, message: 'Доступ запрещён',})
-
+    const specId = getQuery(event).spec as string
     const {id} = event.context.params as Record<string, string>
-    return Conf.createCustom(id, user)
+    const conf = await Conf.createCustom(id, user)
+    if(specId){
+        const spec = await Spec.findOne({ _id: specId, user }) as ISpec
+        spec.configurations.push(conf)
+        await spec.save()
+    }
+    return conf
+}))
+
+router.get('/:cid/to-spec/:sid', defineEventHandler(async (event) => {
+    const user = event.context.user
+    if (!user && user.isServer) throw createError({statusCode: 403, message: 'Доступ запрещён',})
+
+    const {cid, sid} = event.context.params as Record<string, string>
+    const conf = await Conf.findById(cid).populate(Conf.getPopulation())
+    if (!conf) throw createError({statusCode: 404, message: ('Конфигурация не найдена'),})
+    const spec =await Spec.findById(sid)
+    if (!spec) throw createError({statusCode: 404, message: ('Спецификация не найдена'),})
+    spec.configurations.push(conf)
+    await spec.save()
+
 }))
 
 router.get('/view/:id', defineEventHandler(async (event) => {
@@ -19,7 +39,9 @@ router.get('/view/:id', defineEventHandler(async (event) => {
     const conf = await Conf.findById(id).populate(Conf.getPopulation())
     if (!conf) throw createError({statusCode: 404, message: ('Конфигурация не найдена'),})
     const components = await Component.find({deleted: false}).sort({price: 1})
-    return {conf, components}
+    console.log(conf.id)
+    const specs = (await Spec.find()).filter((s:ISpec) => s.configurations.includes(conf.id));
+    return {conf, components, specs}
 }))
 
 router.post('/update/:_id', defineEventHandler(async (event) => {
