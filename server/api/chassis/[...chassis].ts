@@ -1,5 +1,5 @@
-import {Token} from "~/server/models/token.model";
 import {Chassis} from "~/server/models/chassis.model";
+import fs from 'fs'
 
 const router = createRouter()
 
@@ -28,12 +28,14 @@ router.post('/upload/:id', defineEventHandler(async (event) => {
     const chassis = await Chassis.findById(id)
     if (!chassis) throw createError({statusCode: 404, message: ('Chassis not found'),})
     let formData = await readMultipartFormData(event)
-    const storage = useStorage("chassis");
-    if (formData) {
-        const r = await storage.setItemRaw(`${chassis.partNumber}.jpg`, formData[0].data);
-    }
+    if(!formData) return
+    fs.writeFile(`./public/chassis/${chassis.partNumber}.jpg`, formData[0].data, ()=>{})
+    // const storage = useStorage("chassis");
+    // if (formData) {
+    //     const r = await storage.setItemRaw(`${chassis.partNumber}.jpg`, formData[0].data);
+    // }
 
 }))
 
-
+//fs.readdir('.',(err, files) => {console.log(files)})
 export default useBase('/api/chassis', router.handler)
