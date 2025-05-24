@@ -7,7 +7,7 @@ const props = defineProps({
 })
 const {loggedUser} = storeToRefs(useCustomStore())
 
-const rnd = ref()
+const rnd = ref(Math.random())
 const {$listen} = useNuxtApp()
 $listen('chassis:reload-images', () => {
   rnd.value = Math.random()
