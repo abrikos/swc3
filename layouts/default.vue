@@ -52,9 +52,10 @@ const pagesAdmin = [
           q-item-section(avatar)
             q-icon(:name="page.icon")
           q-item-section {{page.label}}
+
         div(v-if="loggedUser?.isAdmin")
-          q-separator
-          q-item.bg-grey-3
+          //q-separator
+          q-item.bg-red-3
             q-item-section
               i Служебный раздел:
           q-item(v-for="page in pagesAdmin" :to="page.to" active-class="active" :active="route.fullPath===page.to || route.path===page.to")

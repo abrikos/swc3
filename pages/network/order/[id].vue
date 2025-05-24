@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import {storeToRefs} from "pinia";
 import {useCustomStore} from "~/store/custom-store";
-import OrderServices from "~/components/order/OrderServices.vue";
-import DeviceChoose from "~/components/order/DeviceChoose.vue";
 import Dialog from "~/components/Dialog.vue";
 import OrderTranscievers from "~/components/order/OrderTranscievers.vue";
 import OrderPowers from "~/components/order/OrderPowers.vue";
 import OrderWifi from "~/components/order/OrderWifi.vue";
+import NetworkCategories from "~/components/order/NetworkCategories.vue";
+import DeviceTable from "~/components/order/DeviceTable.vue";
+
 const {$listen, $event} = useNuxtApp()
 $listen('order:reload', load)
 $listen('order:addDevice', (device:IDevice)=>{
@@ -47,26 +48,26 @@ div(v-if="order")
 
   div.row
     div.col-sm
-      q-input(v-model="order.name" @focus="(input) => input.target.select()")
+      q-input(v-model="order.name" @focus="(input) => input.target.select()" label="Название конфигурации")
       table
         tbody
           tr
             th Наименование
-            th(width="40%") Описание
-            th(width="10%") Количество
+            th Количество
             th Сумма, {{ loggedUser?.currency }}
-            th
           tr(v-for="item of itemsSorted" :key="item.id" :class="item.notDevice ? 'bg-grey-4': ''")
-            td {{item.notDevice && '&nbsp;&nbsp;&nbsp;'}} {{item.device?.name||item.service.name}}
             td
-              small {{item.device?.description||item.service.description}}
-            td
+              div(:class="item.notDevice?'q-pl-lg':''") {{item.device?.name||item.service.name}}
+                br
+                small {{item.device?.description||item.service.description}}
+            td(style="width:100px")
               q-input(v-model.number="item.count" @update:model-value="filterZero" type="number" min="0")
-            td.text-right {{$priceFormat($priceByCurrencyNet(item.device?.price || item.service?.price||0) * item.count)}}
-            td
-              q-btn(@click="item.count = 0; filterZero()" icon="mdi-close" color="negative")
+                template(v-slot:append)
+                  q-btn(@click="item.count = 0; filterZero()" icon="mdi-close" color="negative")
+            td.text-right(style="width:100px") {{$priceFormat($priceByCurrencyNet(item.device?.price || item.service?.price||0) * item.count)}}
+
           tr
-            td.text-right(colspan="3") Итого:
+            td.text-right(colspan="2") Итого:
             td.text-right {{$priceFormat($priceByCurrencyNet(order.items.reduce((sum, item)=>sum + ((item.device?.price||item.service.price) * item.count)||0, 0)))}}
 
       div.flex.justify-between
@@ -75,14 +76,19 @@ div(v-if="order")
         q-btn(@click="load" label="Сбросить")
 
       Dialog(v-model="showCategories" title="Добавление устройства" )
-        DeviceChoose
+        div.row
+          div.col-sm-4
+            NetworkCategories
+          div.col-sm
+            DeviceTable(v-model="order.items" )
     div.col-sm
-      //OrderServices(:order="order")
+      OrderServices(:order="order")
       OrderTranscievers(:order="order")
       OrderPowers(:order="order")
       OrderWifi(:order="order")
 </template>
 
-<style scoped>
-
+<style scoped lang="sass">
+td
+  max-width: 200px
 </style>

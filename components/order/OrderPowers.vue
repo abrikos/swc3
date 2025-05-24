@@ -16,7 +16,6 @@ function checkErrors() {
     if (item.device?.powerCount > powerForDevice) {
       errors.value.push({item, needed: item.device?.powerCount * item.count - powerForDevice})
     }
-    console.log(item.device?.powerCount , powerForDevice)
     if (item.device?.powerCount < powerForDevice) {
       warnings.value.push({item, needed: item.device?.powerCount * item.count - powerForDevice})
     }

@@ -55,7 +55,7 @@ function addWiFiLicense(device: IDevice, license: IDevice) {
 
 <template lang="pug">
   Banner(v-if="wiFiItems.length && !wiFiServersInList.length" color="warning" )
-    div.flex.justify-between.items-center
+    div.flex.justify-between.items-center.no-wrap
       span Необходимо самостоятельно организовать контроллер на своих вычислительных ресурсах или
       q-btn(@click="dialogWiFiServer=true") Добавить контроллер
 
@@ -64,21 +64,19 @@ function addWiFiLicense(device: IDevice, license: IDevice) {
       span Выбрать лицензию для {{item.device.name}}
       q-btn(@click="wifiDevice=item.device; dialogLicense=true") Добавить лицензию
 
-  Dialog(v-model="dialogLicense")
-    q-card
-      q-card-section Выбрать лицензию
-      q-card-section
-        q-btn(v-for="(license, i) in wifiLicenses" @click="addWiFiLicense(wifiDevice,license)" :key="i") {{license.name}}
+  Dialog(v-model="dialogLicense" title="Выбрать лицензию")
+    div(v-for="(license, i) in wifiLicenses")
+      q-btn(@click="addWiFiLicense(wifiDevice,license)" :key="i" color="primary") {{license.name}}
+      span - {{license.description}}
 
-
-  Dialog(v-model="dialogWiFiServer" )
+  Dialog(v-model="dialogWiFiServer" title="Выбрать контроллер")
     table
       tbody
         tr(v-for="(serv,i) of wifiServers" :key="i")
           td(width="200") {{serv.name}}
           td
             small {{serv.description}}
-          td.text-right(width="100") {{$formatPrice($priceByCourse(serv.price, 'rub'))}}
+          td.text-right(width="100") {{$priceFormat($priceByCurrencyNet(serv.price))}}
           td
             q-btn(@click="addWiFiServer(serv)" icon="mdi-plus-circle-outline")
 

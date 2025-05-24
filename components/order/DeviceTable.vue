@@ -26,21 +26,28 @@ function addDevice(device:IDevice){
 </script>
 
 <template lang="pug">
-table
-  tbody
-    tr
-      th Описание
-      th Название
-      th
-    tr(v-for="device of devices")
-      td(:style="`color: ${device.torp?'red':''}`") {{ device.name }} {{device.torp ? '(ТОРП)':''}}
-        div
-          small {{ device.description }}
-      td.text-right {{$priceFormat($priceByCurrencyNet(device.price))}}
-      td.text-center
+  div.device.q-mb-sm(v-for="device of devices")
+    div.row
+      div.col-sm.flex.items-center(:style="`color: ${device.torp?'red':''}`") {{ device.name }} {{device.torp ? '(ТОРП)':''}}
+      div.col-sm.text-right {{$priceFormat($priceByCurrencyNet(device.price))}}
         q-btn(icon="mdi-plus-circle-outline" @click="addDevice(device)")
+    small {{ device.description }}
+    //table
+      tbody
+        tr
+          th Описание
+          th Цена
+          th
+        tr(v-for="device of devices")
+          td(:style="`width:200px; overflow: hidden; color: ${device.torp?'red':''}`") {{ device.name }} {{device.torp ? '(ТОРП)':''}}
+            div
+              small {{ device.description }}
+          td.text-right {{$priceFormat($priceByCurrencyNet(device.price))}}
+          td.text-center
+            q-btn(icon="mdi-plus-circle-outline" @click="addDevice(device)")
 </template>
 
-<style scoped>
-
+<style scoped lang="sass">
+.device
+  border-bottom: 1px solid silver
 </style>

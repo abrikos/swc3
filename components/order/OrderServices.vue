@@ -30,7 +30,7 @@ async function addService(service:INetService){
     div.flex.justify-between
       div Для "{{ item.device.name }}" рекомендуем тех.поддержку
       q-btn(label="Добавить сервис" @click="showServicesDialog(item)")
-  Dialog(v-model="showDialog")
+  Dialog(v-model="showDialog" title="Выбрать сервис")
     table
       tbody
         tr
@@ -41,7 +41,7 @@ async function addService(service:INetService){
         tr(v-for="service in itemSelected?.device.services" :key="service.id" )
           td {{ service.name }}
           td {{ service.description }}
-          td {{$priceFormat($priceByCurrencyNet(service.price))}}
+          td.text-right {{$priceFormat($priceByCurrencyNet(service.price))}}
           td
             q-btn(icon="mdi-plus-circle-outline" @click="addService(service)")
 </template>
