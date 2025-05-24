@@ -62,7 +62,7 @@ const pagesAdmin = [
             q-item-section(avatar)
               q-icon(:name="page.icon")
             q-item-section {{page.label}}
-      span v.034
+      span v.035
     q-page-container
       //div {{route.name}}
       slot
