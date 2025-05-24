@@ -10,6 +10,7 @@ import {
     parseManagers,
     parseNetServices
 } from "~/server/utils/import";
+import {LogAdmin} from "~/server/models/log.model";
 
 const router = createRouter()
 
@@ -33,6 +34,11 @@ router.delete('/user/delete/:_id', defineEventHandler(async (event) => {
 router.get('/roles', defineEventHandler(async (event) => {
     checkAdmin(event.context.user)
     return Role.find()
+}))
+
+router.get('/log', defineEventHandler(async (event) => {
+    checkAdmin(event.context.user)
+    return LogAdmin.find().sort({createdAt: -1}).populate('user')
 }))
 
 router.get('/registrations', defineEventHandler(async (event) => {
@@ -73,6 +79,11 @@ router.get('/user/:id', defineEventHandler(async (event) => {
     checkAdmin(event.context.user)
     const {id} = event.context.params as Record<string, string>
     return User.findById(id).populate(User.getPopulation())
+}))
+
+router.get('/specs', defineEventHandler(async (event) => {
+    checkAdmin(event.context.user)
+    return Spec.find().populate('user')
 }))
 
 router.post('/registration/confirm/:_id', defineEventHandler(async (event) => {

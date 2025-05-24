@@ -12,7 +12,7 @@ function reset() {
 </script>
 
 <template lang="pug">
-q-card.q-pa-sm.fixed-center
+q-card.q-pa-sm.q-ma-sm
   q-toolbar.bg-grey-3
     q-toolbar-title Смена пароля
   q-form(@submit="submit" @reset="reset")

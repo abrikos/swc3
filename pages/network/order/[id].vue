@@ -44,9 +44,10 @@ const itemsSorted = computed(()=>order.value.items
 
 <template lang="pug">
 div(v-if="order")
-  q-input(v-model="order.name" @focus="(input) => input.target.select()")
+
   div.row
     div.col-sm
+      q-input(v-model="order.name" @focus="(input) => input.target.select()")
       table
         tbody
           tr
