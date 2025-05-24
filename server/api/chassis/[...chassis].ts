@@ -35,5 +35,7 @@ router.post('/upload/:id', defineEventHandler(async (event) => {
 
 }))
 
+const storage = useStorage("chassis");
+storage.keys().then(console.log)
 
 export default useBase('/api/chassis', router.handler)
