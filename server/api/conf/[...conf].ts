@@ -17,12 +17,6 @@ router.get('/create/chassis/:id', defineEventHandler(async (event) => {
     return conf
 }))
 
-Conf.findById('683015bc073ec4c37090c742')
-    .populate(Conf.getPopulation())
-    .then(c=>{
-
-    })
-
 router.get('/:cid/to-spec/:sid', defineEventHandler(async (event) => {
     const user = event.context.user
     if (!user && user.isServer) throw createError({statusCode: 403, message: 'Доступ запрещён',})
@@ -56,6 +50,7 @@ router.post('/update/:_id', defineEventHandler(async (event) => {
     const conf = await Conf.findOne({_id, user}).populate(Conf.getPopulation()) as IConf
     if (!conf) throw createError({statusCode: 404, message: ('Конфигурация не найдена'),})
     const body = await readBody(event)
+    if (body.count) conf.count = body.count
     if (body.name) conf.name = body.name
     if (body.service) conf.service = body.service
     if (body.brokenStorageService) conf.brokenStorageService = body.brokenStorageService

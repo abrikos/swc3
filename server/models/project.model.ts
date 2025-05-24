@@ -8,6 +8,7 @@ const statuses = ['Активный', "Успешный", "Не успешный
 const model = 'project';
 
 export interface IProject extends mongoose.Document {
+    name: string
     inn: string
     customer: string
     partner: string

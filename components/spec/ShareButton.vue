@@ -17,6 +17,7 @@ async function share(){
 
 <template lang="pug">
 q-btn(icon="mdi-share" round)
+  q-tooltip Поделиться
   q-popup-proxy.q-pa-sm
     q-input(v-model="emails" hint="Разделитель - новая строка, пробел" label="E-mails" type="textarea" )
     q-badge.q-ma-sm(v-for="email in emailsArray") {{email}}

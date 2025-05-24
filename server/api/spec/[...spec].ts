@@ -19,7 +19,7 @@ router.get('/clone/:_id', defineEventHandler(async (event) => {
     if (!user || !user.isServer) throw createError({statusCode: 403, message: 'Доступ запрещён',})
     const {_id} = event.context.params as Record<string, string>
     const spec = await Spec.findOne({_id, user})
-    if (!spec) throw createError({statusCode: 404, message: ('Конфигурация не найдена'),})
+    if (!spec) throw createError({statusCode: 404, message: ('Спецификация не найдена'),})
     spec._id = new mongoose.Types.ObjectId;
     spec.name = 'Клон ' + spec.name
     spec.isNew = true;
@@ -47,7 +47,7 @@ router.get('/:id/excel', defineEventHandler(async (event) => {
     if (!user || !user.isServer) throw createError({statusCode: 403, message: 'Доступ запрещён',})
     const {id} = event.context.params as Record<string, string>
     const spec = await Spec.findById(id).populate(Spec.getPopulation())
-    if (!spec) throw createError({statusCode: 404, message: ('Конфигурация не найдена'),})
+    if (!spec) throw createError({statusCode: 404, message: ('Спецификация не найдена'),})
     const {confidential} = getQuery(event)
     event.node.res.setHeader('Content-Type', 'application/vnd.openxmlformats');
     event.node.res.setHeader("Content-Disposition", "attachment; filename=" + encodeURIComponent(spec.name) + (confidential !== '0' ? '-confidential' : '') + ".xlsx");
@@ -81,7 +81,7 @@ router.post('/share/:id', defineEventHandler(async (event) => {
     if (!user || !user.isServer) throw createError({statusCode: 403, message: 'Доступ запрещён',})
     const {id} = event.context.params as Record<string, string>
     const spec = await Spec.findById(id)
-    if (!spec) throw createError({statusCode: 404, message: ('Конфигурация не найдена'),})
+    if (!spec) throw createError({statusCode: 404, message: ('Спецификация не найдена'),})
     const emails = await readBody(event)
     const res = []
     for (const email of emails) {

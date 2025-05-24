@@ -19,6 +19,7 @@ router.post('/update/:_id', defineEventHandler(async (event) => {
     if (!order) throw createError({statusCode: 404, message: 'Ордер не найден',})
     const body = await readBody(event)
     order.name = body.name
+    order.count = body.count
     await order.save()
     await OrderItem.deleteMany({order})
     for (const item of body.items) {
