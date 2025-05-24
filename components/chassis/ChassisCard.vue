@@ -25,7 +25,7 @@ async function createConfiguration(chassis: any) {
   div.chassis
     div(@click="createConfiguration(chassis)" :title="chassis.descFull")
       div.image {{rnd}}
-        img(:src="`/chassis/${chassis.partNumber}.jpg?rnd=${rnd}`" xonerror="this.src='/logo.png'")
+        img(:src="`/api/chassis/image/${chassis.partNumber}.jpg?rnd=${rnd}`" xonerror="this.src='/logo.png'")
       strong {{chassis.partNumber}}
       small {{chassis.params}}
     div(v-if="loggedUser.isAdmin") Admin:

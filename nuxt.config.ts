@@ -59,11 +59,11 @@ export default defineNuxtConfig({
         storage: {
             chassis: {
                 driver: "fs",
-                base: "./public/chassis",
+                base: "./upload/chassis",
             },
             excel: {
                 driver: "fs",
-                base: "./upload_excel",
+                base: "./upload/excel",
             },
         },
     },
