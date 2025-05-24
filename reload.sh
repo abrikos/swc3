@@ -7,7 +7,7 @@ if [[ $GIT =~ "актуально" ]]; then
 else
   npm i
   npm run build
-  pm2 restart all
+  /usr/local/bin/pm2 restart all
   echo date > ~/swc3.updated.txt
 fi
 #sleep 5
