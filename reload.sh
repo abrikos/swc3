@@ -8,6 +8,7 @@ else
   npm i
   npm run build
   pm2 restart all
+  echo date > ~/swc3.updated.txt
 fi
 #sleep 5
 #done
