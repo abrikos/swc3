@@ -24,8 +24,8 @@ async function createConfiguration(chassis: any) {
 <template lang="pug">
   div.chassis
     div(@click="createConfiguration(chassis)" :title="chassis.descFull")
-      div.image {{rnd}}
-        img(:src="`/api/chassis/image/${chassis.partNumber}.jpg?rnd=${rnd}`" xonerror="this.src='/logo.png'")
+      div.image
+        img(:src="`/api/chassis/image/${chassis.partNumber}.jpg?rnd=${rnd}`" onerror="this.src='/logo.png'")
       strong {{chassis.partNumber}}
       small {{chassis.params}}
     div(v-if="loggedUser.isAdmin") Admin:
