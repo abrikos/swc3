@@ -24,7 +24,7 @@ async function createConfiguration(chassis: any) {
 <template lang="pug">
   div.chassis
     div(@click="createConfiguration(chassis)" :title="chassis.descFull")
-      div.image
+      div.image {{rnd}}
         img(:src="`/chassis/${chassis.partNumber}.jpg?${rnd}`" xonerror="this.src='/logo.png'")
       strong {{chassis.partNumber}}
       small {{chassis.params}}
