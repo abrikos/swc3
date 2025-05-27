@@ -7,7 +7,7 @@ import confValidator from "~/plugins/logic/logic-validator";
 
 const {loggedUser} = storeToRefs(useCustomStore())
 const route = useRoute()
-const tabs = ref()
+const tabsArray = ref()
 const conf = ref<IConf>()
 const error404 = ref()
 const components = ref<IComponent[]>([])
@@ -25,14 +25,18 @@ async function load() {
   }
   conf.value = data.conf
   components.value = data.components
-  tabs.value = getTabs(data.conf)
+  tabsArray.value = getTabs(data.conf)
   specs.value = data.specs
 }
 
 watch(() => route.query.category, () => {
-  const cat = tabs.value.find((c: any) => c.name === route.query.category)
-  if (cat?.children && !route.query.type) {
-    navigateTo({query: {category: cat.name, type: cat.children[0].name}})
+  const cat = tabsArray.value.find((c: any) => c.name === route.query.category)
+  if (cat?.children) {
+    if(!route.query.type) {
+      navigateTo({query: {category: cat.name, type: cat.children[0].name}})
+    }
+  }else{
+    navigateTo({query: {category: cat.name}})
   }
 })
 
@@ -40,8 +44,8 @@ async function update() {
   await useNuxtApp().$POST(`/conf/update/${route.params.id}`, conf.value)
 }
 
-const tabsType = computed(() => {
-  const category = tabs.value?.find((item: any) => item.name === route.query.category)
+const tabsArrayType = computed(() => {
+  const category = tabsArray.value?.find((item: any) => item.name === route.query.category)
   return category?.children || []
 })
 
@@ -74,8 +78,8 @@ async function createSpec(){
     hr
     div.row
       div.col-8.q-pa-sm
-        Tabs(:items="tabs" param="category" )
-        Tabs(:items="tabsType" param="type" )
+        Tabs(:items="tabsArray" param="category" )
+        Tabs(:items="tabsArrayType" param="type" )
         ConfService(v-if="route.query.category==='Services'" :conf="conf")
         ConfTable(v-else :conf="conf" :components="components")
       div.col.q-pa-sm
