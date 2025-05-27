@@ -7,6 +7,6 @@ if [[ $GIT =~ "актуально" ]]; then
 else
   npm i
   npm run build
-  pm2 restart all
+  ~/.nvm/versions/node/v22.16.0/bin/pm2 restart all
   echo date > ~/swc3.updated.txt
 fi
