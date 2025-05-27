@@ -1,4 +1,5 @@
 <script setup lang="ts">
+const route = useRoute()
 const items = defineModel<{device:IDevice, count:number}[]>()
 
 const itemsNotZeroCount = computed(()=>items.value?.filter((i:any) => i.count))
@@ -8,7 +9,7 @@ function filterZero(item:any){
 }
 
 async function save(){
-  const id =await useNuxtApp().$POST('/order/basket/save', items.value)
+  const id =await useNuxtApp().$POST('/order/basket/save/'+(route.query.spec||''), items.value)
   navigateTo(`/network/order/${id}`)
 }
 

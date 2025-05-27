@@ -35,7 +35,7 @@ router.get('/wifi-servers', defineEventHandler(async (event) => {
     const user = event.context.user
     if (!user || !user.isNetwork) throw createError({statusCode: 403, message: 'Доступ запрещён',})
     const subcats = await SubCategory.find({name: 'Серверы для Wi-Fi'})
-    return  Device.find({subcategory: {$in: subcats.map(s => s.id)}});
+    return Device.find({subcategory: {$in: subcats.map(s => s.id)}});
 }))
 router.get('/wifi-licenses', defineEventHandler(async (event) => {
     const user = event.context.user
@@ -64,12 +64,20 @@ router.get('/devices/:subcategory', defineEventHandler(async (event) => {
 router.post('/basket/save', defineEventHandler(async (event) => {
     const user = event.context.user
     if (!user || !user.isNetwork) throw createError({statusCode: 403, message: 'Доступ запрещён',})
+    const {spec} = getQuery(event)
     const items = await readBody(event)
     const order = await Order.create({user, name: 'Сетевая конфигурация ' + moment().format('YYYY-MM-DD HH:mm'),})
     for (const item of items) {
         item.order = order
         item.sortName = item.device.name
         await OrderItem.create(item)
+    }
+    if (spec) {
+        const s = await Spec.findById(spec)
+        if (s) {
+            s.orders.push(order)
+            await s.save()
+        }
     }
     return order.id
 }))

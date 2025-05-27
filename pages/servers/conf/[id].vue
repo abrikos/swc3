@@ -18,7 +18,7 @@ onMounted(load)
 $listen('conf:reload', load)
 
 async function load() {
-  const data = await useNuxtApp().$GET(`/conf/view/${route.params.id}`) as {conf: IConf, components:IComponent[], specs:ISpec[]}
+  const data = await useNuxtApp().$GET(`/conf/${route.params.id}`) as {conf: IConf, components:IComponent[]}
   if (!data.conf) {
     error404.value = '404 Конфигурация не найдена'
     return
@@ -26,7 +26,6 @@ async function load() {
   conf.value = data.conf
   components.value = data.components
   tabsArray.value = getTabs(data.conf)
-  specs.value = data.specs
 }
 
 watch(() => route.query.category, () => {
@@ -48,20 +47,6 @@ const tabsArrayType = computed(() => {
   const category = tabsArray.value?.find((item: any) => item.name === route.query.category)
   return category?.children || []
 })
-
-const mySpecs = ref([])
-async function addToSpec(id:string){
-  await useNuxtApp().$GET(`/conf/${conf.value?.id}/to-spec/${id}`)
-  await load()
-}
-async function loadMySpec(){
-  mySpecs.value = await useNuxtApp().$GET('/spec/list') as never[]
-}
-async function createSpec(){
-  const newSpec = await useNuxtApp().$POST('/spec/create', conf.value) as ISpec
-  navigateTo(`/servers/spec/${newSpec.id}`)
-}
-
 
 </script>
 
@@ -85,21 +70,7 @@ async function createSpec(){
       div.col.q-pa-sm
         div {{conf.chassis.descFull}}
 
-        div(v-if="specs.length" v-for="spec of specs")
-          router-link(:to="`/servers/spec/${spec.id}`") {{ spec.name }}
-        div(v-else)
-          q-btn(color="primary" @click="loadMySpec") Добавить в спецификацию
-            q-popup-proxy.q-pa-sm
-              table
-                tbody
-                  tr
-                    td Новая спецификация
-                    td
-                      q-btn(icon="mdi-plus-circle-outline" @click="createSpec")
-                  tr(v-for="spec in mySpecs")
-                    td {{spec.name}}
-                    td
-                      q-btn(icon="mdi-plus-circle-outline" @click="addToSpec(spec.id)")
+        AddToSpec(type="conf")
 
         q-banner.bg-red.text-white.q-mt-sm(v-for="err of confValidator(conf).errors" rounded) {{err}}
         q-banner.bg-orange.text-white.q-mt-sm(v-for="err of confValidator(conf).warnings" rounded) {{err}}

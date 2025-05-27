@@ -14,6 +14,34 @@ router.get('/:_id', defineEventHandler(async (event) => {
 
 }))
 
+router.get('/add/:_id/:type/:id', defineEventHandler(async (event) => {
+    const user = event.context.user
+    if (!user || !user.isServer) throw createError({statusCode: 403, message: 'Доступ запрещён',})
+    const {_id, type, id} = event.context.params as Record<string, string>
+    console.log(_id, type, id)
+    const spec = await  Spec.findById(_id)
+    if (!spec) throw createError({statusCode: 404, message: ('Спецификация не найдена'),})
+    if(type==='order'){
+        spec.orders.push(id as unknown as IOrder)
+    }
+    if(type==='conf'){
+        spec.configurations.push(id as unknown as IConf)
+    }
+    await spec.save()
+}))
+
+router.get('/has/:type/:id', defineEventHandler(async (event) => {
+    const user = event.context.user
+    if (!user || !user.isServer) throw createError({statusCode: 403, message: 'Доступ запрещён',})
+    const {type, id} = event.context.params as Record<string, string>
+    if(type==='order'){
+        return (await Spec.find()).filter((s:ISpec) => s.orders.includes(id as unknown as IOrder));
+    }
+    if(type === 'conf'){
+        return (await Spec.find()).filter((s:ISpec) => s.configurations.includes(id as unknown as IConf));
+    }
+}))
+
 router.get('/clone/:_id', defineEventHandler(async (event) => {
     const user = event.context.user
     if (!user || !user.isServer) throw createError({statusCode: 403, message: 'Доступ запрещён',})

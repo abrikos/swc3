@@ -31,7 +31,7 @@ router.get('/:cid/to-spec/:sid', defineEventHandler(async (event) => {
 
 }))
 
-router.get('/view/:id', defineEventHandler(async (event) => {
+router.get('/:id', defineEventHandler(async (event) => {
     const user = event.context.user
     if (!user && user.isServer) throw createError({statusCode: 403, message: 'Доступ запрещён',})
 

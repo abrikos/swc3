@@ -47,7 +47,7 @@ const itemsSorted = computed(()=>order.value.items
 div(v-if="order")
 
   div.row
-    div.col-sm
+    div.col-sm.q-pa-sm
       q-input(v-model="order.name" @focus="(input) => input.target.select()" label="Название конфигурации")
       table
         tbody
@@ -81,7 +81,8 @@ div(v-if="order")
             NetworkCategories
           div.col-sm
             DeviceTable(v-model="order.items" )
-    div.col-sm
+    div.col-sm.q-pa-sm
+      AddToSpec(type="order")
       OrderServices(:order="order")
       OrderTranscievers(:order="order")
       OrderPowers(:order="order")
