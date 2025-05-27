@@ -159,7 +159,9 @@ export default function (configuration) {
                 }
         */
         if (configuration.raidCount > configuration.riserPortsAvailable && configuration.chassis.platform !== 'G2R') {
-            result.errors.push(`Количество выбранных RAID (${configuration.raidCount}) превышает количество слотов на всех RISER (${configuration.riserPortsAvailable})`)
+            if(!(configuration.chassis.units>1 && ['G3','G3R'].includes(configuration.chassis.platform))) {
+                result.errors.push(`Количество выбранных RAID (${configuration.raidCount}) превышает количество слотов на всех RISER (${configuration.riserPortsAvailable})`)
+            }
         }
         if (configuration.riserMaxCount < configuration.riserCount && configuration.riserCount < 5) {
             result.errors.push(`Количество выбранных Riser (${configuration.riserCount}) больше чем возможно установить (${configuration.riserMaxCount})`)

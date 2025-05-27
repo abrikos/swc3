@@ -34,6 +34,9 @@ export default (configuration, components, tab) => {
                     if (configuration.chassis.partNumber === 'QSRV-4524') return component.isDiskSAS && (component.isSFF || component.isLFF)
                     if (configuration.chassis.isSFF && component.type === 'HDD') return component.isSFF
                 case 'Riser':
+                    if(configuration.chassis.units>1 && ['G3','G3R'].includes(configuration.chassis.platform)) {
+                        if (configuration.cpuCount === 1) return component.description.match(/port 1\/2/)
+                    }
                     if (configuration.chassis.units < component.riserUnit) return false
                     if (configuration.chassis.partNumber === 'QSRV-463612-E-R') return false
                     if (configuration.chassis.units < component.riserUnit) return false
