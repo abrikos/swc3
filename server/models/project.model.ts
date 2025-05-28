@@ -2,12 +2,13 @@ import mongoose from 'mongoose';
 import moment from "moment";
 import {IConf} from "~/server/models/conf.model";
 import {IManager} from "~/server/models/manager.model";
-import {IFile} from "~/server/models/file-model";
 
 const statuses = ['Активный', "Успешный", "Не успешный"]
 const model = 'project';
 
 export interface IProject extends mongoose.Document {
+    [key: string]: any
+    id: string
     name: string
     inn: string
     customer: string
@@ -57,6 +58,7 @@ const schema = new Schema<IProject>({
 
 interface IProjectModel extends mongoose.Model<IProject> {
     getPopulation: () => []
+    statusesArr: string[]
 }
 
 schema.statics.getPopulation = () => [

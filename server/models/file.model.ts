@@ -24,4 +24,6 @@ const schema = new Schema<IFile>({
     toJSON: {virtuals: true}
 })
 
-export const File = mongoose.model<IFile>(model, schema)
+
+
+export const ProjectFile = mongoose.model<IFile>(model, schema)

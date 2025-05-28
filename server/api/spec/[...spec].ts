@@ -18,7 +18,6 @@ router.get('/add/:_id/:type/:id', defineEventHandler(async (event) => {
     const user = event.context.user
     if (!user || !user.isServer) throw createError({statusCode: 403, message: 'Доступ запрещён',})
     const {_id, type, id} = event.context.params as Record<string, string>
-    console.log(_id, type, id)
     const spec = await  Spec.findById(_id)
     if (!spec) throw createError({statusCode: 404, message: ('Спецификация не найдена'),})
     if(type==='order'){

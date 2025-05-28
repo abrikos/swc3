@@ -39,13 +39,14 @@ async function saveOrder(order:IOrder){
 div(v-if="spec")
   q-toolbar
     q-toolbar-title {{spec.name}}
-    q-btn(icon="mdi-pencil" round)
-      q-popup-proxy.q-pa-sm
-        q-input(v-model="spec.name" @focus="(input) => input.target.select()" label="Название спецификации" style="width:300px")
-        q-btn(label="Сохранить" @click="save" v-close-popup)
-    q-space
+      q-btn(icon="mdi-pencil" round)
+        q-popup-proxy.q-pa-sm
+          q-input(v-model="spec.name" @focus="(input) => input.target.select()" label="Название спецификации" style="width:300px")
+          q-btn(label="Сохранить" @click="save" v-close-popup)
+
     div Сумма:&nbsp;
       strong {{$priceFormat($priceByCurrencyServer(servPrice) + $priceByCurrencyNet(netPrice))}}
+    q-space
     ExcelButton(:id="spec.id" path="/spec" )
     ExcelButton(:id="spec.id" path="/spec" :confidential="true")
     CloneButton(:spec="spec.id")
@@ -54,6 +55,7 @@ div(v-if="spec")
       q-tooltip Добавить серверную конфигурацию
     q-btn(icon="mdi-network-outline" color="green" :to="{path:'/network/choose', query:{spec:spec.id}}")
       q-tooltip Добавить сетевую конфигурацию
+
     DeleteButton(v-if="spec.user.id === loggedUser.id"  :id="spec.id" :name="spec.name" path="/spec" event="spec:reload" )
 
   div.flex.justify-between.items-center

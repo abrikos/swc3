@@ -13,6 +13,7 @@ const pages = [
   {to: '/network/choose', label: 'Сетевое оборудование', icon: 'mdi-network-outline', forLogged: true},
   {to: '/servers/chassis', label: 'Сервера', icon: 'mdi-server-outline', forLogged: true},
   {to: '/servers/spec/list', label: 'Спецификации', icon: 'mdi-list-box-outline', forLogged: true},
+  {to: '/project/list', label: 'Проекты', icon: 'mdi-briefcase-outline', forLogged: true},
 ]
 const pagesAdmin = [
   {to: '/admin/user-registrations', label: 'Заявки на регистрацию', icon: 'mdi-account-alert'},

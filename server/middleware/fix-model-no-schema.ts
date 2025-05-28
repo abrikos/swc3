@@ -1,3 +1,5 @@
+import {ProjectFile} from "~/server/models/file.model";
+
 export default defineEventHandler(async (event) => {
     new Token({});
     new Role({});
@@ -14,4 +16,5 @@ export default defineEventHandler(async (event) => {
     new NetService()
     new SubCategory()
     new Category()
+    new ProjectFile()
 })
