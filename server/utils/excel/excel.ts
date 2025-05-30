@@ -1,5 +1,5 @@
 import Excel from 'exceljs'
-import {servSpec} from "./excel-servers"
+import {servSpec} from "~/server/utils/excel/excel-servers"
 import {netSpec} from "~/server/utils/excel/excel-net";
 import FillPattern from "exceljs/index";
 
@@ -7,12 +7,12 @@ export const specToXls = async (spec: ISpec, user: IUser, confidential: boolean,
     const currName = confidential ? '$' : user.currency
     const numFmt = `_(* #,##0.00_)"${currName === 'Рубли' ? 'Р' : '$'}";_(* (#,##0.00);_(* "-"??_);_(@_)`
     const workbook = new Excel.Workbook();
-    // const imageId1 = workbook.addImage({
-    //     filename: '~/public/logo.png',
-    //     extension: 'jpeg',
-    // });
+    const imageId1 = workbook.addImage({
+        filename: process.cwd() + '/public/logo.png',
+        extension: 'jpeg',
+    });
     const worksheet = workbook.addWorksheet(spec.name.replace(/[\*|\?|:|\\|\/|\[|\]]/g, '-'));
-    //worksheet.addImage(imageId1, 'A1:A5');
+    worksheet.addImage(imageId1, 'A1:A5');
 
     const fill = {type: 'pattern', pattern: 'solid', bgColor: {argb: 'FFCCCC00'}, fgColor: {argb: 'FFCCCC00'}} as FillPattern
     worksheet.columns = [
@@ -30,10 +30,13 @@ export const specToXls = async (spec: ISpec, user: IUser, confidential: boolean,
         {header: '', key: 'discount', width: 20, style: {numFmt}}, //Скидка
         {header: '', key: 'priceRu', width: 20, style: {numFmt}},
         {header: '', key: 'sumRu', width: 20, style: {numFmt}},
-        {header: '', key: 'confidential1', width: 20, style: {numFmt, fill}},
-        {header: '', key: 'confidential2', width: 20, style: {numFmt, fill}},
-        {header: '', key: 'confidential3', width: 20, style: {numFmt, fill}},
+
     ];
+    if(confidential){
+        worksheet.columns.push({header: '', key: 'confidential1', width: 20, style: {numFmt, fill}},
+            {header: '', key: 'confidential2', width: 20, style: {numFmt, fill}},
+            {header: '', key: 'confidential3', width: 20, style: {numFmt, fill}})
+    }
     worksheet.addRows([
         ['Спецификация'],
         ['ИД спецификации', spec.id],

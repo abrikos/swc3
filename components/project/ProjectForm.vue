@@ -2,6 +2,9 @@
 import moment from "moment";
 
 const project = defineModel<IProject>({required:true})
+const {submit} = defineProps({
+  submit:{type:Function, required: true},
+})
 const managers = ref<IManager[]>()
 
 async function load() {
@@ -28,15 +31,12 @@ const year = computed({
   get() {
     return moment(project.value.expireDate).format("YYYY")
   },
-  set(v) {
+  set(v:number) {
     const date = moment(project.value.expireDate).set('date', 1)
     project.value.expireDate = date.year(v).toDate()
   }
 })
 
-async function update() {
-  await useNuxtApp().$POST(`/project/${project.value.id}`, project.value)
-}
 
 </script>
 
@@ -44,15 +44,15 @@ async function update() {
   q-card
     q-toolbar
       q-toolbar-title Параметры
-    q-form(@submit.prevent="update")
+    q-form(@submit.prevent="submit")
       q-card-section
-        q-input(v-model="project.inn" label="ИНН" :rules="[$validateRequired]" @update:model-value="companyByInn" hint="")
-        q-option-group(v-if="companies.length" :options="companies" v-model="project.customer" option-label="value" @update:model-value="companies=[]" hint="")
-        q-input(v-else v-model="project.customer" label="ИНН" :rules="[$validateRequired]" hint="")
-        q-select(:options="managers" option-label="name" option-value="id" v-model="project.manager" hint="" )
-        q-input(label="Отдел (РОП)" :value="project.manager?.dep" disabled  hint="" )
-        q-input(label="Партнёр" v-model="project.partner" hint="" )
-        q-input(label="Партнёр" v-model="project.distributor" hint="" )
+        q-input(v-model="project.inn" label="ИНН" :rules="[$validateRequired]" @update:model-value="companyByInn" bottom-slots)
+        q-option-group(v-if="companies.length" :options="companies" v-model="project.customer" option-label="value" @update:model-value="companies=[]" bottom-slots)
+        q-input(v-if="!companies.length"  v-model="project.customer" label="Компания" :rules="[$validateRequired]" bottom-slots)
+        q-select(:options="managers" option-label="name" option-value="id" v-model="project.manager" :hint="project.manager?.dep" label="Менеджер" bottom-slots)
+        //q-input(label="Отдел (РОП)" v-model="project.manager.dep" disable  hint="" )
+        q-input(label="Партнёр" v-model="project.partner" bottom-slots)
+        q-input(label="Партнёр" v-model="project.distributor" bottom-slots)
         strong Срок реализации проекта
         div.row
           div.col

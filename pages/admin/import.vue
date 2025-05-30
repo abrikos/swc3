@@ -10,7 +10,6 @@ const response = ref()
 const fail = ref()
 function uploaded(e: {files:File[], xhr:XMLHttpRequest }){
   response.value = e.xhr.responseText
-
 }
 
 function rejected(e: {files:File[], xhr:XMLHttpRequest}) {

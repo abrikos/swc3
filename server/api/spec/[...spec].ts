@@ -26,6 +26,9 @@ router.get('/add/:_id/:type/:id', defineEventHandler(async (event) => {
     if(type==='conf'){
         spec.configurations.push(id as unknown as IConf)
     }
+    if(type==='project'){
+        spec.project = id as unknown as IProject
+    }
     await spec.save()
 }))
 
@@ -38,6 +41,9 @@ router.get('/has/:type/:id', defineEventHandler(async (event) => {
     }
     if(type === 'conf'){
         return (await Spec.find()).filter((s:ISpec) => s.configurations.includes(id as unknown as IConf));
+    }
+    if(type === 'project'){
+        return Spec.find({project:id});
     }
 }))
 

@@ -56,7 +56,7 @@ const pagesAdmin = [
 
         div(v-if="loggedUser?.isAdmin")
           //q-separator
-          q-item.bg-red-3
+          q-item
             q-item-section
               i Служебный раздел:
           q-item(v-for="page in pagesAdmin" :to="page.to" active-class="active" :active="route.fullPath===page.to || route.path===page.to")

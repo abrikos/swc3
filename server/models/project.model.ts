@@ -8,7 +8,6 @@ const model = 'project';
 
 export interface IProject extends mongoose.Document {
     [key: string]: any
-    id: string
     name: string
     inn: string
     customer: string

@@ -1,4 +1,4 @@
-import {ProjectFile} from "~/server/models/file.model";
+import {FileModel} from "~/server/models/file.model";
 
 export default defineEventHandler(async (event) => {
     new Token({});
@@ -16,5 +16,5 @@ export default defineEventHandler(async (event) => {
     new NetService()
     new SubCategory()
     new Category()
-    new ProjectFile()
+    new FileModel()
 })

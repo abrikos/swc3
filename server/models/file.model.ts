@@ -1,10 +1,12 @@
 import mongoose from 'mongoose';
+import moment from "moment/moment";
 
 const model = 'file';
 
 export interface IFile extends mongoose.Document {
     user: IUser
     name: string
+    fileName: string
     mimetype: string
     size: number
     deleted: boolean
@@ -24,6 +26,9 @@ const schema = new Schema<IFile>({
     toJSON: {virtuals: true}
 })
 
+schema.virtual('fileName')
+    .get(function () {
+        return this.id + '-' + this.name
+    })
 
-
-export const ProjectFile = mongoose.model<IFile>(model, schema)
+export const FileModel = mongoose.model<IFile>(model, schema)
