@@ -12,9 +12,9 @@ export const specToXls = async (spec: ISpec, user: IUser, confidential: boolean,
         extension: 'jpeg',
     });
     const worksheet = workbook.addWorksheet(spec.name.replace(/[\*|\?|:|\\|\/|\[|\]]/g, '-'));
-    worksheet.addImage(imageId1, 'A1:A5');
+    //worksheet.addImage(imageId1, 'A1:A5');
 
-    const fill = {type: 'pattern', pattern: 'solid', bgColor: {argb: 'FFCCCC00'}, fgColor: {argb: 'FFCCCC00'}} as FillPattern
+    const fill = confidential ? {type: 'pattern', pattern: 'solid', bgColor: {argb: 'FFCCCC00'}, fgColor: {argb: 'FFCCCC00'}} as FillPattern : {}
     worksheet.columns = [
         {header: '', key: 'PN', width: 40},
         {
@@ -30,13 +30,10 @@ export const specToXls = async (spec: ISpec, user: IUser, confidential: boolean,
         {header: '', key: 'discount', width: 20, style: {numFmt}}, //Скидка
         {header: '', key: 'priceRu', width: 20, style: {numFmt}},
         {header: '', key: 'sumRu', width: 20, style: {numFmt}},
-
+        {header: '', key: 'confidential1', width: 20, style: {numFmt, fill}},
+        {header: '', key: 'confidential2', width: 20, style: {numFmt, fill}},
+        {header: '', key: 'confidential3', width: 20, style: {numFmt, fill}}
     ];
-    if(confidential){
-        worksheet.columns.push({header: '', key: 'confidential1', width: 20, style: {numFmt, fill}},
-            {header: '', key: 'confidential2', width: 20, style: {numFmt, fill}},
-            {header: '', key: 'confidential3', width: 20, style: {numFmt, fill}})
-    }
     worksheet.addRows([
         ['Спецификация'],
         ['ИД спецификации', spec.id],
