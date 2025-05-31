@@ -23,20 +23,21 @@ async function load() {
 
 onMounted(load)
 const filter = ref('')
-const project = ref({})
+const project = ref<IProject>()
 const createDialog = ref(false)
 
-function formatDate(date: string) {
-  return date ? moment(date).format('YYYY-MM') : ''
+function formatDate(row: IProject) {
+  const d = moment([row.year, row.month, 2])
+  return d.isValid() ? d.format('YYYY-MM') : ''
 }
 
-async function create(){
+async function create() {
   const p = await useNuxtApp().$POST('/project/create', project.value) as IProject
-  if(!p) return
+  if (!p) return
   navigateTo(`/project/${p.id}`)
 }
 
-const rowsSorted = computed(()=>rows.value.sort((a, b) => a.expiredDays > 30 ? -1 : 0))
+const rowsSorted = computed(() => rows.value.sort((a, b) => a.expiredDays > 30 ? -1 : 0))
 
 </script>
 
@@ -47,20 +48,22 @@ const rowsSorted = computed(()=>rows.value.sort((a, b) => a.expiredDays > 30 ? -
       template(v-slot:append)
         q-icon(name="mdi-magnify")
     q-space
-    q-btn(label="Создать проект" @click="createDialog=true")
+    q-btn(label="Создать проект" @click="project = {};createDialog=true")
   q-dialog(v-model="createDialog" )
-      ProjectForm(v-model="project" :submit="create")
+    ProjectForm(v-model="project" :submit="create")
 
   q-table(:rows="rowsSorted" :columns="columns" :filter="filter" :pagination="{rowsPerPage:20}" @row-click="(e,row)=>navigateTo(`/project/${row.id}`)" :table-row-class-fn="(row)=>row.expiredDays>30?'text-red':''")
     template(v-slot:body-cell-status="{row}")
       q-td
         q-badge(:label="row.status" :color="row.status==='Не успешный'?'red':row.status==='Успешный'?'green':'grey'")
     template(v-slot:body-cell-end="{row}")
-      q-td {{formatDate(row.expireDate)}}
-        q-badge(v-if="row.expiredDays>30"  color="red") Просрочен
+      q-td {{formatDate(row)}}
+        //q-badge(v-if="row.expiredDays>30"  color="red") Просрочен
         q-badge(v-if="!row.expiredDays") Нет даты
     template(v-slot:body-cell-controls="{row}")
       q-td
+        ExcelButton(:id="row.id" path="/project")
+        ExcelButton(:confidential="true" :id="row.id" path="/project")
         DeleteButton(event="projects:reload" path="project" :id="row.id" :name="row.name" )
 </template>
 

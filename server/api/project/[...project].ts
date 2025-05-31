@@ -35,7 +35,7 @@ router.get('/managers', defineEventHandler(async (event) => {
 
 
 router.get('/statuses', defineEventHandler(async (event) => {
-    return Project.statusesArr
+    return Project.statusesArr()
 }))
 
 router.post('/:_id', defineEventHandler(async (event) => {
@@ -44,7 +44,7 @@ router.post('/:_id', defineEventHandler(async (event) => {
     const {_id} = event.context.params as Record<string, string>
     const project = await Project.findOne({_id, user})
     if (!project) throw createError({statusCode: 404, message: 'Проект не найден'})
-    const fields = ['status', 'inn', 'customer', 'manager', 'partner', 'distributor', 'emails', 'expiredDate']
+    const fields = ['status', 'inn', 'customer', 'manager', 'partner', 'distributor', 'emails', 'month', 'year']
     const body = await readBody(event)
     for (const f of fields) {
         project[f] = body[f]
@@ -93,6 +93,12 @@ router.get('/excel/:_id', defineEventHandler(async (event) => {
 
 }))
 
-//Project.findById('674ed10e706c44002314a5ae').populate(Project.getPopulation()).then(console.log)
+Project.find({expireDate:{$ne:undefined}}).populate(Project.getPopulation()).then(async ps=>{
+    for(const p of ps){
+        p.month = p.expireDate.getMonth()
+        p.year = p.expireDate.getFullYear()
+        await p.save()
+    }
+})
 
 export default useBase('/api/project', router.handler)

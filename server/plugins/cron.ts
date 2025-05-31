@@ -19,12 +19,12 @@ async function deleteRegistrations() {
 async function quartNotifications() {
     const projects = await Project.find({
         status: 'Активный',
-        month: {$gte: parseInt(moment().format('MM'))},
-        year: {$gte: parseInt(moment().format('YYYY'))}
+        month: {$gte: moment().month()},
+        year: {$gte: moment().year()}
     })
         .populate(["user", 'manager'])
     for (const project of projects) {
-        const date = moment({y: project.year, M: project.month - 1, d: 1})
+        const date = moment([project.year, project.month, 1])
         if (date.isValid()) {
             const now = moment()
             const days = date.diff(now, 'days')
@@ -32,10 +32,11 @@ async function quartNotifications() {
             const daysFromQuarter = now.diff(quarter, 'days')
             const url = 'http://srvcfg.qtech.ru/projects/' + project.id
             const text = `До окончания проекта "${project.name}" (${project.customer} ${project.inn}) осталось дней: ${days}. ${url}`
-            const emails = [project.user.email, project.emails]
-            emails.push(project.manager.email)
+            const emails = [project.user.email, project.manager.email, ...project.emails.split(',')]
             if (daysFromQuarter === 1 || days === 30 || days === 7) {
                 await utils.sendMail({to: emails, subj: `Просьба обновить статус проекта - "${project.name}"`, text})
+                project.status = 'Просрочен'
+                await project.save()
             }
         }
     }
@@ -52,5 +53,5 @@ export default defineNitroPlugin(() => {
         })
     }, 3600 * 1000 * 24)
 
-    //setInterval(quartNotifications, 1000 * 3600 * 24);
+    setInterval(quartNotifications, 1000 * 3600 * 24);
 })

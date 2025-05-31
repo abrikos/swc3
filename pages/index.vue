@@ -3,7 +3,7 @@
 </script>
 
 <template lang="pug">
-div INDEX
+div.fixed-center QTECH конфигуратор оборудования
 </template>
 
 <style scoped>

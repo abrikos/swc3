@@ -1,14 +1,16 @@
 <script setup lang="ts">
 import moment from "moment";
 
-const project = defineModel<IProject>({required:true})
+const project = defineModel<IProject>({required: true})
 const {submit} = defineProps({
-  submit:{type:Function, required: true},
+  submit: {type: Function, required: true},
 })
 const managers = ref<IManager[]>()
+const statuses = ref([])
 
 async function load() {
-    managers.value = await useNuxtApp().$GET(`/project/managers`) as IManager[]
+  managers.value = await useNuxtApp().$GET(`/project/managers`) as IManager[]
+  statuses.value = await useNuxtApp().$GET(`/project/statuses`) as never[]
 }
 
 onMounted(load)
@@ -18,24 +20,9 @@ async function companyByInn() {
   companies.value = await useNuxtApp().$POST(`/user/inn`, project.value) as never[]
 }
 
-const month = computed({
-  get(){
-    return moment(project.value.expireDate).format("MMM")
-  },
-  set(v){
-    const date = moment(project.value.expireDate).set('date', 1)
-    project.value.expireDate = date.month(v).toDate()
-  }
-})
-const year = computed({
-  get() {
-    return moment(project.value.expireDate).format("YYYY")
-  },
-  set(v:number) {
-    const date = moment(project.value.expireDate).set('date', 1)
-    project.value.expireDate = date.year(v).toDate()
-  }
-})
+
+const months2 = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+const months = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map(m => ({label: months2[m], value: m}))
 
 
 </script>
@@ -49,17 +36,20 @@ const year = computed({
         q-input(v-model="project.inn" label="ИНН" :rules="[$validateRequired]" @update:model-value="companyByInn" bottom-slots)
         q-option-group(v-if="companies.length" :options="companies" v-model="project.customer" option-label="value" @update:model-value="companies=[]" bottom-slots)
         q-input(v-if="!companies.length"  v-model="project.customer" label="Компания" :rules="[$validateRequired]" bottom-slots)
-        q-select(:options="managers" option-label="name" option-value="id" v-model="project.manager" :hint="project.manager?.dep" label="Менеджер" bottom-slots)
+        q-select(:options="managers" option-label="name" option-value="id" v-model="project.manager" :hint="project.manager?.dep" label="Менеджер" :rules="[$validateRequired]" bottom-slots)
+        q-select(:options="statuses" v-model="project.status" label="Статус" bottom-slots)
         //q-input(label="Отдел (РОП)" v-model="project.manager.dep" disable  hint="" )
         q-input(label="Партнёр" v-model="project.partner" bottom-slots)
         q-input(label="Партнёр" v-model="project.distributor" bottom-slots)
-        strong Срок реализации проекта
+        q-input(label="Дополнительные адреса оповещения (через запятую)" v-model="project.emails" bottom-slots)
+        //div {{project.expireDate}}
+        //q-date(v-model="project.expireDate")
+        strong Месяц реализации проекта
         div.row
           div.col
-            q-select(label="Месяц" v-model="month" :rules="[$validateRequired]" :options="['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']" )
+            q-select(label="Месяц" v-model="project.month" :rules="[$validateRequired]" :options="months" option-value="value" option-label="label" map-options emit-value)
           div.col
-            q-input(label="Год" v-model="year" :rules="[$validateRequired]" type="number" :min="2023")
-        q-input(label="Дополнительные адреса оповещения (через запятую)" v-model="project.emails" )
+            q-input(label="Год" v-model="project.year" :rules="[$validateRequired]" type="number" :min="2023")
 
       q-card-actions
         q-btn(label="Сохранить" color="primary" type="submit")

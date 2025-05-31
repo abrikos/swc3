@@ -3,7 +3,7 @@ import moment from "moment";
 import {IConf} from "~/server/models/conf.model";
 import {IManager} from "~/server/models/manager.model";
 
-const statuses = ['Активный', "Успешный", "Не успешный"]
+const statuses = ['Активный', "Успешный", "Не успешный", 'Просрочен']
 const model = 'project';
 
 export interface IProject extends mongoose.Document {
@@ -27,6 +27,7 @@ export interface IProject extends mongoose.Document {
     expireDate: Date
     createdAt: Date
     specsAttached: ISpec[]
+    notified: boolean
 
 }
 
@@ -38,6 +39,7 @@ const schema = new Schema<IProject>({
     distributor: {type: String},
     status: {type: String, default: statuses[0]},
     deleted: {type: Boolean, default: false},
+    notified: {type: Boolean, default: false},
     specs: [{type: mongoose.Schema.Types.ObjectId, ref: 'spec'},],
     user: {type: mongoose.Schema.Types.ObjectId, ref: 'user'},
     manager: {type: mongoose.Schema.Types.ObjectId, ref: 'manager'},
@@ -57,7 +59,7 @@ const schema = new Schema<IProject>({
 
 interface IProjectModel extends mongoose.Model<IProject> {
     getPopulation: () => []
-    statusesArr: string[]
+    statusesArr: ()=>string[]
 }
 
 schema.statics.getPopulation = () => [
@@ -79,7 +81,7 @@ schema.virtual('name')
     })
 schema.virtual('expiredDays')
     .get(function () {
-        const exp = moment(this.expireDate)
+        const exp = moment([this.year, this.month, 1])
         const now = moment()
         return now.diff(exp, 'days')
     })
