@@ -6,6 +6,7 @@ GIT=`git pull`
 if [[ $GIT =~ "Already" ]]; then
   echo $GIT
 else
+  nvm use 22.16.0
   npm i
   npm run build
   #~/.nvm/versions/node/v22.16.0/bin/pm2 restart all
