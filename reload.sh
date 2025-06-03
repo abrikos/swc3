@@ -1,6 +1,6 @@
 #!/bin/bash
 cd ~/swc3
-#while [ true ]; do
+
 GIT=`git pull`
 if [[ $GIT =~ "Already" ]]; then
   echo $GIT
