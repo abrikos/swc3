@@ -1,5 +1,6 @@
 #!/bin/bash
-PATH="/usr/bin:/bin:/home/abrikos/.nvm/versions/node/v22.16.0/bin/"
+#PATH="/usr/bin:/bin:/home/abrikos/.nvm/versions/node/v22.16.0/bin/"
+
 
 cd ~/swc3
 GIT=`git pull`
