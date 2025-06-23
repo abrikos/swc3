@@ -9,5 +9,7 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
         setRedirect(to.fullPath)
         //abortNavigation();
         return navigateTo('/user/login');
+    }else if(to.fullPath==='/'){
+        return navigateTo('/servers/spec/list');
     }
 });
