@@ -81,7 +81,7 @@ export default function (configuration) {
         result.errors.push(`Для дополнительного количества LFF дисков (${configuration.diskLFFCount - configuration.chassis.disks}) недостаточное количество LFF корзин (${configuration.rearBayLFFCount})`)
     }
 
-    if(!configuration.power ){
+    if(!configuration.power && !configuration.chassis.platform === 'JBOD' ){
         result.errors.push(`Выберите блок питания`)
     }
 
