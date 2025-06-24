@@ -26,6 +26,7 @@ export interface IUser extends mongoose.Document {
     passwordHash: string
     resetCode: string
     currency: string
+    fio: string
     roles: IRole[]
     //order: IOrder
     configurations: IConf[]

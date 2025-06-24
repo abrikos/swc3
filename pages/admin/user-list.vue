@@ -1,4 +1,8 @@
 <script setup lang="ts">
+import RoleForm from "~/components/user/RoleForm.vue";
+import {storeToRefs} from "pinia";
+import {useCustomStore} from "~/store/custom-store";
+const {loggedUser} = storeToRefs(useCustomStore())
 const list = ref()
 const columns = [
   {field:'email',label:'Email'},
@@ -14,6 +18,11 @@ const roles = ref()
 async function load(){
   list.value = await useNuxtApp().$GET('/admin/list-all')
   roles.value = await useNuxtApp().$GET('/admin/roles')
+  user.value = {roles:roles.value.filter((r:IRole)=>['user','External'].includes(r.name)),
+    blocked:false,
+    parent: loggedUser.value.fio
+    //email:'aa@aa.com', inn:'dfdfd', company:'dfds', firstName:'sdsd', lastName:'sdsd', middleName:'dfdfd', phone:'+79142635268'
+  }
 }
 
 async function deleteUser (id:string) {
@@ -33,9 +42,48 @@ const listFiltered = computed(
         .filter((u:IUser)=>u.email.match(filter.value.email))
         .filter((u:IUser)=>filter.value.role ? u.roles.map((r:IRole)=>r.id).includes(filter.value.role):true)//(filter.value.email))
 )
+const addDialog = ref(false)
+const user = ref()
+
+const snackbar = useSnackbar();
+async function addUser(){
+  if(!user.value.roles.length){
+    snackbar.add({type: 'error', text: 'Укажите роль'})
+    return
+  }
+  const res = await useNuxtApp().$POST(`/admin/user/create`, user.value)
+  if(res) {
+    navigateTo(`/admin/user-edit/${res.id}`)
+  }else{
+    snackbar.add({type: 'error', text: 'Ошибка создания пользователя'})
+  }
+}
 </script>
 
 <template lang="pug">
+  q-btn(@click="addDialog = true" color="primary" ) Создать пользователя
+  q-dialog(v-model="addDialog" )
+    q-card(v-if="user")
+      q-toolbar
+        q-toolbar-title Создать пользователя
+      q-card-section
+        q-form(v-if="user" ref="form" @submit="addUser")
+          div.row
+            div.col
+              q-card.q-ma-sm
+                q-card-section.flex.justify-between
+
+                  UserForm(v-model="user")
+            div.col
+              RoleForm(v-model="user")
+              q-card.q-ma-sm
+                q-card-section.flex.justify-between
+                  q-toggle(v-model="user.blocked" label="Заблокирован" )
+              q-card.q-ma-sm(v-if="user")
+                q-card-section
+                  q-input(v-model="user.password" label="Пароль")
+          q-btn(type="submit" label="Создать" color="primary")
+
   q-input(v-model="filter.email" label="Поиск по e-mail" )
   q-option-group(v-if="roles" v-model="filter.role" :options="roles" option-value="id" option-label="name" inline )
   q-table(:rows="listFiltered" v-if="list" :columns="columns" @row-click="(e,row)=>navigateTo({path: '/admin/user-edit', query: {id:row.id}})" :pagination="{rowsPerPage:15}")

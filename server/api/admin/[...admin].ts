@@ -75,6 +75,13 @@ router.post('/user/update/:_id', defineEventHandler(async (event) => {
     return user
 }))
 
+router.post('/user/create', defineEventHandler(async (event) => {
+    checkAdmin(event.context.user)
+    const user = await readBody(event)
+    await User.create(user)
+    return user
+}))
+
 router.get('/user/:id', defineEventHandler(async (event) => {
     checkAdmin(event.context.user)
     const {id} = event.context.params as Record<string, string>

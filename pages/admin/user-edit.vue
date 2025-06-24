@@ -30,7 +30,7 @@ const password2 = ref()
   q-form(v-if="user" ref="form" @submit="submit")
     div.row
       div.col
-        UserForm(v-model="user" :submit="submit")
+        UserForm(v-model="user")
       div.col
         RoleForm(v-model="user")
         q-card.q-ma-sm
