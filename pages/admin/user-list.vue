@@ -42,6 +42,7 @@ const listFiltered = computed(
         .filter((u:IUser)=>u.email.match(filter.value.email))
         .filter((u:IUser)=>filter.value.role ? u.roles.map((r:IRole)=>r.id).includes(filter.value.role):true)//(filter.value.email))
 )
+
 const addDialog = ref(false)
 const user = ref()
 
