@@ -1,7 +1,7 @@
 #!/bin/bash
 cd ~/swc3
 GIT=`git pull`
-if [[ $GIT =~ "Already" ]]; then
+if [[ $GIT =~ "актуально." ]]; then
   echo $GIT
 else
 # Load nvm
