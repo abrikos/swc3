@@ -81,15 +81,20 @@ export default function (configuration) {
         result.errors.push(`Для дополнительного количества LFF дисков (${configuration.diskLFFCount - configuration.chassis.disks}) недостаточное количество LFF корзин (${configuration.rearBayLFFCount})`)
     }
 
-    if(!configuration.power && !configuration.chassis.platform === 'JBOD' ){
-        result.errors.push(`Выберите блок питания`)
-    }
 
     if (configuration.powerConsumption > configuration.power) {
         result.errors.push(`Недостаточно мощности PSU`)
     }
-
+    if(configuration.chassis.platform==='G4'){
+        if(!configuration.ocpCount && !configuration.fcCount && !configuration.lanCount){
+            result.warnings.push('В данной конфигурации нет возможности подключить оборудование к сети передачи данных, для подключения к сети добавьте NIC или FC HBA')
+        }
+    }
     if (configuration.chassis.platform !== 'JBOD') {
+        if(!configuration.power ){
+            result.errors.push(`Выберите блок питания`)
+        }
+
         if (!configuration.cpuCount) {
             result.errors.push(`Выберите CPU`)
         }
