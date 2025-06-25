@@ -70,6 +70,20 @@ export default (configuration, tab) => {
             if (['QSRV-260802-E-R'].includes(configuration.chassis.partNumber)) {
                 return [0, 1, 2]
             }
+            if (['260802','270802','270812-P-R'].map(p=>'QSRV-'+p).includes(configuration.chassis.partNumber)) {
+                if(configuration.backplaneCount){
+                    return Array.from(Array(13).keys())
+                }else{
+                    return Array.from(Array(9).keys())
+                }
+            }
+            if (['261202','271202','271212-P-R'].map(p=>'QSRV-'+p).includes(configuration.chassis.partNumber)) {
+                if(configuration.backplaneCount){
+                    return Array.from(Array(17).keys())
+                }else{
+                    return Array.from(Array(5).keys())
+                }
+            }
 
             const trimode8Adds = configuration.raidTrimode8iCount * 2
             const trimode16Adds = configuration.raidTrimode16iCount * 4

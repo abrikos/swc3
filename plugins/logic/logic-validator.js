@@ -295,7 +295,7 @@ export default function (configuration) {
         ) {
             if (!configuration.chassis.partNumber.match(/02R$/) && !configuration.backplaneCount) {
                 result.errors.push(`На каждые дополнительные 2 шт SSD U.2 NVMe (${configuration.ssdU2Count - configuration.additionalNvmeDisksByBackplane - configuration.U2expnvmeCount * 2}) 
-                необходим rear bay rbaySFFU2 (${configuration.rearBayU2Count})`)
+                необходим rear bay rbaySFFU2 (${configuration.rearBayU2Count}) и/или Anybay Backplane`)
             }
         }
 
@@ -313,6 +313,13 @@ export default function (configuration) {
                 if (configuration.nvmeM2DiskCount > configuration.M2expnvmeCount * 2) {
                     result.errors.push(`Количество SSD m.2 NVME (${configuration.nvmeM2DiskCount}) превышает возможности установки с помощью M2expnvme (${configuration.M2expnvmeCount * 2})`)
                 }
+            }
+        }
+
+
+        if (['260802','270802','270812-P-R'].map(p=>'QSRV-'+p).includes(configuration.chassis.partNumber)) {
+            if(configuration.backplaneCount && !configuration.riserX16Count){
+                result.errors.push(`Необходимо добавить райзер x16`)
             }
         }
 
