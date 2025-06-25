@@ -68,7 +68,7 @@ const tabsArrayType = computed(() => {
         ConfService(v-if="route.query.category==='Services'" :conf="conf")
         ConfTable(v-else :conf="conf" :components="components")
       div.col.q-pa-sm
-        div {{conf.chassis.descFull}}
+        div {{conf.chassis.platform}} {{conf.chassis.descFull}}
 
         AddToSpec(type="conf")
 

@@ -317,7 +317,7 @@ export default function (configuration) {
         }
 
 
-        if (['260802','270802','270812-P-R'].map(p=>'QSRV-'+p).includes(configuration.chassis.partNumber)) {
+        if (['260802','270802','270812-P-R', '171012-P-R', '161002', '171002'].map(p=>'QSRV-'+p).includes(configuration.chassis.partNumber)) {
             if(configuration.backplaneCount && !configuration.riserX16Count){
                 result.errors.push(`Необходимо добавить райзер x16`)
             }

@@ -13,7 +13,6 @@ export default (configuration, components, tab) => {
             }
 
             if (component.unitFix && (component.unitFix !== configuration.chassis.units)) return
-            //if (component.unitMin && (component.unitMin > configuration.chassis.units)) return
             if (!component.platforms.includes(configuration.chassis.platform)) return
             switch (tab.category) {
                 case 'Power':
@@ -34,7 +33,7 @@ export default (configuration, components, tab) => {
                     if (configuration.chassis.partNumber === 'QSRV-4524') return component.isDiskSAS && (component.isSFF || component.isLFF)
                     if (configuration.chassis.isSFF && component.type === 'HDD') return component.isSFF
                 case 'Riser':
-                    if(configuration.chassis.units>1 && ['G3','G3R'].includes(configuration.chassis.platform)) {
+                    if (configuration.chassis.units > 1 && ['G3', 'G3R'].includes(configuration.chassis.platform)) {
                         if (configuration.cpuCount === 1) return component.description.match(/port 1\/2/)
                     }
                     if (configuration.chassis.units < component.riserUnit) return false
@@ -44,8 +43,6 @@ export default (configuration, components, tab) => {
             }
 
             switch (tab.type) {
-                //case 'GPU':
-                //if(configuration.chassis.units === 1 && !['GFGT730', 'QUADROP620', 'TESLAT416'].includes(component.partNumber)) return false
                 case 'RAID':
                     if (configuration.chassis.partNumber.match('-E-R')) {
                         return component.partNumber !== '936124I2GR'
@@ -55,7 +52,7 @@ export default (configuration, components, tab) => {
                     }
                     return true
                 case 'HDD':
-                    if (['QSRV-171012-P-R','QSRV-272512-P-R','QSRV-282400','QSRV-181000'].includes(configuration.chassis.partNumber)) return !component.isLFF
+                    if (['QSRV-171012-P-R', 'QSRV-272512-P-R', 'QSRV-282400', 'QSRV-181000'].includes(configuration.chassis.partNumber)) return !component.isLFF
 
                     if (['QSRV-160812-E-R', 'QSRV-160802-E-R', 'QSRV-160802-P-R', 'QSRV-262402-P-R', 'QSRV-262412-P-R'].includes(configuration.chassis.partNumber)) {
                         if (['20HD7SATA3.5', '22HD7SATA3.5', '20HD7SAS3.5', '22HD7SAS3.5'].includes(component.partNumber)) return false
@@ -74,7 +71,6 @@ export default (configuration, components, tab) => {
                         return true
                     }
                 case 'Rear bay':
-                    //if (configuration.chassis.partNumber === 'QSRV-260802-P-R') return false
                     if (configuration.chassis.partNumber === 'QSRV-463612-E-R') return false
                     if (configuration.chassis.units === 1) return false
                     if (configuration.isRearBayNeeded) {
@@ -82,10 +78,10 @@ export default (configuration, components, tab) => {
                     }
                     return true;
                 case 'Backplane':
-                    if(['QSRV-270802','QSRV-270812-P-R'].includes(configuration.chassis.partNumber) && component.partNumber==='bplnab2u12b') return false
-                    if(['QSRV-271202','QSRV-271212-P-R'].includes(configuration.chassis.partNumber) && component.partNumber!=='bplnab2u12b') return false
-                    return ['QSRV-271212-P-R', 'QSRV-271202', 'QSRV-161002', 'QSRV-1710',
-                        'QSRV-161002A', 'QSRV-260802', 'QSRV-270802', 'QSRV-270812-P-R',
+                    if (['QSRV-270802', 'QSRV-270812-P-R'].includes(configuration.chassis.partNumber) && component.partNumber === 'bplnab2u12b') return false
+                    if (['QSRV-271202', 'QSRV-271212-P-R'].includes(configuration.chassis.partNumber) && component.partNumber !== 'bplnab2u12b') return false
+                    return ['QSRV-171012-P-R', 'QSRV-271212-P-R', 'QSRV-271202', 'QSRV-161002', 'QSRV-1710',
+                        'QSRV-171002','QSRV-161002','QSRV-161002A', 'QSRV-260802', 'QSRV-270802', 'QSRV-270812-P-R',
                         'QSRV-260802A', 'QSRV-161002', 'QSRV-260802', 'QSRV-281200'].includes(configuration.chassis.partNumber)
 
                 case 'SSD U.2 NVMe':
