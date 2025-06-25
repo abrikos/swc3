@@ -1,11 +1,15 @@
 <script setup lang="ts">
 import {storeToRefs} from 'pinia'; // import storeToRefs helper hook from pinia
 import {useCustomStore} from '~/store/custom-store';
+import ThemeSwitch from "~/components/ThemeSwitch.vue";
+import {useCookie} from "#app";
 
 const config = useAppConfig()
 const route = useRoute()
 const {logUserOut, getSettings} = useCustomStore(); // use authenticateUser action from  auth store
 const {loggedUser, loading} = storeToRefs(useCustomStore())
+const themeWidth = useCookie<string>('themeWidth');
+const drawerSide = useCookie<string>('drawerSide');
 await getSettings()
 const leftDrawerOpen = ref(true);
 const pages = [
@@ -36,6 +40,7 @@ const pagesAdmin = [
         q-toolbar-title
           //q-btn(to="/")
         CurrencySwitch
+
         //q-btn-dropdown(flat label="Admin" v-if="loggedUser?.isAdmin")
           q-list
             q-item
@@ -47,7 +52,8 @@ const pagesAdmin = [
         q-btn(v-if="loggedUser" @click="logUserOut" icon="mdi-logout" )
         q-btn(v-if="!loggedUser" to="/user/login" icon="mdi-login" )
         //ThemeSwitch
-    q-drawer(v-model="leftDrawerOpen" bordered)
+    q-drawer(v-model="leftDrawerOpen" bordered :side="drawerSide || 'left'")
+      div {{drawerSide}}
       q-list
         q-item(v-for="page in pages" :to="page.to")
           q-item-section(avatar)
@@ -63,15 +69,22 @@ const pagesAdmin = [
             q-item-section(avatar)
               q-icon(:name="page.icon")
             q-item-section {{page.label}}
-          small.text-center v 2.8
-    q-page-container
-      //div {{route.name}}
-      slot
+        q-item
+          q-item-section
+            i Настройки
+        ThemeSwitch
+      small.text-center v 2.9
+    q-page-container(:class="themeWidth?'page-wrapper':''" )
+      q-page
+        slot
 
 
 </template>
 
 <style scoped lang="sass">
+.page-wrapper
+  max-width: 1600px
+  margin: auto
 #progress
   position: absolute
   height: 10px
