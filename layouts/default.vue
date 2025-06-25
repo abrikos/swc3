@@ -27,6 +27,12 @@ const pagesAdmin = [
   {to: '/admin/log', label: 'Лог действий', icon: 'mdi-security'},
 
 ]
+const version = ref()
+onMounted(()=>{
+  useNuxtApp().$GET('/git-commit').then((res)=>{
+    version.value = res;
+  })
+})
 </script>
 
 <template lang="pug">
@@ -73,7 +79,9 @@ const pagesAdmin = [
           q-item-section
             i Настройки
         ThemeSwitch
-      small.text-center v 2.9
+      pre.text-caption(v-if="loggedUser?.isAdmin")
+        div Last update:
+        div {{version}}
     q-page-container(:class="themeWidth?'page-wrapper':''" )
       q-page
         slot
