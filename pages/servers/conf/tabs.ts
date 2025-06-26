@@ -32,6 +32,7 @@ export default function (conf: IConf) {
         {name: 'Power'},
         {name: 'Cables'},
         {name: 'Services'},
+        {name: 'Soft'},
     ] : [{
         name: 'Storage',
         children: [

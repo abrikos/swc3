@@ -56,7 +56,7 @@ router.post('/update/:_id', defineEventHandler(async (event) => {
     if (body.brokenStorageService) conf.brokenStorageService = body.brokenStorageService
     await conf.save()
 }))
-Component.find({partNumber:'bplnab2u8b'}).then(console.log)
+//Component.find({partNumber:'bplnab2u8b'}).then(console.log)
 
 router.post('/component-count/:_id', defineEventHandler(async (event) => {
     const user = event.context.user
