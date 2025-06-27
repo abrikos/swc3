@@ -43,6 +43,23 @@ async function quartNotifications() {
 
 }
 
+async function clearConfigurations(){
+    const day2 = moment().add(-2, 'day')
+    const date2 = new Date(day2.year(), day2.month(), day2.date());
+    const day30 = moment().add(-30, 'day')
+    const date30 = new Date(day30.year(), day30.month(), day30.date());
+    const specs = await Spec.find({'configurations.1':{$exists: true}});
+    const ids = []
+    for(const spec of specs) {
+        ids.push(...spec.configurations)
+    }
+    const confs = await Conf.deleteMany({_id: {$nin: ids}, createdAt: {$lt: date2}} );
+    const specDel = await Spec.deleteMany({'configurations.1':{$exists: false}, createdAt: {$lt: date30}});
+    console.log(confs, specDel);
+
+}
+//clearConfigurations()
+
 export default defineNitroPlugin(() => {
     setInterval(() => {
         deleteRegistrations()

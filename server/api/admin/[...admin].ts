@@ -90,7 +90,7 @@ router.get('/user/:id', defineEventHandler(async (event) => {
 
 router.get('/specs', defineEventHandler(async (event) => {
     checkAdmin(event.context.user)
-    return Spec.find().populate('user')
+    return Spec.find().populate({path:'user', select:['email']})
 }))
 
 router.post('/registration/confirm/:_id', defineEventHandler(async (event) => {
