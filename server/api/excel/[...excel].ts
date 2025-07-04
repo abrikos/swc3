@@ -11,7 +11,8 @@ router.get('/spec/:_id', defineEventHandler(async (event) => {
     const user = event.context.user
     if (!user || !user.isServer) throw createError({statusCode: 403, message: 'Доступ запрещён',})
     const {_id} = event.context.params as Record<string, string>
-    const spec = await Spec.findOne({_id, user}).populate(Spec.getPopulation())
+    const filter = user.isAdmin ? {_id} : {_id, user}
+    const spec = await Spec.findOne(filter).populate(Spec.getPopulation())
     if (!spec) throw createError({statusCode: 404, message: ('Конфигурация не найдена'),})
     const {confidential} = getQuery(event)
     event.node.res.setHeader('Content-Type', 'application/vnd.openxmlformats');
@@ -25,7 +26,8 @@ router.get('/project/:_id', defineEventHandler(async (event) => {
     if (!user || !user.isServer) throw createError({statusCode: 403, message: 'Доступ запрещён',})
     const {_id} = event.context.params as Record<string, string>
     const {confidential} = getQuery(event)
-    const project = await Project.findOne({_id, user}).populate(Project.getPopulation())
+    const filter = user.isAdmin ? {_id} : {_id, user}
+    const project = await Project.findOne(filter).populate(Project.getPopulation())
     if (!project) throw createError({statusCode: 404, message: ('Проект не найден'),})
     event.node.res.setHeader('Content-Type', 'application/vnd.openxmlformats');
     event.node.res.setHeader("Content-Disposition", "attachment; filename=" + encodeURIComponent(project.name) + (confidential !== '0' ? '-confidential' : '')  + ".xlsx");
