@@ -141,11 +141,12 @@ export function servSpec(worksheet:Excel.Worksheet, spec:ISpec, confidential:boo
 
             ]
             const serviceRow = worksheet.addRow(data)
+            serviceRow.getCell(4).value = {formula: `J${serviceRow.number}/0.85/0.4`}
             serviceRow.getCell(5).value = {formula: `C${serviceRow.number}*D${serviceRow.number}`}
             serviceRow.getCell(7).value = {formula: `D${serviceRow.number}-D${serviceRow.number}*F${serviceRow.number}`}
             serviceRow.getCell(8).value = {formula: `G${serviceRow.number}*C${serviceRow.number}`}
             const servicePercent = conf.service.name.match('Base') ? 0:  (conf.service.name.match('36 месяцев') ? 0.1 : 0.15)
-            serviceRow.getCell(10).value = {formula: `H${serviceRow.number}*${servicePercent}`}
+            serviceRow.getCell(10).value = {formula: `J${rowSummary.number}*0.3`}
             serviceRow.getCell(11).value = {formula: `H${serviceRow.number}*C${serviceRow.number}`}
             summaryRows.push(serviceRow.number)
         }
