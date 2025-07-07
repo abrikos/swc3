@@ -3,17 +3,21 @@ import {useCustomStore} from '~/store/custom-store';
 
 const {signupUser} = useCustomStore()
 const config = useRuntimeConfig()
-console.log(config.app)
 const testuser ={email: Math.random()+'@a.com', inn:'1', company:'1', firstName:'1', lastName:'1', middleName:'1', phone:'+79142365896', parent:'1'}
-const user = ref({})
+const user = ref(config.app.buildId==='dev' ? testuser: {})
 const form = ref()
-
+const snackbar = useSnackbar()
 
 const res = ref(true)
 async function submit() {
   if(await form.value.validate()) {
-    await useNuxtApp().$POST('/user/registration', user.value)
-    navigateTo('/user/registration-done')
+    const res = await useNuxtApp().$POST('/user/registration', user.value)
+    if(!res?.error) {
+      navigateTo('/user/registration-done')
+    }else{
+      snackbar.add({type: 'error', text: res.error})
+    }
+
   }
 }
 

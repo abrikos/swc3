@@ -18,6 +18,7 @@ const pages = [
   {to: '/servers/chassis', label: 'Сервера', icon: 'mdi-server-outline', forLogged: true},
   {to: '/servers/spec/list', label: 'Спецификации', icon: 'mdi-list-box-outline', forLogged: true},
   {to: '/project/list', label: 'Проекты', icon: 'mdi-briefcase-outline', forLogged: true},
+  {to: '/user/login', label: 'Вход', icon: 'mdi-account', forLogged: false},
   {to: '/user/registration', label: 'Зарегистрироваться', icon: 'mdi-account-plus', forLogged: false},
   {to: '/user/password-restore', label: 'Восстановить пароль', icon: 'mdi-form-textbox-password', forLogged: false},
 ]

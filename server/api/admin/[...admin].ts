@@ -11,8 +11,18 @@ import {
     parseNetServices
 } from "~/server/utils/import";
 import {LogAdmin} from "~/server/models/log.model";
+import {H3Event} from "h3";
 
 const router = createRouter()
+
+async function logAction(event: H3Event) {
+    await LogAdmin.create({
+        user: event.context.user,
+        route: JSON.stringify(event.context.matchedRoute),
+        params: getQuery(event),
+        data: await readBody(event)
+    });
+}
 
 function checkAdmin(user: IUser) {
     if (!user || !user.isAdmin) throw createError({statusCode: 403, message: 'Доступ запрещён',})
@@ -26,6 +36,7 @@ router.get('/list-all', defineEventHandler(async (event) => {
 
 router.delete('/user/delete/:_id', defineEventHandler(async (event) => {
     checkAdmin(event.context.user)
+    await logAction(event)
     const {_id} = event.context.params as Record<string, string>
     await User.findByIdAndDelete(_id)
 }))
@@ -54,6 +65,7 @@ router.get('/registration/:id', defineEventHandler(async (event) => {
 
 router.post('/user/update/:_id', defineEventHandler(async (event) => {
     checkAdmin(event.context.user)
+    await logAction(event)
     const body = await readBody(event)
     const {_id} = event.context.params as Record<string, string>
     const user = await User.findById(_id)
@@ -77,9 +89,9 @@ router.post('/user/update/:_id', defineEventHandler(async (event) => {
 
 router.post('/user/create', defineEventHandler(async (event) => {
     checkAdmin(event.context.user)
+    await logAction(event)
     const user = await readBody(event)
-    await User.create(user)
-    return user
+    return  User.create(user)
 }))
 
 router.get('/user/:id', defineEventHandler(async (event) => {
@@ -90,20 +102,22 @@ router.get('/user/:id', defineEventHandler(async (event) => {
 
 router.get('/specs', defineEventHandler(async (event) => {
     checkAdmin(event.context.user)
-    return Spec.find().populate({path:'user', select:['email']})
+    return Spec.find().populate({path: 'user', select: ['email']})
 }))
 
 router.post('/registration/confirm/:_id', defineEventHandler(async (event) => {
     checkAdmin(event.context.user)
+    await logAction(event)
     const {_id} = event.context.params as Record<string, string>
     const reg = await Registration.findById(_id)
     if (!reg) throw createError({statusCode: 404, message: 'Регистрация не найдена',})
 
     reg.password = Math.random().toString(36).slice(-8)
-    if (!reg.roles.length) {
-        const role = await Role.findOne({name: 'user'})
-        reg.roles = [role?.id]
-    }
+
+    const role1 = await Role.findOne({name: 'user'})
+    const role2 = await Role.findOne({name: 'External'})
+    reg.roles = [role1?.id, role2?.id]
+
     const user = await User.create(reg.toJSON())
     await Registration.deleteMany({email: user.email})
     const text = `Здравствуйте, ${user.fio}
@@ -125,6 +139,7 @@ router.post('/registration/confirm/:_id', defineEventHandler(async (event) => {
 
 router.post('/registration/reject/:_id', defineEventHandler(async (event) => {
     checkAdmin(event.context.user)
+    await logAction(event)
     const {_id} = event.context.params as Record<string, string>
     const reg = await Registration.findById(_id)
     if (!reg) throw createError({statusCode: 404, message: 'Регистрация не найдена',})
@@ -138,6 +153,7 @@ router.post('/registration/reject/:_id', defineEventHandler(async (event) => {
 
 router.post('/import/:type', defineEventHandler(async (event) => {
     checkAdmin(event.context.user)
+    await logAction(event)
     const {type} = event.context.params as Record<string, string>
     let formData = await readMultipartFormData(event)
     const storage = useStorage("excel");

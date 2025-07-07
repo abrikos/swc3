@@ -84,17 +84,18 @@ router.get('/check-email/:email', defineEventHandler(async (event) => {
     return {}
 }))
 
+
 router.post('/registration', defineEventHandler(async (event) => {
     const body = await readBody(event)
     const host = getHeader(event, 'host')
-    const exists = await User.findOne({email: body.email})
-    if (exists) throw createError({statusCode: 400, message: 'Такой юзер уже существует'})
+    const exists = await Registration.findOne({email: body.email})
+    if (exists) return {error: `Заявка на регистрацию "${body.email}" уже существует`}
     const role = await Role.findOne({name:'user'})
     body.roles = [role?.id]
     const user = await Registration.create(body)
     const users = await User.find().populate('roles')
     const url = `http://${host}/admin/user-confirm?id=${user.id}`
-    const text = `Для подтверждения/отклонения регистрации пройдите по ссылке ${url}`
+    const text = `Для подтверждения/отклонения регистрации пройдите по ссылке ${url}\n${JSON.stringify(body)}`
     const subject = 'Заявка на регистрацию нового пользователя'
     const emails = []
     for (const user of users) {
@@ -108,13 +109,12 @@ router.post('/registration', defineEventHandler(async (event) => {
             subject,
             text
         })
-        console.log(r)
 
     } catch (err) {
         console.error(err)
-        throw createError({statusCode: 400, message: 'Ошибка уведомления админов'})
+        //return {error: `Заявка на регистрацию "${body.email}" уже существует`}
     }
-
+    return {ok:200}
 }))
 //User.deleteMany().then(console.log)
 //User.findById('636376c6a98e169787cf0a99').then(console.log)
