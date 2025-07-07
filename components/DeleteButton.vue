@@ -10,6 +10,7 @@ const {name, path, event, id} = defineProps({
 
 async function deleteSpec() {
   await useNuxtApp().$DELETE(`${path}/${id}`)
+  console.log(event)
   $event(event)
 }
 
@@ -19,7 +20,8 @@ async function deleteSpec() {
   q-btn(icon="mdi-delete" color="negative" @click.stop round)
     q-tooltip Удалить "{{name}}"
     q-popup-proxy(cover transition-show="scale" transition-hide="scale")
-      q-banner Удалить "{{name}}"? &nbsp;
+      q-banner Удалить "{{name}}"?
+        br
         q-btn( @click.stop="deleteSpec" label="OK" v-close-popup color="negative" )
         q-btn( @click.stop label="Отмена" v-close-popup)
 

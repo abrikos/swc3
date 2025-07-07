@@ -43,6 +43,15 @@ router.get('/:id', defineEventHandler(async (event) => {
     return {conf, components, specs}
 }))
 
+router.delete('/delete/:_id', defineEventHandler(async (event) => {
+    const user = event.context.user
+    if (!user && user.isServer) throw createError({statusCode: 403, message: 'Доступ запрещён',})
+
+    const {_id} = event.context.params as Record<string, string>
+    console.log(event.context.params)
+    return Conf.deleteOne({_id})
+}))
+
 router.post('/update/:_id', defineEventHandler(async (event) => {
     const user = event.context.user
     if (!user && !user.isServer) throw createError({statusCode: 403, message: ('Доступ запрещён'),})

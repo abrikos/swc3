@@ -37,9 +37,13 @@ const search = ref('')
 </script>
 
 <template lang="pug">
-  q-input(v-model="search" label="Поиск" )
-    template(v-slot:append)
-      q-icon(name="mdi-magnify")
+  div.row
+    div.col
+    div.col
+      q-input(v-model="search" label="Поиск")
+        template(v-slot:append)
+          q-icon(name="mdi-magnify")
+    div.col
   q-table(
     :rows="rows"
     :columns="columns"

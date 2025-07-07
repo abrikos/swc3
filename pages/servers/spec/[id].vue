@@ -22,7 +22,7 @@ async function save() {
 }
 onMounted(load)
 const {$listen} = useNuxtApp()
-$listen('specs:reload', load)
+$listen('spec:reload', load)
 
 const servPrice = computed(()=>spec.value.configurations.reduce((a:number, b:IConf) => a + b.price * b.count, 0))
 const netPrice = computed(()=>spec.value.orders.reduce((a:number, b:IOrder) => a + b.sum * b.count, 0))
@@ -41,7 +41,7 @@ div(v-if="spec")
     q-toolbar-title {{spec.name}}
       q-btn(icon="mdi-pencil" round)
         q-popup-proxy.q-pa-sm
-          q-input(v-model="spec.name" @focus="(input) => input.target.select()" label="Название спецификации" style="width:300px")
+          q-input(v-model="spec.name" @focus="(input) => input.target.select()" label="Название спецификации" style="width:300px" autofocus)
           q-btn(label="Сохранить" @click="save" v-close-popup)
 
     div Сумма:&nbsp;
@@ -64,29 +64,36 @@ div(v-if="spec")
     tbody
       tr
         th
+        th(width="400") Описание
         th(width="100") Кол-во
         th.text-right Цена
         th.text-right Сумма
+        th.text-right
 
-    tbody.bg-orange(v-if="spec.configurations.length")
+    tbody(v-if="spec.configurations.length")
       tr
-        td.text-left(colspan="4")
+        td.text-left(colspan="5")
           q-icon(name="mdi-server-outline")
           span Серверные
       tr(v-for="conf of spec.configurations" :key="conf.id")
         td
           router-link(:to="`/servers/conf/${conf.id}?category=CPU`") {{conf.name}}
+        td {{ conf.description }}
         td
           q-input(v-model="conf.count" type="number" min="1" @update:model-value="saveConf(conf)")
         td.text-right {{$priceFormat($priceByCurrencyServer(conf.price))}}
         td.text-right {{$priceFormat($priceByCurrencyServer(conf.price * conf.count))}}
+        td
+          DeleteButton(v-if="conf.user === loggedUser.id"  :id="conf.id" :name="conf.name" path="/conf/delete" event="spec:reload" )
       tr
-        td.text-right(colspan="3") Итого:
+        td.text-right(colspan="4") Итого:
         td.text-right.text-weight-bold {{$priceFormat($priceByCurrencyServer(servPrice))}}
-    tbody
+
+
+    tbody(v-if="spec.orders.length")
       tr
         td &nbsp;
-    tbody(v-if="spec.orders.length").bg-green
+    tbody(v-if="spec.orders.length")
       tr
         td.text-left(colspan="4")
           q-icon(name="mdi-network-outline")
