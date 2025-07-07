@@ -16,14 +16,15 @@ export default (configuration, components, tab) => {
             if (!component.platforms.includes(configuration.chassis.platform)) return
             switch (tab.category) {
                 case 'Power':
-                    if (configuration.chassis.platform === 'G2R') {
-                        if (component.power === 550 || ['QSRV-160812-E-R', 'QSRV-160402-E-R', 'QSRV-160412-E-R', 'QSRV-160802-E-R'].includes(configuration.chassis.partNumber)) {
-                            return false
-                        } else
-                            return component.power !== 650
-                    } else {
-                        return component.power !== 650
-                    }
+                    return true
+                    // if (configuration.chassis.platform === 'G2R') {
+                    //     if (component.power === 550 || ['QSRV-160812-E-R', 'QSRV-160402-E-R', 'QSRV-160412-E-R', 'QSRV-160802-E-R'].includes(configuration.chassis.partNumber)) {
+                    //         return false
+                    //     } else
+                    //         return component.power !== 650
+                    // } else {
+                    //     return component.power !== 650
+                    // }
                 case 'CPU':
                     return configuration.chassis.cpu === component.type && component.platforms.includes(configuration.chassis.platform)
                 case 'Cable':
