@@ -3,8 +3,9 @@ import {useCustomStore} from '~/store/custom-store';
 
 const {signupUser} = useCustomStore()
 const config = useRuntimeConfig()
+console.log(config.app)
 const testuser ={email: Math.random()+'@a.com', inn:'1', company:'1', firstName:'1', lastName:'1', middleName:'1', phone:'+79142365896', parent:'1'}
-const user = ref(testuser)
+const user = ref({})
 const form = ref()
 
 
