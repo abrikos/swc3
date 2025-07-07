@@ -27,12 +27,8 @@ q-card.q-pa-sm.fixed-center
     br
     q-input(v-model="user.password" label="Пароль" type="password" )
     q-card-actions
-      q-btn(type="submit" label="Отправить" color="primary" )
+      q-btn(type="submit" label="Отправить" color="primary" :flat="false")
       q-btn(type="reset" label="Сбросить")
-    q-card-actions.flex
-      router-link(to="/user/registration") Зарегистрироваться
-      span &nbsp;
-      router-link(to="/user/password-restore") Восстановить пароль
 </template>
 
 <style scoped>

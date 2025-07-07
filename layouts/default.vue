@@ -18,7 +18,10 @@ const pages = [
   {to: '/servers/chassis', label: 'Сервера', icon: 'mdi-server-outline', forLogged: true},
   {to: '/servers/spec/list', label: 'Спецификации', icon: 'mdi-list-box-outline', forLogged: true},
   {to: '/project/list', label: 'Проекты', icon: 'mdi-briefcase-outline', forLogged: true},
+  {to: '/user/registration', label: 'Зарегистрироваться', icon: 'mdi-account-plus', forLogged: false},
+  {to: '/user/password-restore', label: 'Восстановить пароль', icon: 'mdi-form-textbox-password', forLogged: false},
 ]
+
 const pagesAdmin = [
   {to: '/admin/user-registrations', label: 'Заявки на регистрацию', icon: 'mdi-account-alert'},
   {to: '/admin/import', label: 'Импорт данных', icon: 'mdi-import'},
@@ -41,7 +44,7 @@ onMounted(()=>{
       q-linear-progress#progress(color="orange" indeterminate v-if="loading" )
       q-toolbar.bg-grey-6
         q-btn( flat @click="leftDrawerOpen = !leftDrawerOpen" round dense icon="mdi-menu")
-        img(src="/logo.png" style="max-height: 20px;max-width: 230px")
+        img(src="/logo.png" style="max-height: 20px;max-width: 230px;cursor:pointer" @click="navigateTo('/')")
         //q-btn(v-if="loggedUser" flat round dense icon="menu" @click="toggleDrawer")
         q-toolbar-title
           //q-btn(to="/")
@@ -56,12 +59,12 @@ onMounted(()=>{
         q-space
         q-btn.flex.la-align-center(flat dense no-caps v-if="loggedUser" to="/user/cabinet") {{loggedUser.email}}
         q-btn(v-if="loggedUser" @click="logUserOut" icon="mdi-logout" )
-        q-btn(v-if="!loggedUser" to="/user/login" icon="mdi-login" )
+        //q-btn(v-if="!loggedUser" to="/user/login" icon="mdi-login" )
         //ThemeSwitch
     q-drawer(v-model="leftDrawerOpen" bordered :side="drawerSide || 'left'")
       div {{drawerSide}}
       q-list
-        q-item(v-for="page in pages" :to="page.to")
+        q-item(v-for="page in pages.filter(p=>p.forLogged===!!loggedUser)" :to="page.to")
           q-item-section(avatar)
             q-icon(:name="page.icon")
           q-item-section {{page.label}}
