@@ -67,15 +67,17 @@ router.post('/basket/save', defineEventHandler(async (event) => {
     const {spec} = getQuery(event)
     const items = await readBody(event)
     const order = await Order.create({user, name: 'Сетевая конфигурация ' + moment().format('YYYY-MM-DD HH:mm'),})
+
     for (const item of items) {
         item.order = order
         item.sortName = item.device.name
         await OrderItem.create(item)
     }
+
     if (spec) {
         const s = await Spec.findById(spec)
         if (s) {
-            s.orders.push(order)
+            s.orders.push(order.id)
             await s.save()
         }
     }

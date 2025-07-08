@@ -11,7 +11,7 @@ router.get('/create/chassis/:id', defineEventHandler(async (event) => {
     const conf = await Conf.createCustom(id, user)
     if(specId){
         const spec = await Spec.findOne({ _id: specId, user }) as ISpec
-        spec.configurations.push(conf)
+        spec.configurations.push(conf.id)
         await spec.save()
     }
     return conf

@@ -48,12 +48,6 @@ const tabsArrayType = computed(() => {
   return category?.children || []
 })
 
-async function createSpec() {
-  const newSpec = await useNuxtApp().$POST(`/spec/create/conf`, route.params) as ISpec
-  //await useNuxtApp().$GET(`/spec/add/${newSpec.id}/conf/${route.params.id}`)
-  navigateTo(`/servers/spec/${newSpec.id}`)
-}
-
 </script>
 
 <template lang="pug">
@@ -76,8 +70,8 @@ async function createSpec() {
       div.col.q-pa-sm
         div {{conf.chassis.platform}} {{conf.chassis.descFull}}
 
-        //AddToSpec(type="conf")
-        q-btn(@click="createSpec" :flat="false" color="primary" ) Добавить в спецификацию
+        AddToSpec(type="conf")
+
 
         q-banner.bg-red.text-white.q-mt-sm(v-for="err of confValidator(conf).errors" rounded) {{err}}
         q-banner.bg-orange.text-white.q-mt-sm(v-for="err of confValidator(conf).warnings" rounded) {{err}}

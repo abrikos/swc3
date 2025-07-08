@@ -9,7 +9,8 @@ function filterZero(item:any){
 }
 
 async function save(){
-  const id =await useNuxtApp().$POST('/order/basket/save/'+(route.query.spec||''), items.value)
+  const id =await useNuxtApp().$POST('/order/basket/save?spec='+(route.query.spec||''), items.value)
+  console.log(id)
   navigateTo(`/network/order/${id}`)
 }
 

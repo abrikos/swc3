@@ -34,12 +34,12 @@ async function createSpec() {
   q-card
     q-toolbar
       q-toolbar-title Спецификации
-    q-card-section
+    q-card-section(v-if="inSpecs.length")
       div(v-for="spec of inSpecs")
         router-link(:to="`/servers/spec/${spec.id}`") {{ spec.name }}
-    q-card-actions
-      q-btn(color="primary" @click="loadMySpec") Добавить в спецификацию
-        q-popup-proxy.q-pa-sm
+    q-card-actions(v-else)
+      q-btn(color="primary" @click="createSpec") Добавить в спецификацию
+        //q-popup-proxy.q-pa-sm
           table
             tbody
               tr
