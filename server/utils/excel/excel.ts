@@ -48,9 +48,12 @@ export const specToXls = async (spec: ISpec, user: IUser, confidential: boolean,
     ])
 
     const totalSumRow = worksheet.addRow(['Всего вкл. НДС 20%.' + (confidential ? '$' : user.currency)])
-    const servRow = spec.configurations.length ? servSpec(worksheet, spec, confidential, user, course) : 1
-    const netRow = spec.orders.length ? netSpec(worksheet, spec, confidential, user, course) : 1
-    totalSumRow.getCell(2).value = {formula: `E${servRow}+E${netRow}`}
+    const servRow = spec.configurations.length ? servSpec(worksheet, spec, confidential, user, course) : 0
+    const netRow = spec.orders.length ? netSpec(worksheet, spec, confidential, user, course) : 0
+    const total = []
+    if(servRow) total.push(servRow)
+    if(netRow) total.push(netRow)
+    totalSumRow.getCell(2).value = {formula: total.map(t=>`E${t}`).join('+')}
     totalSumRow.getCell(2).style = {numFmt, font: {bold: true}}
     if (confidential) {
         totalSumRow.getCell(9).value = "Только для внутреннего пользования"

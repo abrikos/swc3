@@ -58,12 +58,12 @@ export function netSpec(worksheet:Excel.Worksheet, spec:ISpec, confidential:bool
                 serviceRow.getCell(5).value = {formula: `C${serviceRow.number}*D${serviceRow.number}`}
             }*/
         }
-        orderRow.getCell(4).value = {formula: `SUM(E${orderRowNumbers[0]}:E${orderRowNumbers[orderRowNumbers.length - 1]}`}
+        orderRow.getCell(4).value = {formula: `SUM(E${orderRowNumbers[0]}:E${orderRowNumbers[orderRowNumbers.length - 1]})`}
         orderRow.getCell(5).value = {formula: `D${orderRow.number} * C${orderRow.number}`}
         if (user.isEmployer) {
-            orderRow.getCell(7).value = {formula: `SUM(G${orderRowNumbers[0]}:G${orderRowNumbers[orderRowNumbers.length - 1]}`}
-            orderRow.getCell(9).value = {formula: `SUM(I${orderRowNumbers[0]}:I${orderRowNumbers[orderRowNumbers.length - 1]}`}
-            orderRow.getCell(11).value = {formula: `SUM(K${orderRowNumbers[0]}:K${orderRowNumbers[orderRowNumbers.length - 1]}`}
+            orderRow.getCell(7).value = {formula: `SUM(G${orderRowNumbers[0]}:G${orderRowNumbers[orderRowNumbers.length - 1]})`}
+            orderRow.getCell(9).value = {formula: `SUM(I${orderRowNumbers[0]}:I${orderRowNumbers[orderRowNumbers.length - 1]})`}
+            orderRow.getCell(11).value = {formula: `SUM(K${orderRowNumbers[0]}:K${orderRowNumbers[orderRowNumbers.length - 1]})`}
         }
         orderRow.fill = {
             type: 'pattern',
