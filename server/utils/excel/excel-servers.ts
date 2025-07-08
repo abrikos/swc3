@@ -36,9 +36,11 @@ export function servSpec(worksheet:Excel.Worksheet, spec:ISpec, confidential:boo
         const confRow = worksheet.addRow(['', conf.name])
         confRow.height = 30
         confRow.alignment = {vertical: 'middle'}
-        confRow.getCell(9).fill = fill
-        confRow.getCell(10).fill = fill
-        confRow.getCell(11).fill = fill
+        if(confidential) {
+            confRow.getCell(9).fill = fill
+            confRow.getCell(10).fill = fill
+            confRow.getCell(11).fill = fill
+        }
 
         const {errors} = logic(conf)
         if (errors.length) {
@@ -64,9 +66,11 @@ export function servSpec(worksheet:Excel.Worksheet, spec:ISpec, confidential:boo
             rowSummary.getCell(7).value = {formula: `D${rowSummary.number} - D${rowSummary.number} * F${rowSummary.number}`}
             rowSummary.getCell(6).style = {numFmt: '0%'}
             rowSummary.getCell(8).value = {formula: `G${rowSummary.number} * C${rowSummary.number}`}
-            rowSummary.getCell(9).fill = fill
-            rowSummary.getCell(10).fill = fill
-            rowSummary.getCell(11).fill = fill
+            if(confidential) {
+                rowSummary.getCell(9).fill = fill
+                rowSummary.getCell(10).fill = fill
+                rowSummary.getCell(11).fill = fill
+            }
         }
 
         rowSummary.alignment = {wrapText: true, vertical: 'middle'}
@@ -118,9 +122,11 @@ export function servSpec(worksheet:Excel.Worksheet, spec:ISpec, confidential:boo
                 partRow.alignment = {wrapText: true}
                 partRow.font = {color: {argb: gray}}
                 partRow.getCell(1).alignment = {horizontal: 'right'}
-                partRow.getCell(9).fill = fill
-                partRow.getCell(10).fill = fill
-                partRow.getCell(11).fill = fill
+                if(confidential) {
+                    partRow.getCell(9).fill = fill
+                    partRow.getCell(10).fill = fill
+                    partRow.getCell(11).fill = fill
+                }
                 //partRow.getCell(2).alignment = {horizontal: 'center'}
                 if (confidential) {
                     partRow.getCell(5).value = {formula: `C${partRow.number}*D${partRow.number}`}
@@ -146,8 +152,13 @@ export function servSpec(worksheet:Excel.Worksheet, spec:ISpec, confidential:boo
             serviceRow.getCell(7).value = {formula: `D${serviceRow.number}-D${serviceRow.number}*F${serviceRow.number}`}
             serviceRow.getCell(8).value = {formula: `G${serviceRow.number}*C${serviceRow.number}`}
             const servicePercent = conf.service.name.match('Base') ? 0:  (conf.service.name.match('36 месяцев') ? 0.1 : 0.15)
-            serviceRow.getCell(10).value = {formula: `J${rowSummary.number}*0.3`}
-            serviceRow.getCell(11).value = {formula: `H${serviceRow.number}*C${serviceRow.number}`}
+            if(confidential) {
+                serviceRow.getCell(10).value = {formula: `J${rowSummary.number}*0.3`}
+                serviceRow.getCell(11).value = {formula: `H${serviceRow.number}*C${serviceRow.number}`}
+                serviceRow.getCell(9).fill = fill
+                serviceRow.getCell(10).fill = fill
+                serviceRow.getCell(11).fill = fill
+            }
             summaryRows.push(serviceRow.number)
         }
 

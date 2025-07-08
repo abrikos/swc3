@@ -11,7 +11,7 @@ export const specToXls = async (spec: ISpec, user: IUser, confidential: boolean,
         filename: process.cwd() + '/public/logo.png',
         extension: 'jpeg',
     });
-    const worksheet = workbook.addWorksheet(spec.name.replace(/[\*|\?|:|\\|\/|\[|\]]/g, '-'));
+    const worksheet = workbook.addWorksheet(spec.id);
     //worksheet.addImage(imageId1, 'A1:A5');
 
     const fill = confidential ? {type: 'pattern', pattern: 'solid', bgColor: {argb: 'FFCCCC00'}, fgColor: {argb: 'FFCCCC00'}} as FillPattern : {}
@@ -30,9 +30,7 @@ export const specToXls = async (spec: ISpec, user: IUser, confidential: boolean,
         {header: '', key: 'discount', width: 20, style: {numFmt}}, //Скидка
         {header: '', key: 'priceRu', width: 20, style: {numFmt}},
         {header: '', key: 'sumRu', width: 20, style: {numFmt}},
-        {header: '', key: 'confidential1', width: 20, style: {numFmt, fill}},
-        {header: '', key: 'confidential2', width: 20, style: {numFmt, fill}},
-        {header: '', key: 'confidential3', width: 20, style: {numFmt, fill}}
+
     ];
     worksheet.addRows([
         ['Спецификация'],
