@@ -36,7 +36,7 @@ export function netSpec(worksheet:Excel.Worksheet, spec:ISpec, confidential:bool
                 item.device?.name || item.service.name,
                 item.device?.description,
                 item.count,
-                (item.device?.price || item.service.price) * (confidential || user.currency === 'USD' ? course : 1)
+                (item.device?.price || item.service.price) / (confidential || user.currency === 'USD' ? course : 1)
             ])
             orderRowNumbers.push(deviceRow.number)
             deviceRow.getCell(5).value = {formula: `D${deviceRow.number}*C${deviceRow.number}`}

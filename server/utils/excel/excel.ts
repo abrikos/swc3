@@ -11,7 +11,7 @@ export const specToXls = async (spec: ISpec, user: IUser, confidential: boolean,
         filename: process.cwd() + '/public/logo.png',
         extension: 'jpeg',
     });
-    const worksheet = workbook.addWorksheet(spec.id);
+    const worksheet = workbook.addWorksheet(spec.name.replace(/[\*|\?|:|\\|\/|\[|\]]/g, '-'));
     //worksheet.addImage(imageId1, 'A1:A5');
 
     const fill = confidential ? {type: 'pattern', pattern: 'solid', bgColor: {argb: 'FFCCCC00'}, fgColor: {argb: 'FFCCCC00'}} as FillPattern : {}
