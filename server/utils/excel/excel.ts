@@ -12,9 +12,9 @@ export const specToXls = async (spec: ISpec, user: IUser, confidential: boolean,
         extension: 'jpeg',
     });
     const worksheet = workbook.addWorksheet(spec.name.replace(/[\*|\?|:|\\|\/|\[|\]]/g, '-'));
-    //worksheet.addImage(imageId1, 'A1:A5');
+    worksheet.addImage(imageId1, 'A1:A6');
 
-    const fill = confidential ? {type: 'pattern', pattern: 'solid', bgColor: {argb: 'FFCCCC00'}, fgColor: {argb: 'FFCCCC00'}} as FillPattern : {}
+    const fill = confidential ? {type: 'pattern', pattern: 'solid', bgColor: {argb: 'FFFFFF00'}, fgColor: {argb: 'FFFFFF00'}} as FillPattern : {}
     worksheet.columns = [
         {header: '', key: 'PN', width: 40},
         {
@@ -58,6 +58,8 @@ export const specToXls = async (spec: ISpec, user: IUser, confidential: boolean,
     if (confidential) {
         totalSumRow.getCell(9).value = "Только для внутреннего пользования"
         totalSumRow.getCell(9).style = {font: {color: {argb: 'FFFF0000'}, bold: true, size: 20}, fill}
+        totalSumRow.getCell(10).style = {fill}
+        totalSumRow.getCell(11).style = {fill}
     }
 
     worksheet.addRow([''])

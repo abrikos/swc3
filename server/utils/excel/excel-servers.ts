@@ -29,7 +29,7 @@ export function servSpec(worksheet:Excel.Worksheet, spec:ISpec, confidential:boo
     redRow.font = {color: {argb: 'FFFFFFFF'}, name: 'Arial'}
     redRow.height = 30
     redRow.alignment = {vertical: 'middle'}
-    const fill = {type: 'pattern', pattern: 'solid', bgColor: {argb: 'FFCCCC00'}, fgColor: {argb: 'FFCCCC00'}}
+    const fill = {type: 'pattern', pattern: 'solid', bgColor: {argb: 'FFFFFF00'}, fgColor: {argb: 'FFFFFF00'}} as FillPattern
 
     const summaryRows = []
     for (const conf of spec.configurations) {
@@ -37,7 +37,7 @@ export function servSpec(worksheet:Excel.Worksheet, spec:ISpec, confidential:boo
         confRow.height = 30
         confRow.alignment = {vertical: 'middle'}
         if(confidential) {
-            confRow.getCell(9).fill = fill
+            confRow.getCell(9).style = {fill}
             confRow.getCell(10).fill = fill
             confRow.getCell(11).fill = fill
         }

@@ -90,11 +90,11 @@ router.post('/registration', defineEventHandler(async (event) => {
     const host = getHeader(event, 'host')
     const exists = await Registration.findOne({email: body.email})
     if (exists) return {error: `Заявка на регистрацию "${body.email}" уже существует`}
-    const role = await Role.findOne({name:'user'})
+    const role = await Role.findOne({name: 'user'})
     body.roles = [role?.id]
     const user = await Registration.create(body)
     const users = await User.find().populate('roles')
-    const url = `http://${host}/admin/user-confirm?id=${user.id}`
+    const url = `http://${host}${process.env.TEST_PORT ? ':' + process.env.TEST_PORT : ''}/admin/user-confirm?id=${user.id}`
     const text = `Для подтверждения/отклонения регистрации пройдите по ссылке ${url}\n${JSON.stringify(body)}`
     const subject = 'Заявка на регистрацию нового пользователя'
     const emails = []
@@ -114,7 +114,7 @@ router.post('/registration', defineEventHandler(async (event) => {
         console.error(err)
         //return {error: `Заявка на регистрацию "${body.email}" уже существует`}
     }
-    return {ok:200}
+    return {ok: 200}
 }))
 //User.deleteMany().then(console.log)
 //User.findById('636376c6a98e169787cf0a99').then(console.log)
