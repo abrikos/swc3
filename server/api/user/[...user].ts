@@ -89,7 +89,8 @@ router.post('/registration', defineEventHandler(async (event) => {
     const body = await readBody(event)
     const host = getHeader(event, 'host')
     const exists = await Registration.findOne({email: body.email})
-    if (exists) return {error: `Заявка на регистрацию "${body.email}" уже существует`}
+    const existsUser = await User.findOne({email: body.email})
+    if (exists || existsUser) return {error: `Заявка на регистрацию "${body.email}" уже существует`}
     const role = await Role.findOne({name: 'user'})
     body.roles = [role?.id]
     const user = await Registration.create(body)
