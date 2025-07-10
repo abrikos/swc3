@@ -131,7 +131,11 @@ schema.virtual('description')
             }
             confName.push(part.count + '* ' + part.component.description)
         }
-        confName.push('1G dedicated RJ45 IPMI, Rails; Техническая поддержка Base 8х5, 36 месяцев')
+        confName.push('1G dedicated RJ45 IPMI, Rails')
+        confName.push(this.service? this.service.name :'Техническая поддержка Base 8х5, 36 месяцев')
+        if(this.brokenStorageService){
+            confName.push('Невозврат неисправных накопителей')
+        }
         return confName.join(', ');
     })
 
