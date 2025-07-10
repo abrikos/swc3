@@ -29,9 +29,9 @@ const types = ['Сотрудник','Дистрибутор', 'Партнер', 
       UserForm(v-model="user")
       q-select(v-model="user.type" :options="types" label="Тип пользователя" :rules="[$validateRequired]" )
       q-card.q-ma-sm
-        q-card-section.flex.justify-between
+        q-card-section
           q-btn(type="submit" label="Подтвердить" color="primary" )
-          q-btn(label="Отказать" color="negative" @click="reject")
+          q-btn(label="Отказать" @click="reject")
 </template>
 
 <style scoped>
