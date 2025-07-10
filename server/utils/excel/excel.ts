@@ -63,11 +63,9 @@ export const specToXls = async (spec: ISpec, user: IUser, confidential: boolean,
     }
 
     worksheet.addRow([''])
-    worksheet.addRow(['Срок действия спецификации 1 неделя с даты создания. Данная спецификация  носит информационный характер и' +
-    ' не является публичной офертой. По всем вопросам, связанным с данной спецификацией, обращайтесь к менеджерам по' +
-    ' работе с партнерами компании QTECH. '])
+
     worksheet.addRow([''])
-    worksheet.addRow(['Условия гарантии:'])
+    const f1 = worksheet.addRow(['Условия гарантии:'])
     worksheet.addRow(['На все оборудование распространяется услуга гарантийного и/или сервисного обслуживания.'])
     worksheet.addRow(['Начало гарантии/сервиса считается с момента приобретения оборудования.'])
     worksheet.addRow(['Производитель обязуется в течение всего гарантийного срока устранять выявленные дефекты'])
@@ -75,10 +73,16 @@ export const specToXls = async (spec: ISpec, user: IUser, confidential: boolean,
     worksheet.addRow(['Подробнее по ссылке - www.qtech.ru/support'])
 
     worksheet.addRow([''])
-    worksheet.addRow(['Комплектация:'])
+    const f2 = worksheet.addRow(['Комплектация:'])
     worksheet.addRow(['Кабель питания 1,5 м. с разъемами IEC320 (Shuko)-C13 входит в комплект блоков питания'])
     worksheet.addRow([''])
-    worksheet.addRow(['Условия размещения заказа:'])
-    worksheet.addRow(['Спецификация подлежит уточнению перед закупкой/подписанием договора'])
+    const f3 = worksheet.addRow(['Условия размещения заказа:'])
+    f1.getCell(1).style = {font: {bold: true}}
+    f2.getCell(1).style = {font: {bold: true}}
+    f3.getCell(1).style = {font: {bold: true}}
+    //worksheet.addRow(['Спецификация подлежит уточнению перед закупкой/подписанием договора'])
+    worksheet.addRow(['Срок действия спецификации 1 неделя с даты создания. Данная спецификация  носит информационный характер и'])
+    worksheet.addRow(['не является публичной офертой. По всем вопросам, связанным с данной спецификацией, обращайтесь к менеджерам по' ])
+    worksheet.addRow(['работе с партнерами компании QTECH. '])
     return workbook.xlsx.writeBuffer();
 }
