@@ -20,6 +20,7 @@ export function servSpec(worksheet: Excel.Worksheet, spec: ISpec, confidential: 
             "СТОИМОСТЬ СО СКИДКОЙ, " + currName)
     }
     if (confidential) {
+        data.push('')
         data.push('ЦЕНА FOB, $')
         data.push('ЦЕНА DDP, $')
         data.push('СТОИМОСТЬ DDP, $')
@@ -28,6 +29,7 @@ export function servSpec(worksheet: Excel.Worksheet, spec: ISpec, confidential: 
     redRow.height = 40
     redRow.alignment = {vertical: 'middle'}
     for (let i = 1; i <= 12; i++) {
+        if(i===9) continue
         redRow.getCell(i).style = {
             fill: {type: 'pattern', pattern: 'solid', bgColor: {argb: 'FFFF2238'}, fgColor: {argb: 'FFFF2238'}},
             font: {color: {argb: 'FFFFFFFF'}, name: 'Arial'},
@@ -47,10 +49,9 @@ export function servSpec(worksheet: Excel.Worksheet, spec: ISpec, confidential: 
         confRow.height = 30
         confRow.alignment = {vertical: 'middle'}
         if (confidential) {
-            confRow.getCell(9).style = {fill}
-            confRow.getCell(10).fill = fill
+            confRow.getCell(10).style = {fill}
             confRow.getCell(11).fill = fill
-            worksheet.columns[11].width = 120
+            confRow.getCell(12).fill = fill
         }
 
         const {errors} = logic(conf)
@@ -78,9 +79,9 @@ export function servSpec(worksheet: Excel.Worksheet, spec: ISpec, confidential: 
             rowSummary.getCell(6).style = {numFmt: '0%'}
             rowSummary.getCell(8).value = {formula: `G${rowSummary.number} * C${rowSummary.number}`}
             if (confidential) {
-                rowSummary.getCell(9).fill = fill
                 rowSummary.getCell(10).fill = fill
                 rowSummary.getCell(11).fill = fill
+                rowSummary.getCell(12).fill = fill
             }
         }
 
@@ -95,13 +96,13 @@ export function servSpec(worksheet: Excel.Worksheet, spec: ISpec, confidential: 
         chassisRow.font = {color: {argb: gray}}
         chassisRow.getCell(1).alignment = {vertical: 'middle', horizontal: 'right'}
         if (confidential) {
-            rowSummary.getCell(11).value = {formula: `J${rowSummary.number}*C${rowSummary.number}`}
-            chassisRow.getCell(9).value = Math.round((conf.chassis.priceFob) * 100) / 100
-            chassisRow.getCell(9).fill = fill
+            rowSummary.getCell(12).value = {formula: `K${rowSummary.number}*C${rowSummary.number}`}
+            chassisRow.getCell(10).value = Math.round((conf.chassis.priceFob) * 100) / 100
             chassisRow.getCell(10).fill = fill
             chassisRow.getCell(11).fill = fill
-            chassisRow.getCell(10).value = Math.round((conf.chassis.priceDdp) * 100) / 100
-            chassisRow.getCell(4).value = {formula: `J${chassisRow.number}/0.85/0.4`}
+            chassisRow.getCell(12).fill = fill
+            chassisRow.getCell(11).value = Math.round((conf.chassis.priceDdp) * 100) / 100
+            chassisRow.getCell(4).value = {formula: `K${chassisRow.number}/0.85/0.4`}
             chassisRow.getCell(4).font = {color: {argb: gray}}
         }
         let fob = conf.chassis.price
@@ -120,6 +121,7 @@ export function servSpec(worksheet: Excel.Worksheet, spec: ISpec, confidential: 
                     data.push('')
                     data.push('')
                     data.push('')
+                    data.push('')
                     data.push(Math.round((part.component.priceFob) * 100) / 100)
                     data.push(Math.round((part.component.priceDdp) * 100) / 100)
                     fob += part.component.price * part.count
@@ -133,16 +135,16 @@ export function servSpec(worksheet: Excel.Worksheet, spec: ISpec, confidential: 
                 partRow.font = {color: {argb: gray}}
                 partRow.getCell(1).alignment = {horizontal: 'right'}
                 if (confidential) {
-                    partRow.getCell(9).fill = fill
                     partRow.getCell(10).fill = fill
                     partRow.getCell(11).fill = fill
+                    partRow.getCell(12).fill = fill
                 }
                 //partRow.getCell(2).alignment = {horizontal: 'center'}
                 if (confidential) {
                     partRow.getCell(5).value = {formula: `C${partRow.number}*D${partRow.number}`}
-                    partRow.getCell(4).value = {formula: `J${partRow.number}/0.85/0.4`}
+                    partRow.getCell(4).value = {formula: `K${partRow.number}/0.85/0.4`}
                     partRow.getCell(4).font = {color: {argb: gray}}
-                    //partRow.getCell(10).value = {formula: `I${partRow.number} * B${partRow.number}`}
+                    //partRow.getCell(11).value = {formula: `I${partRow.number} * B${partRow.number}`}
                 }
             }
         }
@@ -157,17 +159,17 @@ export function servSpec(worksheet: Excel.Worksheet, spec: ISpec, confidential: 
 
             ]
             const serviceRow = worksheet.addRow(data)
-            serviceRow.getCell(4).value = {formula: `J${serviceRow.number}/0.85/0.4`}
+            serviceRow.getCell(4).value = {formula: `K${serviceRow.number}/0.85/0.4`}
             serviceRow.getCell(5).value = {formula: `C${serviceRow.number}*D${serviceRow.number}`}
             serviceRow.getCell(7).value = {formula: `D${serviceRow.number}-D${serviceRow.number}*F${serviceRow.number}`}
             serviceRow.getCell(8).value = {formula: `G${serviceRow.number}*C${serviceRow.number}`}
             const servicePercent = conf.service.name.match('Base') ? 0 : (conf.service.name.match('36 месяцев') ? 0.1 : 0.15)
             if (confidential) {
-                serviceRow.getCell(10).value = {formula: `J${rowSummary.number}*0.3`}
-                serviceRow.getCell(11).value = {formula: `J${serviceRow.number}*C${serviceRow.number}`}
-                serviceRow.getCell(9).fill = fill
+                serviceRow.getCell(11).value = {formula: `K${rowSummary.number}*0.3`}
+                serviceRow.getCell(12).value = {formula: `K${serviceRow.number}*C${serviceRow.number}`}
                 serviceRow.getCell(10).fill = fill
                 serviceRow.getCell(11).fill = fill
+                serviceRow.getCell(12).fill = fill
             }
             summaryRows.push(serviceRow.number)
         }
@@ -194,7 +196,7 @@ export function servSpec(worksheet: Excel.Worksheet, spec: ISpec, confidential: 
         if (confidential) {
             rowSummary.getCell(4).value = {formula: `SUMPRODUCT(C${partRowNumbers[0]}:C${partRowNumbers[partRowNumbers.length - 1]},D${partRowNumbers[0]}:D${partRowNumbers[partRowNumbers.length - 1]})`}
             rowSummary.getCell(4).alignment = {vertical: 'middle'}
-            rowSummary.getCell(10).value = {formula: `SUMPRODUCT(C${partRowNumbers[0]}:C${partRowNumbers[partRowNumbers.length - 1]},J${partRowNumbers[0]}:J${partRowNumbers[partRowNumbers.length - 1]})`}
+            rowSummary.getCell(11).value = {formula: `SUMPRODUCT(C${partRowNumbers[0]}:C${partRowNumbers[partRowNumbers.length - 1]},K${partRowNumbers[0]}:K${partRowNumbers[partRowNumbers.length - 1]})`}
         }
     }
     let formula = []
@@ -202,7 +204,7 @@ export function servSpec(worksheet: Excel.Worksheet, spec: ISpec, confidential: 
     let formula3 = []
     for (const row of summaryRows) {
         formula.push(`H${row}`)
-        formula2.push(`K${row}`)
+        formula2.push(`L${row}`)
         formula3.push(`E${row}`)
     }
     const sumServ = worksheet.addRow(['', 'Итого вкл. НДС 20%. ' + (confidential ? '$' : user.currency)])
@@ -210,8 +212,8 @@ export function servSpec(worksheet: Excel.Worksheet, spec: ISpec, confidential: 
     sumServ.getCell(5).value = {formula: formula3.join('+')}
     sumServ.getCell(8).value = {formula: formula.join('+')}
     //sumServ.getCell(8).style = {numFmt}
-    sumServ.getCell(11).value = {formula: formula2.join('+')}
-    //sumServ.getCell(11).style = {numFmt}
+    sumServ.getCell(12).value = {formula: formula2.join('+')}
+    //sumServ.getCell(12).style = {numFmt}
     sumServ.fill = {type: 'pattern', pattern: 'solid', bgColor: {argb: 'DDDDDDDD'}, fgColor: {argb: 'DDDDDDDD'}}
     sumServ.height = 20
     return sumServ.number

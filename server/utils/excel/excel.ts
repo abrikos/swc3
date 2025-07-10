@@ -16,7 +16,12 @@ export const specToXls = async (spec: ISpec, user: IUser, confidential: boolean,
     const worksheet = workbook.addWorksheet(spec.name.replace(/[\*|\?|:|\\|\/|\[|\]]/g, '-'));
     worksheet.addImage(imageId1, 'A1:A6');
 
-    const fill = confidential ? {type: 'pattern', pattern: 'solid', bgColor: {argb: 'FFFFFF00'}, fgColor: {argb: 'FFFFFF00'}} as FillPattern : {}
+    const fill = confidential ? {
+        type: 'pattern',
+        pattern: 'solid',
+        bgColor: {argb: 'FFFFFF00'},
+        fgColor: {argb: 'FFFFFF00'}
+    } as FillPattern : {}
     const columns = [
         {header: '', key: 'PN', width: 40},
         {
@@ -33,13 +38,14 @@ export const specToXls = async (spec: ISpec, user: IUser, confidential: boolean,
         {header: '', key: 'priceRu', width: 20, style: {numFmt}},
         {header: '', key: 'sumRu', width: 20, style: {numFmt}},
 
-    ] as Partial<Columns>[];
-    if(confidential){
+    ];
+    if (confidential) {
+        columns.push({header: '', key: 'divider', width: 15})
         columns.push({header: '', key: 'conf1', width: 25, style: {numFmt}},)
         columns.push({header: '', key: 'conf2', width: 25, style: {numFmt}},)
         columns.push({header: '', key: 'conf3', width: 25, style: {numFmt}},)
     }
-    worksheet.columns = columns
+    worksheet.columns = columns as unknown as Partial<Columns>[]
     worksheet.addRows([
         ['Спецификация'],
         ['ИД спецификации', spec.id],
@@ -54,22 +60,22 @@ export const specToXls = async (spec: ISpec, user: IUser, confidential: boolean,
         [],
         ['QTECH.RU', user.email, new Date()]
     ])
-    const discountRow = worksheet.addRow(['','','','','Скидка',0])
+    const discountRow = worksheet.addRow(['', '', '', '', 'Скидка', 0])
     ///console.log(discountRow.number)
 
     const totalSumRow = worksheet.addRow(['Всего вкл. НДС 20%.' + (confidential ? '$' : user.currency)])
     const servRow = spec.configurations.length ? servSpec(worksheet, spec, confidential, user, course) : 0
     const netRow = spec.orders.length ? netSpec(worksheet, spec, confidential, user, course) : 0
     const total = []
-    if(servRow) total.push(servRow)
-    if(netRow) total.push(netRow)
-    totalSumRow.getCell(2).value = {formula: total.map(t=>`E${t}`).join('+')}
+    if (servRow) total.push(servRow)
+    if (netRow) total.push(netRow)
+    totalSumRow.getCell(2).value = {formula: total.map(t => `E${t}`).join('+')}
     totalSumRow.getCell(2).style = {numFmt, font: {bold: true}}
     if (confidential) {
-        totalSumRow.getCell(9).value = "Только для внутреннего пользования"
-        totalSumRow.getCell(9).style = {font: {color: {argb: 'FFFF0000'}, bold: true, size: 20}, fill}
-        totalSumRow.getCell(10).style = {fill}
+        totalSumRow.getCell(10).value = "Только для внутреннего пользования"
+        totalSumRow.getCell(10).style = {font: {color: {argb: 'FFFF0000'}, bold: true, size: 20}, fill}
         totalSumRow.getCell(11).style = {fill}
+        totalSumRow.getCell(12).style = {fill}
     }
 
     worksheet.addRow([''])
@@ -92,7 +98,7 @@ export const specToXls = async (spec: ISpec, user: IUser, confidential: boolean,
     f3.getCell(1).style = {font: {bold: true}}
     //worksheet.addRow(['Спецификация подлежит уточнению перед закупкой/подписанием договора'])
     worksheet.addRow(['Срок действия спецификации 1 неделя с даты создания. Данная спецификация  носит информационный характер и'])
-    worksheet.addRow(['не является публичной офертой. По всем вопросам, связанным с данной спецификацией, обращайтесь к менеджерам по' ])
+    worksheet.addRow(['не является публичной офертой. По всем вопросам, связанным с данной спецификацией, обращайтесь к менеджерам по'])
     worksheet.addRow(['работе с партнерами компании QTECH. '])
     return workbook.xlsx.writeBuffer();
 }
