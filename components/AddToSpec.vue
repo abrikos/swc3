@@ -23,7 +23,7 @@ async function addToSpec(id: string) {
 
 async function createSpec() {
   const newSpec = await useNuxtApp().$POST(`/spec/create/${type}`, route.params) as ISpec
-  await addToSpec(newSpec.id)
+  //await addToSpec(newSpec.id)
   navigateTo(`/servers/spec/${newSpec.id}`)
 }
 
