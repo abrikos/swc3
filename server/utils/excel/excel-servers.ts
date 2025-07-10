@@ -2,7 +2,7 @@ import Excel from "exceljs";
 import logic from "~/plugins/logic/logic-validator"
 import FillPattern from "exceljs/index";
 
-export function servSpec(worksheet:Excel.Worksheet, spec:ISpec, confidential:boolean, user:IUser, course: number) {
+export function servSpec(worksheet: Excel.Worksheet, spec: ISpec, confidential: boolean, user: IUser, course: number) {
     const currName = confidential ? '$' : user.currency
     const numFmt = `_(* #,##0.00_)"${currName === 'Рубли' ? 'Р' : '$'}";_(* (#,##0.00);_(* "-"??_);_(@_)`
 
@@ -25,21 +25,32 @@ export function servSpec(worksheet:Excel.Worksheet, spec:ISpec, confidential:boo
         data.push('СТОИМОСТЬ DDP, $')
     }
     const redRow = worksheet.addRow(data)
-    redRow.fill = {type: 'pattern', pattern: 'solid', bgColor: {argb: 'FFFF2238'}, fgColor: {argb: 'FFFF2238'}}
-    redRow.font = {color: {argb: 'FFFFFFFF'}, name: 'Arial'}
-    redRow.height = 30
+    redRow.height = 40
     redRow.alignment = {vertical: 'middle'}
-    const fill = {type: 'pattern', pattern: 'solid', bgColor: {argb: 'FFFFFF00'}, fgColor: {argb: 'FFFFFF00'}} as FillPattern
+    for (let i = 1; i <= 12; i++) {
+        redRow.getCell(i).style = {
+            fill: {type: 'pattern', pattern: 'solid', bgColor: {argb: 'FFFF2238'}, fgColor: {argb: 'FFFF2238'}},
+            font: {color: {argb: 'FFFFFFFF'}, name: 'Arial'},
+            alignment: {vertical: 'middle', horizontal: 'center', wrapText: true}
+        }
+    }
+    const fill = {
+        type: 'pattern',
+        pattern: 'solid',
+        bgColor: {argb: 'FFFFFF00'},
+        fgColor: {argb: 'FFFFFF00'}
+    } as FillPattern
 
     const summaryRows = []
     for (const conf of spec.configurations) {
         const confRow = worksheet.addRow(['', conf.name])
         confRow.height = 30
         confRow.alignment = {vertical: 'middle'}
-        if(confidential) {
+        if (confidential) {
             confRow.getCell(9).style = {fill}
             confRow.getCell(10).fill = fill
             confRow.getCell(11).fill = fill
+            worksheet.columns[11].width = 120
         }
 
         const {errors} = logic(conf)
@@ -54,19 +65,19 @@ export function servSpec(worksheet:Excel.Worksheet, spec:ISpec, confidential:boo
             conf.count,
             conf.price * (user.currency === 'USD' ? 1 : course),
             conf.priceTotal * (confidential || user.currency === 'USD' ? 1 : course),
-            0,
+            {formula: '+F18'},
             conf.price * (confidential || user.currency === 'USD' ? 1 : course),
             conf.priceTotal * (confidential || user.currency === 'USD' ? 1 : course),
         ]
         const rowSummary = worksheet.addRow(data)
         summaryRows.push(rowSummary.number)
-        rowSummary.height = 50
+        //rowSummary.height = 170
         rowSummary.getCell(5).value = {formula: `C${rowSummary.number} * D${rowSummary.number}`}
         if (user.isEmployer) {
             rowSummary.getCell(7).value = {formula: `D${rowSummary.number} - D${rowSummary.number} * F${rowSummary.number}`}
             rowSummary.getCell(6).style = {numFmt: '0%'}
             rowSummary.getCell(8).value = {formula: `G${rowSummary.number} * C${rowSummary.number}`}
-            if(confidential) {
+            if (confidential) {
                 rowSummary.getCell(9).fill = fill
                 rowSummary.getCell(10).fill = fill
                 rowSummary.getCell(11).fill = fill
@@ -74,16 +85,15 @@ export function servSpec(worksheet:Excel.Worksheet, spec:ISpec, confidential:boo
         }
 
         rowSummary.alignment = {wrapText: true, vertical: 'middle'}
-        //rowSummary.getCell(2).alignment = {horizontal: 'center', vertical: 'middle'}
-        rowSummary.height = 50
+        rowSummary.getCell(2).alignment = {vertical: 'middle', wrapText: true}
+        //rowSummary.height = 50
         //rowSummary.getCell(3).font = {size: 8}
 
         const gray = 'FFAAAAAA'
         const chassisRow = worksheet.addRow([conf.chassis.partNumber, conf.chassis.descFull, 1, 0])
-        chassisRow.height = 30
+        chassisRow.getCell(2).alignment = {vertical: 'middle', wrapText: true}
         chassisRow.font = {color: {argb: gray}}
-        chassisRow.alignment = {wrapText: true}
-        chassisRow.getCell(1).alignment = {horizontal: 'right'}
+        chassisRow.getCell(1).alignment = {vertical: 'middle', horizontal: 'right'}
         if (confidential) {
             rowSummary.getCell(11).value = {formula: `J${rowSummary.number}*C${rowSummary.number}`}
             chassisRow.getCell(9).value = Math.round((conf.chassis.priceFob) * 100) / 100
@@ -122,7 +132,7 @@ export function servSpec(worksheet:Excel.Worksheet, spec:ISpec, confidential:boo
                 partRow.alignment = {wrapText: true}
                 partRow.font = {color: {argb: gray}}
                 partRow.getCell(1).alignment = {horizontal: 'right'}
-                if(confidential) {
+                if (confidential) {
                     partRow.getCell(9).fill = fill
                     partRow.getCell(10).fill = fill
                     partRow.getCell(11).fill = fill
@@ -140,10 +150,10 @@ export function servSpec(worksheet:Excel.Worksheet, spec:ISpec, confidential:boo
             const data = [
                 conf.service.article,
                 conf.service.name,
-                conf.count,
+                {formula: `+C${rowSummary.number}`},
                 conf.priceService * (confidential || user.currency === 'USD' ? 1 : course),
                 conf.priceService * conf.count * (confidential || user.currency === 'USD' ? 1 : course),
-                0,
+                {formula: '+F18'},
 
             ]
             const serviceRow = worksheet.addRow(data)
@@ -151,10 +161,10 @@ export function servSpec(worksheet:Excel.Worksheet, spec:ISpec, confidential:boo
             serviceRow.getCell(5).value = {formula: `C${serviceRow.number}*D${serviceRow.number}`}
             serviceRow.getCell(7).value = {formula: `D${serviceRow.number}-D${serviceRow.number}*F${serviceRow.number}`}
             serviceRow.getCell(8).value = {formula: `G${serviceRow.number}*C${serviceRow.number}`}
-            const servicePercent = conf.service.name.match('Base') ? 0:  (conf.service.name.match('36 месяцев') ? 0.1 : 0.15)
-            if(confidential) {
+            const servicePercent = conf.service.name.match('Base') ? 0 : (conf.service.name.match('36 месяцев') ? 0.1 : 0.15)
+            if (confidential) {
                 serviceRow.getCell(10).value = {formula: `J${rowSummary.number}*0.3`}
-                serviceRow.getCell(11).value = {formula: `H${serviceRow.number}*C${serviceRow.number}`}
+                serviceRow.getCell(11).value = {formula: `J${serviceRow.number}*C${serviceRow.number}`}
                 serviceRow.getCell(9).fill = fill
                 serviceRow.getCell(10).fill = fill
                 serviceRow.getCell(11).fill = fill
@@ -170,12 +180,15 @@ export function servSpec(worksheet:Excel.Worksheet, spec:ISpec, confidential:boo
             const data = [
                 'NRD',
                 'Невозврат неисправных накопителей',
-                conf.count,
+                {formula: `+C${rowSummary.number}`},
                 confidential ? {formula: formula.join('+')} : conf.storagePrice * (confidential || user.currency === 'USD' ? 1 : course),
             ]
-            const serviceRow = worksheet.addRow(data)
-            serviceRow.getCell(5).value = {formula: `C${serviceRow.number}*D${serviceRow.number}`}
-            summaryRows.push(serviceRow.number)
+            const brokenStorageRow = worksheet.addRow(data)
+            brokenStorageRow.getCell(5).value = {formula: `C${brokenStorageRow.number}*D${brokenStorageRow.number}`}
+            brokenStorageRow.getCell(6).value = {formula: `+F18`}
+            brokenStorageRow.getCell(7).value = {formula: `D${brokenStorageRow.number}-D${brokenStorageRow.number}*F${brokenStorageRow.number}`}
+            brokenStorageRow.getCell(8).value = {formula: `G${brokenStorageRow.number}*C${brokenStorageRow.number}`}
+            summaryRows.push(brokenStorageRow.number)
         }
 
         if (confidential) {

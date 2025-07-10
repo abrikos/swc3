@@ -2,6 +2,8 @@ import Excel from 'exceljs'
 import {servSpec} from "~/server/utils/excel/excel-servers"
 import {netSpec} from "~/server/utils/excel/excel-net";
 import FillPattern from "exceljs/index";
+import {Property} from "csstype";
+import Columns = Property.Columns;
 
 export const specToXls = async (spec: ISpec, user: IUser, confidential: boolean, course: number) => {
     const currName = confidential ? '$' : user.currency
@@ -15,7 +17,7 @@ export const specToXls = async (spec: ISpec, user: IUser, confidential: boolean,
     worksheet.addImage(imageId1, 'A1:A6');
 
     const fill = confidential ? {type: 'pattern', pattern: 'solid', bgColor: {argb: 'FFFFFF00'}, fgColor: {argb: 'FFFFFF00'}} as FillPattern : {}
-    worksheet.columns = [
+    const columns = [
         {header: '', key: 'PN', width: 40},
         {
             header: '',
@@ -27,11 +29,17 @@ export const specToXls = async (spec: ISpec, user: IUser, confidential: boolean,
         {header: '', key: 'count', width: 12},
         {header: '', key: 'price1', width: 20, style: {numFmt}}, //РРЦ доллар
         {header: '', key: 'price2', width: 20, style: {numFmt}}, //РРЦ стоимость
-        {header: '', key: 'discount', width: 20, style: {numFmt}}, //Скидка
+        {header: '', key: 'discount', width: 10, style: {numFmt: '0%'}}, //Скидка
         {header: '', key: 'priceRu', width: 20, style: {numFmt}},
         {header: '', key: 'sumRu', width: 20, style: {numFmt}},
 
-    ];
+    ] as Partial<Columns>[];
+    if(confidential){
+        columns.push({header: '', key: 'conf1', width: 25, style: {numFmt}},)
+        columns.push({header: '', key: 'conf2', width: 25, style: {numFmt}},)
+        columns.push({header: '', key: 'conf3', width: 25, style: {numFmt}},)
+    }
+    worksheet.columns = columns
     worksheet.addRows([
         ['Спецификация'],
         ['ИД спецификации', spec.id],
@@ -46,6 +54,8 @@ export const specToXls = async (spec: ISpec, user: IUser, confidential: boolean,
         [],
         ['QTECH.RU', user.email, new Date()]
     ])
+    const discountRow = worksheet.addRow(['','','','','Скидка',0])
+    ///console.log(discountRow.number)
 
     const totalSumRow = worksheet.addRow(['Всего вкл. НДС 20%.' + (confidential ? '$' : user.currency)])
     const servRow = spec.configurations.length ? servSpec(worksheet, spec, confidential, user, course) : 0
