@@ -49,7 +49,7 @@ schema.virtual('sum')
     })
 schema.virtual('description')
     .get(function () {
-        return this.items.map(i=>i.device ? i.device.name : i.license ? i.license : i.service.name).join(', ');
+        return this.items.map(i=>i.device ? i.device.name : i.license ? i.license : i.service? i.service.name : i.id).join(', ');
     })
 schema.virtual('total')
     .get(function () {

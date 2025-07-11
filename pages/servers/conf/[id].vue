@@ -4,6 +4,8 @@ import {storeToRefs} from "pinia";
 import {useCustomStore} from "~/store/custom-store";
 import ConfBasket from "~/components/conf/ConfBasket.vue";
 import confValidator from "~/plugins/logic/logic-validator";
+import EditButton from "~/components/EditButton.vue";
+import EditField from "~/components/EditField.vue";
 
 const {loggedUser} = storeToRefs(useCustomStore())
 const route = useRoute()
@@ -38,9 +40,12 @@ watch(() => route.query.category, () => {
     navigateTo({query: {category: cat.name}})
   }
 })
-
+const $q = useQuasar()
 async function update() {
   await useNuxtApp().$POST(`/conf/update/${route.params.id}`, conf.value)
+  //$q.notify({message:'aaaa', color: 'green'})
+
+
 }
 
 const tabsArrayType = computed(() => {
@@ -52,15 +57,9 @@ const tabsArrayType = computed(() => {
 
 <template lang="pug">
   div(v-if="conf" )
-    div(v-if="!edit" ).flex.justify-center
-      strong.h1 {{conf.name}}
-      div.flex.items-center
-        q-btn(icon="mdi-pencil" color="secondary" @click="edit=true" round)
-    q-input(v-else v-model="conf.name" @keydown.enter.prevent="update")
-      template(v-slot:append)
-        q-btn(icon="mdi-keyboard-return" color="primary" round @click="update")
-        q-btn(icon="mdi-close" color="primary" round @click="edit=false")
-    hr
+    q-toolbar
+      q-toolbar-title.cursor-pointer {{conf.name}}
+        EditField(v-model="conf.name" :update="update")
     div.row
       div.col-8.q-pa-sm
         Tabs(:items="tabsArray" param="category" )

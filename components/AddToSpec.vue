@@ -32,6 +32,11 @@ async function createSpec() {
 
 <template lang="pug">
   q-card
+    q-card-section
+      div(v-for="spec of inSpecs")
+        router-link(:to="`/servers/spec/${spec.id}`") {{ spec.name }}
+      q-btn(v-if="!inSpecs.length" color="primary" @click="createSpec") Добавить в спецификацию
+  //q-card
     q-toolbar
       q-toolbar-title Спецификации
     q-card-section(v-if="inSpecs.length")

@@ -5,6 +5,8 @@ import DeleteButton from "~/components/DeleteButton.vue";
 import {storeToRefs} from "pinia";
 import {useCustomStore} from "~/store/custom-store";
 import ShareButton from "~/components/spec/ShareButton.vue";
+import EditButton from "~/components/EditButton.vue";
+import EditField from "~/components/EditField.vue";
 
 const {loggedUser} = storeToRefs(useCustomStore())
 const route = useRoute()
@@ -38,24 +40,22 @@ async function saveOrder(order:IOrder){
 <template lang="pug">
 div(v-if="spec")
   q-toolbar
-    q-toolbar-title {{spec.name}}
-      q-btn(icon="mdi-pencil" round)
-        q-popup-proxy.q-pa-sm
-          q-input(v-model="spec.name" @focus="(input) => input.target.select()" label="Название спецификации" style="width:300px" autofocus @keydown.enter.prevent="save")
-          q-btn(label="Сохранить" @click="save" v-close-popup)
-
+    q-toolbar-title.cursor-pointer {{spec.name}}
+      EditField(v-model="spec.name" :update="save")
+  q-toolbar
     div Сумма:&nbsp;
       strong {{$priceFormat($priceByCurrencyServer(servPrice) + $priceByCurrencyNet(netPrice))}}
     q-space
     ExcelButton(:id="spec.id" path="/spec" )
     ExcelButton(:id="spec.id" path="/spec" :confidential="true")
-    CloneButton(:spec="spec.id")
-    ShareButton(:spec="spec.id")
-    q-btn(icon="mdi-server-outline" color="green" :to="{path:'/servers/chassis', query:{spec:spec.id}}")
+    q-space
+    q-btn(icon="mdi-server-outline" color="orange" :to="{path:'/servers/chassis', query:{spec:spec.id}}")
       q-tooltip Добавить серверную конфигурацию
     q-btn(icon="mdi-network-outline" color="green" :to="{path:'/network/choose', query:{spec:spec.id}}")
       q-tooltip Добавить сетевую конфигурацию
-
+    q-space
+    CloneButton(:spec="spec.id")
+    ShareButton(:spec="spec.id")
     DeleteButton(v-if="spec.user.id === loggedUser.id"  :id="spec.id" :name="spec.name" path="/spec" event="spec:reload" )
 
   div.flex.justify-between.items-center
@@ -71,10 +71,12 @@ div(v-if="spec")
         th.text-right
 
     tbody(v-if="spec.configurations.length")
-      tr
-        td.text-left(colspan="5")
+      tr.bg-orange-1
+        td.text-left(colspan="4")
           q-icon(name="mdi-server-outline")
           span Серверные
+        td.text-right.text-weight-bold {{$priceFormat($priceByCurrencyServer(servPrice))}}
+        td
       tr(v-for="conf of spec.configurations" :key="conf.id")
         td
           router-link(:to="`/servers/conf/${conf.id}?category=CPU`") {{conf.name}}
@@ -85,19 +87,21 @@ div(v-if="spec")
         td.text-right {{$priceFormat($priceByCurrencyServer(conf.price * conf.count))}}
         td
           DeleteButton(v-if="conf.user === loggedUser.id"  :id="conf.id" :name="conf.name" path="/conf/delete" event="spec:reload" )
-      tr
+      //tr.bg-orange-1
         td.text-right(colspan="4") Итого:
         td.text-right.text-weight-bold {{$priceFormat($priceByCurrencyServer(servPrice))}}
-
+        td
 
     tbody(v-if="spec.orders.length")
       tr
         td &nbsp;
     tbody(v-if="spec.orders.length")
-      tr
+      tr.bg-green-1
         td.text-left(colspan="4")
           q-icon(name="mdi-network-outline")
           span Сетевые
+        td.text-right.text-weight-bold {{$priceFormat($priceByCurrencyNet(netPrice))}}
+        td
       tr(v-for="order of spec.orders" :key="order.id")
         td
           router-link(:to="`/network/order/${order.id}`") {{order.name || order.id}}
@@ -106,10 +110,12 @@ div(v-if="spec")
           q-input(v-model="order.count" type="number" min="1" @update:model-value="saveOrder(order)")
         td.text-right {{$priceFormat($priceByCurrencyNet(order.sum))}}
         td.text-right {{$priceFormat($priceByCurrencyNet(order.sum * order.count))}}
-
-      tr
-        td.text-right(colspan="3") Итого:
+        td
+          DeleteButton(v-if="order.user === loggedUser.id"  :id="order.id" :name="order.name" path="/order/delete" event="spec:reload" )
+      //tr.bg-green-1
+        td.text-right(colspan="4") Итого:
         td.text-right.text-weight-bold {{$priceFormat($priceByCurrencyNet(netPrice))}}
+        td
 </template>
 
 <style scoped lang="sass">

@@ -11,6 +11,13 @@ router.get('/:_id', defineEventHandler(async (event) => {
     return Order.findOne({_id, user}).populate(['user', ...Order.getPopulation()])
 }))
 
+router.delete('/delete/:_id', defineEventHandler(async (event) => {
+    const user = event.context.user
+    if (!user || !user.isNetwork) throw createError({statusCode: 403, message: 'Доступ запрещён',})
+    const {_id} = event.context.params as Record<string, string>
+    return Order.deleteOne({_id, user})
+}))
+
 router.post('/update/:_id', defineEventHandler(async (event) => {
     const user = event.context.user
     if (!user || !user.isNetwork) throw createError({statusCode: 403, message: 'Доступ запрещён',})
