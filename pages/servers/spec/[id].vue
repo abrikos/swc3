@@ -41,7 +41,7 @@ div(v-if="spec")
     q-toolbar-title {{spec.name}}
       q-btn(icon="mdi-pencil" round)
         q-popup-proxy.q-pa-sm
-          q-input(v-model="spec.name" @focus="(input) => input.target.select()" label="Название спецификации" style="width:300px" autofocus)
+          q-input(v-model="spec.name" @focus="(input) => input.target.select()" label="Название спецификации" style="width:300px" autofocus @keydown.enter.prevent="save")
           q-btn(label="Сохранить" @click="save" v-close-popup)
 
     div Сумма:&nbsp;
@@ -101,6 +101,7 @@ div(v-if="spec")
       tr(v-for="order of spec.orders" :key="order.id")
         td
           router-link(:to="`/network/order/${order.id}`") {{order.name || order.id}}
+        td {{ order.description }}
         td
           q-input(v-model="order.count" type="number" min="1" @update:model-value="saveOrder(order)")
         td.text-right {{$priceFormat($priceByCurrencyNet(order.sum))}}

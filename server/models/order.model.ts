@@ -47,6 +47,10 @@ schema.virtual('sum')
             return sum + ((item.device?.price || 0) + (item.service?.price || 0)) * (item.count || 0)
         }, 0);
     })
+schema.virtual('description')
+    .get(function () {
+        return this.items.map(i=>i.device ? i.device.name : i.license ? i.license : i.service.name).join(', ');
+    })
 schema.virtual('total')
     .get(function () {
         return this.sum * this.count;
