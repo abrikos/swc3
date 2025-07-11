@@ -14,7 +14,7 @@ function to(v: { name: string}) {
 </script>
 
 <template lang="pug">
-  q-tabs
+  q-tabs(active-color="primary" )
     q-route-tab(v-for="item of items"
       :name="item.name"
       :icon="param==='category' ? `img:/icons/${item.name}_icon.png`:''"
