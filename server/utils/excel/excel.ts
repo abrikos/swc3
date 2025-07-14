@@ -2,8 +2,7 @@ import Excel from 'exceljs'
 import {servSpec} from "~/server/utils/excel/excel-servers"
 import {netSpec} from "~/server/utils/excel/excel-net";
 import FillPattern from "exceljs/index";
-import {Property} from "csstype";
-import Columns = Property.Columns;
+import Column from "exceljs/index"
 
 export const specToXls = async (spec: ISpec, user: IUser, confidential: boolean, course: number) => {
     const currName = confidential ? '$' : user.currency
@@ -45,7 +44,7 @@ export const specToXls = async (spec: ISpec, user: IUser, confidential: boolean,
         columns.push({header: '', key: 'conf2', width: 25, style: {numFmt}},)
         columns.push({header: '', key: 'conf3', width: 25, style: {numFmt}},)
     }
-    worksheet.columns = columns as unknown as Partial<Columns>[]
+    worksheet.columns = columns as Partial<Column>[]
     worksheet.addRows([
         ['Спецификация'],
         ['ИД спецификации', spec.id],
