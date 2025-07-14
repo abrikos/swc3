@@ -9,8 +9,8 @@ router.get('/:_id', defineEventHandler(async (event) => {
     const user = event.context.user
     if (!user || !user.isServer) throw createError({statusCode: 403, message: 'Доступ запрещён',})
     const {_id} = event.context.params as Record<string, string>
-    const filter = user.isAdmin ? {_id} : {_id,user}
-    return  Spec.findOne(filter).populate(['user', ...Spec.getPopulation()])
+    const filter = user.isAdmin ? {_id} : {_id, user}
+    return Spec.findOne(filter).populate(['user', ...Spec.getPopulation()])
 
 }))
 
@@ -18,15 +18,15 @@ router.get('/add/:_id/:type/:id', defineEventHandler(async (event) => {
     const user = event.context.user
     if (!user || !user.isServer) throw createError({statusCode: 403, message: 'Доступ запрещён',})
     const {_id, type, id} = event.context.params as Record<string, string>
-    const spec = await  Spec.findById(_id)
+    const spec = await Spec.findById(_id)
     if (!spec) throw createError({statusCode: 404, message: ('Спецификация не найдена'),})
-    if(type==='order'){
+    if (type === 'order') {
         spec.orders.push(id as unknown as IOrder)
     }
-    if(type==='conf'){
+    if (type === 'conf') {
         spec.configurations.push(id as unknown as IConf)
     }
-    if(type==='project'){
+    if (type === 'project') {
         spec.project = id as unknown as IProject
     }
     await spec.save()
@@ -36,14 +36,14 @@ router.get('/has/:type/:id', defineEventHandler(async (event) => {
     const user = event.context.user
     if (!user || !user.isServer) throw createError({statusCode: 403, message: 'Доступ запрещён',})
     const {type, id} = event.context.params as Record<string, string>
-    if(type==='order'){
-        return (await Spec.find()).filter((s:ISpec) => s.orders.includes(id as unknown as IOrder));
+    if (type === 'order') {
+        return (await Spec.find()).filter((s: ISpec) => s.orders.includes(id as unknown as IOrder));
     }
-    if(type === 'conf'){
-        return (await Spec.find()).filter((s:ISpec) => s.configurations.includes(id as unknown as IConf));
+    if (type === 'conf') {
+        return (await Spec.find()).filter((s: ISpec) => s.configurations.includes(id as unknown as IConf));
     }
-    if(type === 'project'){
-        return Spec.find({project:id});
+    if (type === 'project') {
+        return Spec.find({project: id});
     }
 }))
 
@@ -92,20 +92,29 @@ function prepareRegex(str: string) {
     return {$regex: new RegExp(str.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&')), $options: 'i'}
 }
 
-
 router.get('/list', defineEventHandler(async (event) => {
     const user = event.context.user
     if (!user || !user.isServer) throw createError({statusCode: 403, message: 'Доступ запрещён',})
-    return Spec.find({user})
+    const res = await Spec.find({user})
         .sort({createdAt: -1})
         .populate(Spec.getPopulation())
+    return res.map(r => ({
+        id: r._id,
+        name: r.name,
+        configurations: r.configurations.length,
+        orders: r.orders.length,
+        priceServer: r.priceServer,
+        priceNet: r.priceNet,
+        date: r.date,
+        user: r.shared?.email,
+    }))
 }))
 
 router.post('/create/conf', defineEventHandler(async (event) => {
     const user = event.context.user
     if (!user || !user.isServer) throw createError({statusCode: 403, message: 'Доступ запрещён',})
     const {id} = await readBody(event)
-    return Spec.create({user, name:'Спецификация от ' +moment().format('YYYY-MM-DD HH:mm'), configurations:[id]})
+    return Spec.create({user, name: 'Спецификация от ' + moment().format('YYYY-MM-DD HH:mm'), configurations: [id]})
 }))
 
 
@@ -119,7 +128,7 @@ router.post('/share/:id', defineEventHandler(async (event) => {
     const res = []
     for (const email of emails) {
         const shared = await User.findOne({email}) as IUser
-        if(!shared) continue
+        if (!shared) continue
         spec._id = new mongoose.Types.ObjectId;
         spec.user = shared
         spec.shared = user
@@ -155,7 +164,7 @@ router.post('/listBak', defineEventHandler(async (event) => {
                     console.log(users.length)
                     //return {specs:[], count:0}
                     const specs = []
-                    for(const user of users){
+                    for (const user of users) {
                         specs.push(...user.specs)
                     }
                     const count = await User.countDocuments(f)
@@ -163,7 +172,7 @@ router.post('/listBak', defineEventHandler(async (event) => {
                 } else if (k === 'id') {
                     delete filter.id
                     filter._id = search[k]
-                }else {
+                } else {
                     filter[k] = prepareRegex(search[k])
                 }
             }

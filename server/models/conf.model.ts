@@ -69,6 +69,7 @@ schema.statics.createCustom = async function (chassisId, user) {
     const chassis = await Chassis.findById(chassisId).populate('services');
     if (!chassis) return null;
     const service = chassis.services.find((s: any) => s.level === 'BAS' && s.period === 3)
+    console.log(service)
     const configuration = await this.create({
         chassis,
         service,

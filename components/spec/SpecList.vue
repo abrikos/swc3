@@ -11,7 +11,7 @@ const columns = computed(() => {
     {label: 'ИД', field: 'id', style: 'width:80px!important'},
     {label: 'Дата', field: 'date', style: 'width:150px!important'},
     {label: 'Название', field: 'name', style: 'width:150px!important'},
-    {label: 'От кого', field: ((row: any) => row.shared?.email) as unknown as string, style: ''},
+    {label: 'От кого', field: 'user', style: ''},
     {
       label: 'Сумма, ' + loggedUser.value?.currency,
       field: ((row: any) => $priceFormat($priceByCurrencyServer(row.priceServer) + $priceByCurrencyNet(row.priceNet))) as unknown as string,
@@ -60,9 +60,9 @@ const search = ref('')
         CloneButton(:spec="row.id")
         DeleteButton(:id="row.id" path="/spec" :name="row.name" event="specs:reload" )
 
-        q-icon(v-if="row.configurations.length" name="mdi-server-outline" color="orange" )
+        q-icon(v-if="row.configurations" name="mdi-server-outline" color="orange" )
           q-tooltip Серверные конфигурации
-        q-icon(v-if="row.orders.length" name="mdi-network-outline" outline color="green")
+        q-icon(v-if="row.orders" name="mdi-network-outline" outline color="green")
           q-tooltip Сетевые конфигурации
         //q-badge(v-if="row.configurations.length" color="orange" outline) SRV
         //q-badge(v-if="row.orders.length" color="green" outline) NET
