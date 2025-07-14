@@ -65,6 +65,8 @@ onMounted(()=>{
     q-drawer(v-model="leftDrawerOpen" bordered :side="drawerSide || 'left'")
       div {{drawerSide}}
       q-list
+        //q-item(to="http://srvgfg.qtech.ru:8080")
+          q-item-section Старая версия
         q-item(v-for="page in pages.filter(p=>p.forLogged===!!loggedUser)" :to="page.to")
           q-item-section(avatar)
             q-icon(:name="page.icon")

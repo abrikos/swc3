@@ -59,7 +59,8 @@ export const specToXls = async (spec: ISpec, user: IUser, confidential: boolean,
         [],
         ['QTECH.RU', user.email, new Date()]
     ])
-    const discountRow = worksheet.addRow(['', '', '', '', 'Скидка', 0])
+    const discountRow = worksheet.addRow(['', '', '', '', 'Общая скидка', 0])
+    discountRow.getCell(5).style = {alignment: {vertical: 'middle', horizontal: 'center', wrapText: true}}
     ///console.log(discountRow.number)
 
     const totalSumRow = worksheet.addRow(['Всего вкл. НДС 20%.' + (confidential ? '$' : user.currency)])

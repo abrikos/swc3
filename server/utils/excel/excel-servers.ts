@@ -28,7 +28,7 @@ export function servSpec(worksheet: Excel.Worksheet, spec: ISpec, confidential: 
     const redRow = worksheet.addRow(data)
     redRow.height = 40
     redRow.alignment = {vertical: 'middle'}
-    for (let i = 1; i <= 12; i++) {
+    for (let i = 1; i <= (confidential ? 12 : 9); i++) {
         if(i===9) continue
         redRow.getCell(i).style = {
             fill: {type: 'pattern', pattern: 'solid', bgColor: {argb: 'FFFF2238'}, fgColor: {argb: 'FFFF2238'}},
@@ -165,7 +165,7 @@ export function servSpec(worksheet: Excel.Worksheet, spec: ISpec, confidential: 
             serviceRow.getCell(8).value = {formula: `G${serviceRow.number}*C${serviceRow.number}`}
             const servicePercent = conf.service.name.match('Base') ? 0 : (conf.service.name.match('36 месяцев') ? 0.1 : 0.15)
             if (confidential) {
-                serviceRow.getCell(11).value = {formula: `K${rowSummary.number}*0.3`}
+                serviceRow.getCell(11).value = {formula: `K${rowSummary.number}*0.3`} //???????
                 serviceRow.getCell(12).value = {formula: `K${serviceRow.number}*C${serviceRow.number}`}
                 serviceRow.getCell(10).fill = fill
                 serviceRow.getCell(11).fill = fill
@@ -211,10 +211,21 @@ export function servSpec(worksheet: Excel.Worksheet, spec: ISpec, confidential: 
 
     sumServ.getCell(5).value = {formula: formula3.join('+')}
     sumServ.getCell(8).value = {formula: formula.join('+')}
-    //sumServ.getCell(8).style = {numFmt}
-    sumServ.getCell(12).value = {formula: formula2.join('+')}
+    if(confidential) {
+        sumServ.getCell(12).value = {formula: formula2.join('+')}
+    }
     //sumServ.getCell(12).style = {numFmt}
-    sumServ.fill = {type: 'pattern', pattern: 'solid', bgColor: {argb: 'DDDDDDDD'}, fgColor: {argb: 'DDDDDDDD'}}
+    for (let i = 1; i <= (confidential ? 12 : 9); i++) {
+        if(i===9) continue
+        sumServ.getCell(i).style = {
+            fill: {type: 'pattern', pattern: 'solid', bgColor: {argb: 'DDDDDDDD'}, fgColor: {argb: 'DDDDDDDD'}},
+            numFmt
+        }
+    }
+    //sumServ.getCell(8).style = {numFmt}
+    //sumServ.getCell(5).style = {numFmt}
+
+    //sumServ.fill = {type: 'pattern', pattern: 'solid', bgColor: {argb: 'DDDDDDDD'}, fgColor: {argb: 'DDDDDDDD'}}
     sumServ.height = 20
     return sumServ.number
 }
