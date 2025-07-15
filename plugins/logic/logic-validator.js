@@ -82,7 +82,7 @@ export default function (configuration) {
     }
 
 
-    if (configuration.powerConsumption > configuration.power) {
+    if (configuration.powerConsumption > configuration.power && configuration.chassis.platform!=='JBOD') {
         result.errors.push(`Недостаточно мощности PSU`)
     }
     if(configuration.chassis.platform==='G4'){

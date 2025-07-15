@@ -122,7 +122,7 @@ schema.virtual('isNetwork')
     })
 schema.virtual('isEmployer')
     .get(function () {
-        return !!['Employer', 'BDM', 'Manager', 'admin', 'superuser', 'internal'].filter(r => this.roles?.map((u: IRole) => u.name).includes(r)).length;
+        return !!['Employer', 'BDM', 'Manager', 'admin', 'superuser', 'Internal'].filter(r => this.roles?.map((u: IRole) => u.name).includes(r)).length;
     })
 schema.virtual('isProject')
     .get(function () {
