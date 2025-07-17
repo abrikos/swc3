@@ -48,12 +48,10 @@ div(v-if="spec")
     q-space
     ExcelButton(:id="spec.id" path="/spec" )
     ExcelButton(:id="spec.id" path="/spec" :confidential="true")
-    q-space
     q-btn(icon="mdi-server-outline" color="orange" :to="{path:'/servers/chassis', query:{spec:spec.id}}")
       q-tooltip Добавить серверную конфигурацию
     q-btn(icon="mdi-network-outline" color="green" :to="{path:'/network/choose', query:{spec:spec.id}}")
       q-tooltip Добавить сетевую конфигурацию
-    q-space
     CloneButton(:spec="spec.id")
     ShareButton(:spec="spec.id")
     DeleteButton(v-if="spec.user.id === loggedUser.id"  :id="spec.id" :name="spec.name" path="/spec" event="spec:reload" )
