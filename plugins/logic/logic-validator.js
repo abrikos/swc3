@@ -225,9 +225,8 @@ export default function (configuration) {
         }
 
         //STORAGE
-        if (configuration.vrocModuleCount && configuration.ssdM2Count >= 2 && !configuration.m2raidCount) {
+        if (['G2','G2R'].includes(configuration.chassis.platform) && configuration.vrocModuleCount && configuration.ssdM2Count >= 2 && !configuration.m2raidCount) {
             result.warnings.push('Без RAID функционала. Для организации RAID на накопителях M.2 NVMe необходимо выбрать M2Raid PCI-E Card for 2*M.2 NVMe RAID 0, 1')
-
         }
         if (configuration.chassis.isSFF && configuration.diskLFFCount && !configuration.rearBayCount) {
             const text = configuration.chassis.units === 1 ?
