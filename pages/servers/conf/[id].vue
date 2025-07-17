@@ -61,12 +61,12 @@ const tabsArrayType = computed(() => {
       q-toolbar-title.cursor-pointer {{conf.name}}
         EditField(v-model="conf.name" :update="update")
     div.row
-      div.col-8.q-pa-sm
+      div.col-8-sm.q-pa-sm
         Tabs(:items="tabsArray" param="category" )
         Tabs(:items="tabsArrayType" param="type" )
         ConfService(v-if="route.query.category==='Services'" :conf="conf")
         ConfTable(v-else :conf="conf" :components="components")
-      div.col.q-pa-sm
+      div.col-sm.q-pa-sm
         div {{conf.chassis.platform}} {{conf.chassis.descFull}}
 
         AddToSpec(type="conf")

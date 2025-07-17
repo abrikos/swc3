@@ -14,7 +14,7 @@ export default function (conf: IConf) {
                 {name: 'SSD m.2'},
                 {name: 'SSD U.2 NVMe'},
                 {name: 'Rear bay'},
-                //{name: 'Cable'},
+                //{name: 'PCI-E SSD NVMe'},
 
             ]
         },

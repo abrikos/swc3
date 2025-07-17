@@ -77,13 +77,13 @@ schema.statics.createCustom = async function (chassisId, user) {
         name: 'Конфигурация от ' + moment().format('YYYY-MM-DD HH-mm')
     })
     await configuration.populate(population);
-    if (chassis.platform !== 'JBOD' && chassis.partNumber !== 'QSRV-260802-E-R' && !['QSRV-260802-P-R', 'QSRV-261202-P-R', 'QSRV-262402-P-R'].includes(chassis.partNumber)) {
-        const partNumber = configuration.chassis.units === 1 ? chassis.platform === 'G3R' ? 'x16riser1U' : 'zzzz' : '3x8riser2U'
-        const component = await Component.findOne({partNumber})
-        if (component) {
-            await Part.create({component, configuration, count: 1})
-        }
-    }
+    // if (chassis.platform !== 'JBOD' && chassis.partNumber !== 'QSRV-260802-E-R' && !['QSRV-260802-P-R', 'QSRV-261202-P-R', 'QSRV-262402-P-R'].includes(chassis.partNumber)) {
+    //     const partNumber = configuration.chassis.units === 1 ? chassis.platform === 'G3R' ? 'x16riser1U' : 'zzzz' : '3x8riser2U'
+    //     const component = await Component.findOne({partNumber})
+    //     if (component) {
+    //         await Part.create({component, configuration, count: 1})
+    //     }
+    // }
 
     // if (chassis.platform === 'G2R') {
     //     const partNumber = (['QSRV-160812-E-R', 'QSRV-160402-E-R', 'QSRV-160412-E-R', 'QSRV-160802-E-R'].includes(chassis.partNumber) ? 'PSU065R' : 'PSU08R')
