@@ -7,11 +7,6 @@ export default (configuration, components, tab) => {
     return componentsByType
         .filter(c => !c.deleted)
         .filter(component => {
-
-            if (component.type === 'SSD U.2 NVMe' && configuration.additionalNvmeDisksByBackplane) {
-                return true
-            }
-
             if (component.unitFix && (component.unitFix !== configuration.chassis.units)) return
             if (!component.platforms.includes(configuration.chassis.platform)) return
             switch (tab.category) {
@@ -20,8 +15,7 @@ export default (configuration, components, tab) => {
                 case 'Storage':
                     if (configuration.chassis.partNumber === 'QSRV-2524') return component.isDiskSAS && component.isSFF
                     if (configuration.chassis.partNumber === 'QSRV-4524') return component.isDiskSAS && (component.isSFF || component.isLFF)
-                    if (configuration.chassis.isSFF && component.type === 'HDD') return component.isSFF
-                    return true
+                    break
                 case 'Riser':
                     if (configuration.chassis.units > 1 && ['G3', 'G3R'].includes(configuration.chassis.platform)) {
                         if (configuration.cpuCount === 1) return component.description.match(/port 1\/2/)
@@ -30,7 +24,7 @@ export default (configuration, components, tab) => {
                     if (configuration.chassis.partNumber === 'QSRV-463612-E-R') return false
                     if (configuration.chassis.units < component.riserUnit) return false
                     if (configuration.chassis.platform === 'G2R' && configuration.chassis.units === 2) return false
-                    return true
+                    break
             }
 
             switch (tab.type) {
@@ -43,6 +37,7 @@ export default (configuration, components, tab) => {
                     }
                     return true
                 case 'HDD':
+                    if (configuration.chassis.isSFF) return component.isSFF
                     if (['QSRV-171012-P-R', 'QSRV-272512-P-R', 'QSRV-282400', 'QSRV-181000'].includes(configuration.chassis.partNumber)) return !component.isLFF
 
                     if (['QSRV-160812-E-R', 'QSRV-160802-E-R', 'QSRV-160802-P-R', 'QSRV-262402-P-R', 'QSRV-262412-P-R'].includes(configuration.chassis.partNumber)) {
@@ -76,6 +71,9 @@ export default (configuration, components, tab) => {
                         'QSRV-260802A', 'QSRV-161002', 'QSRV-260802', 'QSRV-281200'].includes(configuration.chassis.partNumber)
 
                 case 'SSD U.2 NVMe':
+                    if (configuration.additionalNvmeDisksByBackplane) {
+                        return true
+                    }
                     return !['QSRV-463612-E-R', 'QSRV-260802-P-R'].includes(configuration.chassis.partNumber)
 
                 case 'GPU':
