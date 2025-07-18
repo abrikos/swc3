@@ -46,9 +46,8 @@ q-card
           td.text-right(v-if="loggedUser.isAdmin") {{$priceFormat($priceByCurrencyServer(part.component.price))}}
           td.text-right(v-if="loggedUser.isAdmin") {{$priceFormat($priceByCurrencyServer(part.price))}}
         tr(v-if="conf.brokenStorageService")
-          td(colspan="3") Невозврат неисправных накопителей
+          td(colspan="4") Невозврат неисправных накопителей
           td.text-right(v-if="loggedUser.isAdmin") {{$priceFormat($priceByCurrencyServer(conf.storagePrice))}}
-          td.text-right(v-if="loggedUser.isAdmin") {{$priceFormat($priceByCurrencyServer(conf.chassis.price))}}
         tr(v-if="conf.service")
           td(colspan="4") {{ conf.service.name }}
           td.text-right(v-if="loggedUser.isAdmin") {{$priceFormat($priceByCurrencyServer(conf.priceService))}}

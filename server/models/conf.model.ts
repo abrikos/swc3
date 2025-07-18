@@ -185,7 +185,7 @@ schema.virtual('price')
 
 schema.virtual('priceTotal')
     .get(function () {
-        return this.price * this.count
+        return (this.price+this.priceService+(this.brokenStorageService ? this.storagePrice : 0)) * this.count
     })
 
 schema.virtual('isRearBayNeeded')

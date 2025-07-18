@@ -183,7 +183,7 @@ export function servSpec(worksheet: Excel.Worksheet, spec: ISpec, confidential: 
                 'NRD',
                 'Невозврат неисправных накопителей',
                 {formula: `+C${rowSummary.number}`},
-                confidential ? {formula: formula.join('+')} : conf.storagePrice * (confidential || user.currency === 'USD' ? 1 : course),
+                conf.storagePrice * (confidential || user.currency === 'USD' ? 1 : course),
             ]
             const brokenStorageRow = worksheet.addRow(data)
             brokenStorageRow.getCell(5).value = {formula: `C${brokenStorageRow.number}*D${brokenStorageRow.number}`}
