@@ -1,4 +1,5 @@
 import {Chassis} from "~/server/models/chassis.model";
+import mongoose from "mongoose";
 
 const router = createRouter()
 
@@ -32,6 +33,25 @@ router.get('/:cid/to-spec/:sid', defineEventHandler(async (event) => {
     if (!spec) throw createError({statusCode: 404, message: ('Спецификация не найдена'),})
     spec.configurations.push(conf)
     await spec.save()
+
+}))
+
+router.put('/clone/:id', defineEventHandler(async (event) => {
+    const user = event.context.user
+    if (!user && user.isServer) throw createError({statusCode: 403, message: 'Доступ запрещён',})
+    const {id} = event.context.params as Record<string, string>
+    const spec2 = await readBody(event)
+    const conf = await Conf.findById(id)
+    if (!conf) throw createError({statusCode: 404, message: ('Конфигурация не найдена'),})
+    const spec = await Spec.findOne({_id:spec2.id, user})
+    if (!spec) throw createError({statusCode: 404, message: ('Спецификация не найдена'),})
+    conf._id = new mongoose.Types.ObjectId;
+    conf.name = 'Клон ' + conf.name
+    conf.isNew = true;
+    conf.save()
+    spec.configurations.push(conf)
+    spec.save()
+    return conf.id
 
 }))
 

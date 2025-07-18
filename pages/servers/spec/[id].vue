@@ -35,6 +35,10 @@ async function saveConf(conf:IConf){
 async function saveOrder(order:IOrder){
   await useNuxtApp().$POST(`/order/update/${order.id}`, order)
 }
+async function cloneConf(id:string){
+  await useNuxtApp().$PUT(`/conf/clone/${id}`,spec.value)
+  await load()
+}
 </script>
 
 <template lang="pug">
@@ -84,6 +88,9 @@ div(v-if="spec")
         td.text-right {{$priceFormat($priceByCurrencyServer(conf.price))}}
         td.text-right {{$priceFormat($priceByCurrencyServer(conf.price * conf.count))}}
         td
+          q-btn(icon="mdi-content-duplicate" @click.stop="cloneConf(conf.id)" round)
+            q-tooltip Клонировать
+
           DeleteButton(v-if="conf.user === loggedUser.id"  :id="conf.id" :name="conf.name" path="/conf/delete" event="spec:reload" )
       //tr.bg-orange-1
         td.text-right(colspan="4") Итого:
