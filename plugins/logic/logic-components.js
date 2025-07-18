@@ -15,24 +15,13 @@ export default (configuration, components, tab) => {
             if (component.unitFix && (component.unitFix !== configuration.chassis.units)) return
             if (!component.platforms.includes(configuration.chassis.platform)) return
             switch (tab.category) {
-                case 'Power':
-                    return true
-                    // if (configuration.chassis.platform === 'G2R') {
-                    //     if (component.power === 550 || ['QSRV-160812-E-R', 'QSRV-160402-E-R', 'QSRV-160412-E-R', 'QSRV-160802-E-R'].includes(configuration.chassis.partNumber)) {
-                    //         return false
-                    //     } else
-                    //         return component.power !== 650
-                    // } else {
-                    //     return component.power !== 650
-                    // }
                 case 'CPU':
                     return configuration.chassis.cpu === component.type && component.platforms.includes(configuration.chassis.platform)
-                case 'Cable':
-
                 case 'Storage':
                     if (configuration.chassis.partNumber === 'QSRV-2524') return component.isDiskSAS && component.isSFF
                     if (configuration.chassis.partNumber === 'QSRV-4524') return component.isDiskSAS && (component.isSFF || component.isLFF)
                     if (configuration.chassis.isSFF && component.type === 'HDD') return component.isSFF
+                    return true
                 case 'Riser':
                     if (configuration.chassis.units > 1 && ['G3', 'G3R'].includes(configuration.chassis.platform)) {
                         if (configuration.cpuCount === 1) return component.description.match(/port 1\/2/)
@@ -41,6 +30,7 @@ export default (configuration, components, tab) => {
                     if (configuration.chassis.partNumber === 'QSRV-463612-E-R') return false
                     if (configuration.chassis.units < component.riserUnit) return false
                     if (configuration.chassis.platform === 'G2R' && configuration.chassis.units === 2) return false
+                    return true
             }
 
             switch (tab.type) {
