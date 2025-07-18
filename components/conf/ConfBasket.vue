@@ -33,7 +33,7 @@ q-card
           th(v-if="loggedUser.isAdmin") Сумма
         tr
           td(colspan="2") Платформа {{conf.chassis.partNumber}}
-          td 1
+          td.text-center 1
           td.text-right(v-if="loggedUser.isAdmin") {{$priceFormat($priceByCurrencyServer(conf.chassis.price))}}
           td.text-right(v-if="loggedUser.isAdmin") {{$priceFormat($priceByCurrencyServer(conf.chassis.price))}}
 
