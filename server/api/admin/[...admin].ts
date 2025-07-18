@@ -91,7 +91,7 @@ router.post('/user/create', defineEventHandler(async (event) => {
     checkAdmin(event.context.user)
     await logAction(event)
     const user = await readBody(event)
-    return  User.create(user)
+    return User.create(user)
 }))
 
 router.get('/user/:id', defineEventHandler(async (event) => {
@@ -103,6 +103,34 @@ router.get('/user/:id', defineEventHandler(async (event) => {
 router.get('/specs', defineEventHandler(async (event) => {
     checkAdmin(event.context.user)
     return Spec.find().populate({path: 'user', select: ['email']})
+}))
+
+router.get('/services', defineEventHandler(async (event) => {
+    checkAdmin(event.context.user)
+    return Service.find({partNumber: undefined}).sort({partNumber: 1})
+}))
+
+router.post('/services-add', defineEventHandler(async (event) => {
+    checkAdmin(event.context.user)
+    await logAction(event)
+    const body = await readBody(event)
+    const exists = await Service.findOne({...body, partNumber: undefined})
+    if (exists) throw createError({statusCode: 400, message: 'Такой сервис уже создан',})
+    return Service.create({...body, article: Math.random()})
+}))
+
+router.post('/services-update', defineEventHandler(async (event) => {
+    checkAdmin(event.context.user)
+    await logAction(event)
+    const body = await readBody(event)
+    return Service.updateOne({_id: body.id}, body)
+}))
+
+router.delete('/services-delete/:_id', defineEventHandler(async (event) => {
+    checkAdmin(event.context.user)
+    await logAction(event)
+    const {_id} = event.context.params as Record<string, string>
+    return Service.deleteOne({_id})
 }))
 
 router.post('/registration/confirm/:_id', defineEventHandler(async (event) => {

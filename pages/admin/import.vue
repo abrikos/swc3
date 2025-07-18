@@ -1,7 +1,7 @@
 <script setup lang="ts">
 const types = [
   {title: 'Серверное оборудование', name: 'serv', file: 'servers.xlsx'},
-  {title: 'Cервисы', name: 'services', file: 'services_example.xlsb'},
+  //{title: 'Cервисы', name: 'services', file: 'services_example.xlsb'},
   {title: 'Сетевое оборудование', name: 'net', file: 'network-price.xls'},
   {title: 'Совместимость трансиверов', name: 'trans', file: 'net-trans-example.xlsx'},
   {title: 'Менеджеры', name: 'manager', file: 'managers.xlsx'},

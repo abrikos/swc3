@@ -5,6 +5,7 @@ const model = 'service';
 export interface IService extends mongoose.Document {
     partNumber: string,
     article: string
+    deleted: boolean
     name: string,
     price: number
     priceDdp: number
@@ -20,12 +21,13 @@ export interface IService extends mongoose.Document {
 const Schema = mongoose.Schema;
 const schema = new Schema<IService>({
     partNumber: String,
-    article: {type:String, require: true, unique: true},
+    article: {type: String, require: true, unique: true},
+    deleted: {type: Boolean, default: false},
     name: String,
-    price: {type:Number, default:0},
-    priceDdp: {type:Number, default:0},
-    priceFob: {type:Number, default:0},
-    priceNet: {type:Number, default:0},
+    price: {type: Number, default: 0},
+    priceDdp: {type: Number, default: 0},
+    priceFob: {type: Number, default: 0},
+    priceNet: {type: Number, default: 0},
     discount1: Number,
     discount2: Number,
     level: String,
