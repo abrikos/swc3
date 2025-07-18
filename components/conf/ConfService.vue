@@ -21,7 +21,7 @@ async function onServiceChange() {
 }
 
 async function switchBrokenStorageService() {
-  await useNuxtApp().$POST(`/conf/update/${props.conf.id}`, {brokenStorageService: brokenStorageService.value})
+  await useNuxtApp().$GET(`/conf/broken-storage-switch/${props.conf.id}`)
   $event('conf:reload')
 }
 
