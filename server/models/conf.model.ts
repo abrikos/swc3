@@ -60,16 +60,16 @@ const schema = new Schema<IConf>({
 })
 const population = [
     {path: 'parts', populate: {path: 'component'}},
-    {path: 'chassis', populate: {path: 'services', options: {sort: {'level': 1, 'period': -1}}}},
+    {path: 'chassis'},
     {path: 'service'}
 ]
 schema.statics.getPopulation = () => population
 
 schema.statics.createCustom = async function (chassisId, user) {
-    const chassis = await Chassis.findById(chassisId).populate('services');
+    const chassis = await Chassis.findById(chassisId)
     if (!chassis) return null;
-    const service = chassis.services.find((s: any) => s.level === 'BAS' && s.period === 3)
-    console.log('zzzzzzzzzz', service)
+    const service = await Service.findOne({level: 'BAS', period: 5, partNumber:undefined})
+    console.log('zzzzzzz', service)
     const configuration = await this.create({
         chassis,
         service,
@@ -133,8 +133,8 @@ schema.virtual('description')
             confName.push(part.count + '* ' + part.component.description)
         }
         confName.push('1G dedicated RJ45 IPMI, Rails')
-        confName.push(this.service? this.service.name :'Техническая поддержка Base 8х5, 36 месяцев')
-        if(this.brokenStorageService){
+        confName.push(this.service ? this.service.name : 'Техническая поддержка Base 8х5, 36 месяцев')
+        if (this.brokenStorageService) {
             confName.push('Невозврат неисправных накопителей')
         }
         return confName.join(', ');

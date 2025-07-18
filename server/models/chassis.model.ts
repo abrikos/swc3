@@ -99,10 +99,4 @@ schema.virtual('units')
         //return match[1] * 1
     })
 
-schema.virtual('services', {
-    ref: 'service',
-    localField: 'partNumber',
-    foreignField: 'partNumber'
-})
-
 export const Chassis = mongoose.model<IChassis>(name, schema)

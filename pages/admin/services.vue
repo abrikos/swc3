@@ -4,7 +4,7 @@ const services = ref<IService[]>([])
 const {$listen} = useNuxtApp()
 
 async function load() {
-  services.value = await useNuxtApp().$GET('/admin/services') as IService[];
+  services.value = await useNuxtApp().$GET('/conf/services') as IService[];
   console.log($q.screen.lt.md)
 }
 

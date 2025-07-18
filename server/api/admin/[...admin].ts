@@ -105,11 +105,6 @@ router.get('/specs', defineEventHandler(async (event) => {
     return Spec.find().populate({path: 'user', select: ['email']})
 }))
 
-router.get('/services', defineEventHandler(async (event) => {
-    checkAdmin(event.context.user)
-    return Service.find({partNumber: undefined}).sort({partNumber: 1})
-}))
-
 router.post('/services-add', defineEventHandler(async (event) => {
     checkAdmin(event.context.user)
     await logAction(event)

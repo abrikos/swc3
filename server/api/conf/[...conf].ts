@@ -17,6 +17,10 @@ router.get('/create/chassis/:id', defineEventHandler(async (event) => {
     return conf
 }))
 
+router.get('/services', defineEventHandler(async (event) => {
+    return Service.find({partNumber: undefined}).sort({partNumber: 1})
+}))
+
 router.get('/:cid/to-spec/:sid', defineEventHandler(async (event) => {
     const user = event.context.user
     if (!user && user.isServer) throw createError({statusCode: 403, message: 'Доступ запрещён',})

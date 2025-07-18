@@ -35,6 +35,9 @@ async function createSpec() {
     q-card-section
       div(v-for="spec of inSpecs")
         router-link(:to="`/servers/spec/${spec.id}`") {{ spec.name }}
+        ExcelButton(:id="spec.id" path="/spec" )
+        ExcelButton(:id="spec.id" path="/spec" :confidential="true")
+
       q-btn(v-if="!inSpecs.length" color="primary" @click="createSpec") Добавить в спецификацию
   //q-card
     q-toolbar
