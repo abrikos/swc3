@@ -17,7 +17,7 @@ const tabsList = [
 ]
 
 const tree = [{
-  label: 'Серверы',
+  label: 'Сервера',
   selectable: true,
   children: tabsList
 }]
