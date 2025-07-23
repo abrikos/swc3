@@ -26,7 +26,7 @@ const pages = [
 const pagesAdmin = [
   {to: '/admin/user-registrations', label: 'Заявки на регистрацию', icon: 'mdi-account-alert-outline'},
   {to: '/admin/import', label: 'Импорт данных', icon: 'mdi-import'},
-  {to: '/admin/services', label: 'Список сервисов', icon: 'mdi-room-service-outline'},
+  {to: '/admin/services', label: 'Список сервисов тех-поддержки', icon: 'mdi-room-service-outline'},
   {to: '/admin/user-list', label: 'Список пользователей', icon: 'mdi-text-account'},
   {to: '/admin/specs', label: 'Все спеки', icon: 'mdi-list-box-outline'},
   {to: '/admin/log', label: 'Лог действий', icon: 'mdi-security'},

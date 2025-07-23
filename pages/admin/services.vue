@@ -36,7 +36,7 @@ const levels = ['ADV', 'PRE', 'BAS']
 
 <template lang="pug">
   q-toolbar
-    q-toolbar-title Список сервисов
+    q-toolbar-title Список сервисов тех-поддержки
     q-btn(icon="mdi-plus" @click="addDialog=true")
       q-tooltip Добавить сервис
     q-dialog(v-model="addDialog")
