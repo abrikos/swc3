@@ -322,6 +322,11 @@ export default function (configuration) {
             }
         }
 
+        if (configuration.chassis.platform === 'G3R') {
+            if(configuration.raidCount > configuration.riserCount){
+                result.errors.push(`Количество RAID (${configuration.raidCount}) превышает количество RISER (${configuration.riserCount})`)
+            }
+        }
         //REESTR
         if (configuration.chassis.platform === 'G2R') {
             if (configuration.sataM2DiskCount > 1) {
