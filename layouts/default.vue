@@ -14,6 +14,7 @@ await getSettings()
 const leftDrawerOpen = ref(true);
 const pages = [
   //{to: '/', label: 'Начало', icon: 'mdi-home'},
+  {to: '/new-spec', label: 'Создать спецификацию', icon: 'mdi-new-box', forLogged: true},
   {to: '/network/choose', label: 'Сетевое оборудование', icon: 'mdi-network-outline', forLogged: true},
   {to: '/servers/chassis', label: 'Сервера', icon: 'mdi-server-outline', forLogged: true},
   {to: '/servers/spec/list', label: 'Спецификации', icon: 'mdi-list-box-outline', forLogged: true},
