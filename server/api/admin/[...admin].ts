@@ -49,6 +49,7 @@ router.get('/roles', defineEventHandler(async (event) => {
 
 
 async function refRoles() {
+    console.log('ffffffffff')
     const users = await User.find().populate('roles')
     for (const user of users) {
         console.log(user.email, user.role, user.roles)
