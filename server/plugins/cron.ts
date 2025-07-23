@@ -77,7 +77,6 @@ async function clearConfigurations() {
 }
 
 async function refRoles() {
-    console.log('ffffffffff')
     const users = await User.find().populate('roles')
     for (const user of users) {
         console.log(user.email, user.role, user.roles)
@@ -105,8 +104,21 @@ async function refRoles() {
 
 //clearConfigurations()
 
+async function servicesFix(){
+
+    const confs = await Conf.find().populate('service')
+    for(const conf of confs){
+        if(conf.service) {
+            console.log(conf.id, conf.service.name, conf.service.partNumber)
+            //conf.service = await Service.findOne({name: conf.service.name, partNumber: undefined}) as IService
+            //conf.save()
+        }
+    }
+}
+
 export default defineNitroPlugin(() => {
     //refRoles()
+    //servicesFix();
     setInterval(() => {
         deleteRegistrations()
     }, 1000 * 3600)

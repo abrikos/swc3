@@ -11,7 +11,7 @@ const props = defineProps({
   conf: {type: Object, required: true},
 })
 const {$event} = useNuxtApp()
-const service = ref(props.conf.service.id)
+const service = ref(props.conf.service)
 const brokenStorageService = ref(props.conf.brokenStorageService)
 
 async function onServiceChange() {
@@ -29,7 +29,7 @@ async function switchBrokenStorageService() {
 
 <template lang="pug">
   q-option-group(:options="services.map((s:IService)=>({label:s.name,value:s.id}))" type="radio" v-model="service" @update:model-value="onServiceChange")
-  q-checkbox(v-model="brokenStorageService" :label="`Невозврат неисправных накопителей: ${conf.storagePrice}`" @update:model-value="switchBrokenStorageService")
+  q-checkbox(v-model="brokenStorageService" :label="`Невозврат неисправных накопителей`" @update:model-value="switchBrokenStorageService")
 </template>
 
 <style scoped>

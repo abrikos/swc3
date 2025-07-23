@@ -19,7 +19,7 @@ router.get('/create/chassis/:id', defineEventHandler(async (event) => {
 }))
 
 router.get('/services', defineEventHandler(async (event) => {
-    return Service.find({partNumber: undefined}).sort({coefficient: 1}).exec()
+    return Service.find({partNumber: undefined}).sort({type: 1, period:1}).exec()
 }))
 
 router.get('/:cid/to-spec/:sid', defineEventHandler(async (event) => {
