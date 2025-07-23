@@ -30,7 +30,7 @@ router.post('/request-restore-password', defineEventHandler(async (event) => {
     const user = await User.findOne({email});
     if (!user) {
         //await utils.sleep(4000)
-        return 1
+        return {ok: "200"}
     }
     user.restorePassword = crypto.createHmac('sha256', '').update(Math.random().toString()).digest('hex')
     await user.save()
@@ -38,15 +38,17 @@ router.post('/request-restore-password', defineEventHandler(async (event) => {
     const res = await utils.sendMail({
         to: email,
         subject: 'Восстановить пароль',
-        text: `Ссылка для восстановления ${host}/password-restore-${user.restorePassword}`
+        text: `Ссылка для восстановления http://${host}/api/user/process-restore-password/${user.restorePassword}`
     })
     if (!res.messageId) throw createError({statusCode: 500, message: 'Ошибка отправки'})
-    return 1
+    return {message:'Новый пароль отправлен на почту'}
 }))
 
-router.post('/process-restore-password', defineEventHandler(async (event) => {
-    const {code} = await readBody(event)
+router.get('/process-restore-password/:code', defineEventHandler(async (event) => {
+    const {code} = event.context.params as Record<string, string>
+    console.log('zzzzzzzzz',code)
     const user = await User.findOne({restorePassword: code});
+    console.log('user',user)
     if (!user) return
     const password = crypto.createHmac('sha256', '').update(Math.random().toString()).digest('hex').substring(1, 5)
     user.password = password

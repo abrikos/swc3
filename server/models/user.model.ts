@@ -24,7 +24,7 @@ export interface IUser extends mongoose.Document {
     course: number
     blocked: boolean
     passwordHash: string
-    resetCode: string
+    restorePassword: string
     currency: string
     fio: string
     role: string
@@ -78,7 +78,7 @@ const schema = new Schema<IUser>({
     course: {type: Number, default: 1},
     blocked: {type: Boolean, default: false},
     passwordHash: {type: String},
-    resetCode: {type: String},
+    restorePassword: {type: String},
     currency: {type: String, default: 'Рубли'},
     role: {type: String, default: 'External'},
     roles: [{type: mongoose.Schema.Types.ObjectId, ref: 'role'}],
