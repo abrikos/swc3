@@ -27,6 +27,7 @@ export interface IUser extends mongoose.Document {
     resetCode: string
     currency: string
     fio: string
+    role: string
     roles: IRole[]
     //order: IOrder
     configurations: IConf[]
@@ -36,13 +37,13 @@ export interface IUser extends mongoose.Document {
 }
 
 interface IUserModel extends mongoose.Model<IUser> {
-    getPopulation: ()=>[]
+    getPopulation: () => []
 }
 
 
 const Schema = mongoose.Schema;
 export const validateEmail = function (email: string) {
-    return /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email);
+    return /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,4})+$/.test(email);
 };
 
 
@@ -79,6 +80,7 @@ const schema = new Schema<IUser>({
     passwordHash: {type: String},
     resetCode: {type: String},
     currency: {type: String, default: 'Рубли'},
+    role: {type: String, default: 'External'},
     roles: [{type: mongoose.Schema.Types.ObjectId, ref: 'role'}],
     //order: {type: mongoose.Schema.Types.ObjectId, ref: 'order'},
 }, {
@@ -110,39 +112,39 @@ schema.virtual('date')
     })
 schema.virtual('fio')
     .get(function () {
-        return `${this.firstName||''} ${this.middleName||''} ${this.lastName||''}`
+        return `${this.firstName || ''} ${this.middleName || ''} ${this.lastName || ''}`
     })
 schema.virtual('isAdmin')
     .get(function () {
-        return this.roles?.map((r: IRole) => r.name).includes('admin');
+        return this.role === 'admin';
     })
 schema.virtual('isNetwork')
     .get(function () {
-        return !!['admin', 'BDM', 'user'].filter(r => this.roles?.map((u: IRole) => u.name).includes(r)).length;
+        return ['admin', 'Internal'].includes(this.role);
     })
 schema.virtual('isEmployer')
     .get(function () {
-        return !!['Employer', 'BDM', 'Manager', 'admin', 'superuser', 'Internal'].filter(r => this.roles?.map((u: IRole) => u.name).includes(r)).length;
+        return ['admin', 'Internal'].includes(this.role);
     })
 schema.virtual('isProject')
     .get(function () {
-        return !!['admin', 'BDM', 'Manager'].filter(r => this.roles?.map((u: IRole) => u.name).includes(r)).length;
+        return ['admin', 'Internal'].includes(this.role);
     })
 schema.virtual('isAnalytic')
     .get(function () {
-        return !!['admin', 'BDM'].filter(r => this.roles?.map((u: IRole) => u.name).includes(r)).length;
+        return ['admin', 'Internal'].includes(this.role);
     })
 schema.virtual('isSettings')
     .get(function () {
-        return !!['admin', 'superuser'].filter(r => this.roles?.map((u: IRole) => u.name).includes(r)).length;
+        return ['admin'].includes(this.role);
     })
 schema.virtual('isServer')
     .get(function () {
-        return !!['admin', 'BDM', 'user'].filter(r => this.roles?.map((u: IRole) => u.name).includes(r)).length;
+        return true
     })
 schema.virtual('isSuperUser')
     .get(function () {
-        return this.roles?.map((r: IRole) => r.name).includes('superuser');
+        return ['admin'].includes(this.role);
     })
 
 schema.virtual('loggedDate')

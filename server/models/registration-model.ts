@@ -12,7 +12,7 @@ export interface IReg extends mongoose.Document {
     jobTitle: string
     phone: string
     parent: string
-    roles: string[]
+    role: string
     //isNetwork: {type: Boolean, default: false},
     //isSuperUser: {type: Boolean, default: false},
     email: string
@@ -32,7 +32,7 @@ const schema = new Schema<IReg>({
     jobTitle: {type: String},
     phone: {type: String},
     parent: {type: String},
-    roles: [{type: String}],
+    role: {type: String, default: 'External'},
     //isNetwork: {type: Boolean, default: false},
     //isSuperUser: {type: Boolean, default: false},
     email: {

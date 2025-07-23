@@ -27,7 +27,7 @@ const types = ['Сотрудник','Дистрибутор', 'Партнер', 
   Banner(v-if="!user" color="warning") Заявка на регистрацию не найдена. Возможно она уже подтверждена
   q-form(v-else ref="form" @submit="submit")
       UserForm(v-model="user")
-      q-select(v-model="user.type" :options="types" label="Тип пользователя" :rules="[$validateRequired]" )
+      RoleForm(v-model="user")
       q-card.q-ma-sm
         q-card-section
           q-btn(type="submit" label="Подтвердить" color="primary" )

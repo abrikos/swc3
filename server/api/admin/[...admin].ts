@@ -44,8 +44,32 @@ router.delete('/user/delete/:_id', defineEventHandler(async (event) => {
 
 router.get('/roles', defineEventHandler(async (event) => {
     checkAdmin(event.context.user)
-    return Role.find()
+    return Role.find({name: {$in: ['admin', 'External', 'Internal', 'BDM']}})
 }))
+
+
+async function refRoles() {
+    const users = await User.find().populate('roles')
+    for (const user of users) {
+        if (user.roles.map(r => r.name).includes('admin')) {
+            user.role = 'admin'
+        } else if (user.email.includes('qtech.ru')) {
+            user.role = 'Internal'
+        } else {
+            user.role = 'External'
+        }
+        try {
+            user.save()
+        } catch (err) {
+            console.log('zzzzzzzzzzz')
+            //console.error(err)
+        }
+    }
+
+}
+
+refRoles()
+//User.find({role:undefined}).then(console.log).catch(console.error)
 
 router.get('/log', defineEventHandler(async (event) => {
     checkAdmin(event.context.user)
@@ -91,6 +115,9 @@ router.post('/user/create', defineEventHandler(async (event) => {
     checkAdmin(event.context.user)
     await logAction(event)
     const user = await readBody(event)
+    if (!user.email.includes('@qtech.ru')) {
+        user.role = 'External'
+    }
     return User.create(user)
 }))
 
@@ -136,10 +163,9 @@ router.post('/registration/confirm/:_id', defineEventHandler(async (event) => {
     if (!reg) throw createError({statusCode: 404, message: 'Регистрация не найдена',})
 
     reg.password = Math.random().toString(36).slice(-8)
-
-    const role1 = await Role.findOne({name: 'user'})
-    const role2 = await Role.findOne({name: 'External'})
-    reg.roles = [role1?.id, role2?.id]
+    if (!reg.email.includes('@qtech.ru')) {
+        reg.role = 'External'
+    }
 
     const user = await User.create(reg.toJSON())
     await Registration.deleteMany({email: user.email})

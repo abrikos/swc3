@@ -10,20 +10,20 @@ const columns = [
   {field: 'date', label: 'Зарегистрирован'},
   {field: 'loggedDate', label: 'Последний вход'},
   {field: 'specsCount', label: 'Спек'},
-  {field: 'roles', label: 'Роли'},
+  {field: 'role', label: 'Роль'},
   {name: 'actions', label: ''},
 ].map(v => ({name: v.field, ...v}))
 onMounted(load)
 
-const roles = ref()
+//const roles = ref()
 
 async function load() {
   list.value = await useNuxtApp().$GET('/admin/list-all')
-  roles.value = await useNuxtApp().$GET('/admin/roles')
+  //roles.value = await useNuxtApp().$GET('/admin/roles')
   user.value = {
-    roles: roles.value.filter((r: IRole) => ['user', 'External'].includes(r.name)),
+    //roles: roles.value.filter((r: IRole) => ['user', 'External'].includes(r.name)),
     blocked: false,
-    parent: loggedUser.value.fio
+    parent: loggedUser.value?.fio
     //email:'aa@aa.com', inn:'dfdfd', company:'dfds', firstName:'sdsd', lastName:'sdsd', middleName:'dfdfd', phone:'+79142635268'
   }
 }
@@ -34,7 +34,6 @@ async function deleteUser(id: string) {
 }
 
 async function updateUser(user: any) {
-  console.log(user.blocked)
   await useNuxtApp().$POST(`/admin/user/update/${user.id}`, user)
   await load()
 }
@@ -44,7 +43,7 @@ const filter = ref({role: '', email: ''})
 const listFiltered = computed(
     () => list.value
         .filter((u: IUser) => u.email.match(filter.value.email))
-        .filter((u: IUser) => filter.value.role ? u.roles.map((r: IRole) => r.id).includes(filter.value.role) : true)//(filter.value.email))
+        .filter((u: IUser) => filter.value.role ? u.role === filter.value.role : true)//(filter.value.email))
 )
 
 const addDialog = ref(false)
@@ -53,7 +52,7 @@ const user = ref()
 const snackbar = useSnackbar();
 
 async function addUser() {
-  if (!user.value.roles.length) {
+  if (!user.value.role) {
     snackbar.add({type: 'error', text: 'Укажите роль'})
     return
   }
@@ -64,10 +63,11 @@ async function addUser() {
     snackbar.add({type: 'error', text: 'Ошибка создания пользователя'})
   }
 }
+const roles = ['admin','Internal','External'].map(r=>({label:r, value:r}))
 </script>
 
 <template lang="pug">
-  q-btn(@click="addDialog = true" color="primary" ) Создать пользователя
+  q-btn(@click="addDialog = true; user={role:'External'}" color="primary" ) Создать пользователя
   q-dialog(v-model="addDialog" )
     q-card(v-if="user")
       q-toolbar
@@ -91,7 +91,7 @@ async function addUser() {
           q-btn(type="submit" label="Создать" color="primary")
 
   q-input(v-model="filter.email" label="Поиск по e-mail" )
-  q-option-group(v-if="roles" v-model="filter.role" :options="roles" option-value="id" option-label="name" inline )
+  q-option-group(v-model="filter.role" :options="roles"  inline )
   q-table(:rows="listFiltered" v-if="list" :columns="columns" @row-click="(e,row)=>navigateTo({path: '/admin/user-edit', query: {id:row.id}})" :pagination="{rowsPerPage:15}")
     template(v-slot:body-cell-roles="{row}")
       q-td {{row.roles.map(r => r.name)}}
