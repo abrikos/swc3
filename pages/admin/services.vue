@@ -5,7 +5,6 @@ const {$listen} = useNuxtApp()
 
 async function load() {
   services.value = await useNuxtApp().$GET('/conf/services') as IService[];
-  console.log($q.screen.lt.md)
 }
 
 $listen('load-services', load)
@@ -20,7 +19,7 @@ const columns = [
 
 async function update(row: IService) {
   await useNuxtApp().$POST('/admin/services-update', row)
-  console.log(row)
+  await load()
 }
 
 const service = ref({})

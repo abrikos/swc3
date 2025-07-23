@@ -16,6 +16,7 @@ export interface IService extends mongoose.Document {
     level: string,
     period: number,
     coefficient: number,
+    order: number
 }
 
 const Schema = mongoose.Schema;
@@ -32,6 +33,7 @@ const schema = new Schema<IService>({
     discount2: Number,
     level: String,
     period: Number,
+    order: Number,
     coefficient: Number,
 
 }, {
