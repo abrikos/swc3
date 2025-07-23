@@ -110,11 +110,16 @@ router.get('/list', defineEventHandler(async (event) => {
     }))
 }))
 
-router.post('/create/conf', defineEventHandler(async (event) => {
+router.post('/create/:type', defineEventHandler(async (event) => {
     const user = event.context.user
     if (!user || !user.isServer) throw createError({statusCode: 403, message: 'Доступ запрещён',})
     const {id} = await readBody(event)
-    return Spec.create({user, name: 'Спецификация от ' + moment().format('YYYY-MM-DD HH:mm'), configurations: [id]})
+    const {type} = event.context.params as Record<string, string>
+    if(type==='order') {
+        return Spec.create({user, name: 'Спецификация от ' + moment().format('YYYY-MM-DD HH:mm'), orders: [id]})
+    }else{
+        return Spec.create({user, name: 'Спецификация от ' + moment().format('YYYY-MM-DD HH:mm'), configurations: [id]})
+    }
 }))
 
 
