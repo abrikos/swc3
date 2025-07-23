@@ -48,9 +48,16 @@ router.put('/clone/:id', defineEventHandler(async (event) => {
     conf._id = new mongoose.Types.ObjectId;
     conf.name = 'Клон ' + conf.name
     conf.isNew = true;
-    conf.save()
+    await conf.save()
     spec.configurations.push(conf)
-    spec.save()
+    await spec.save()
+    const parts = await Part.find({configuration:id})
+    for (const part of parts) {
+        part._id = new mongoose.Types.ObjectId;
+        part.isNew = true;
+        part.configuration  = conf
+        await part.save()
+    }
     return conf.id
 
 }))
