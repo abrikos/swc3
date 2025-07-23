@@ -473,7 +473,7 @@ schema.virtual('rearBayU2Count')
 
 schema.virtual('diskCount')
     .get(function () {
-        return this.parts.filter(p => ['HDD', 'SSD 2.5', 'SSD U.2 NVMe', 'SSS m.2'].includes(p.component.type)).reduce((a, b) => a + b.count * 1, 0)
+        return this.parts.filter(p => ['HDD', 'SSD 2.5', 'SSD U.2 NVMe', 'SSD m.2'].includes(p.component.type)).reduce((a, b) => a + b.count * 1, 0)
     })
 
 schema.virtual('diskSsdHddCount')
