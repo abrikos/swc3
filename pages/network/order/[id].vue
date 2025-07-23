@@ -38,6 +38,7 @@ function filterZero(){
 
 async function save(){
   await useNuxtApp().$POST('/order/update/'+route.params.id, order.value)
+  showCategories.value = false
 }
 
 const itemsSorted = computed(()=>order.value.items
@@ -51,6 +52,10 @@ div(v-if="order")
     q-toolbar-title.cursor-pointer {{order.name}}
       EditField(v-model="order.name" :update="save")
   div.row
+    div.col-sm(v-if="showCategories")
+      NetworkCategories
+    div.col-sm(v-if="showCategories")
+      DeviceTable(v-model="order.items" )
     div.col-sm.q-pa-sm
       //q-input(v-model="order.name" @focus="(input) => input.target.select()" label="Название конфигурации")
       q-card
@@ -78,16 +83,16 @@ div(v-if="order")
 
           q-card-actions.flex.justify-between
             q-btn(@click="save" label="Сохранить" color="primary")
-            q-btn(@click="showCategories=true" label="Добавить устройства")
-            q-btn(@click="load" label="Сбросить")
+            q-btn(v-if="!showCategories" @click="showCategories=true" label="Добавить устройства")
+            q-btn(@click="showCategories=false; load()" label="Сбросить")
 
-    div.col-sm.q-pa-sm
+    div.col-sm.q-pa-sm(v-if="!showCategories")
       AddToSpec(type="order")
       OrderServices(:order="order")
       OrderTranscievers(:order="order")
       OrderPowers(:order="order")
       OrderWifi(:order="order")
-  Dialog(v-model="showCategories" title="Добавление устройства" )
+  //Dialog(v-model="showCategories" title="Добавление устройства" )
     div.row
       div.col-sm-4
         NetworkCategories
