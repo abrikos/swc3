@@ -1,4 +1,5 @@
 import moment from "moment";
+import {User} from "~/server/models/user.model";
 
 async function setCourse() {
     const url = 'https://www.cbr-xml-daily.ru/daily_json.js'
@@ -74,6 +75,33 @@ async function clearConfigurations() {
     console.log(confs, specDel);
 
 }
+
+async function refRoles() {
+    console.log('ffffffffff')
+    const users = await User.find().populate('roles')
+    for (const user of users) {
+        console.log(user.email, user.role, user.roles)
+        if (user.roles.map(r => r.name).includes('admin')) {
+            user.role = 'admin'
+
+        } else if (user.email.includes('qtech.ru')) {
+            user.role = 'Internal'
+        } else {
+            user.role = 'External'
+        }
+        try {
+            user.save()
+        } catch (err) {
+            console.log('zzzzzzzzzzz')
+            //console.error(err)
+        }
+    }
+
+}
+
+refRoles()
+//User.find({role:undefined}).then(console.log).catch(console.error)
+
 
 //clearConfigurations()
 
