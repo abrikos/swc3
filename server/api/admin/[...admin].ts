@@ -106,7 +106,8 @@ router.get('/user/:id', defineEventHandler(async (event) => {
 
 router.get('/specs', defineEventHandler(async (event) => {
     checkAdmin(event.context.user)
-    return Spec.find().populate({path: 'user', select: ['email']})
+    const specs = await Spec.find().populate({path: 'user', select: ['email']})
+    return specs.map((s:ISpec)=>({id:s.id,name:s.name,date:s.date,user:s.user?.email}))
 }))
 
 router.post('/services-add', defineEventHandler(async (event) => {

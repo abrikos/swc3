@@ -10,7 +10,7 @@ const columns = [
   {field: 'id', label: 'ID'},
   {field: 'date', label: 'Date'},
   {field: 'name', label: 'Name'},
-  {field: ((row: ISpec) => row.user?.email) as unknown as string, label: 'User'},
+  {field: 'user', label: 'User'},
 ]
 const filter = ref()
 </script>
