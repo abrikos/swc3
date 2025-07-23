@@ -70,7 +70,7 @@ const confColor = computed(()=>conf.value?.powerCoefficient === 0 ? '' : conf.va
         Tabs(:items="tabsArrayType" param="type" )
         ConfService(v-if="route.query.category==='Services'" :conf="conf")
         ConfTable(v-else :conf="conf" :components="components")
-      div.col-sm.q-pa-sm
+      div.col-sm-4.q-pa-sm
         div {{conf.chassis.platform}} {{conf.chassis.descFull}}
 
         AddToSpec(type="conf")
