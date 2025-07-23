@@ -11,7 +11,7 @@ const props = defineProps({
   conf: {type: Object, required: true},
 })
 const {$event} = useNuxtApp()
-const service = ref(props.conf.service)
+const service = ref(props.conf.service?.id)
 const brokenStorageService = ref(props.conf.brokenStorageService)
 
 async function onServiceChange() {

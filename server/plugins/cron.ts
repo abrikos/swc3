@@ -109,16 +109,16 @@ async function servicesFix(){
     const confs = await Conf.find().populate('service')
     for(const conf of confs){
         if(conf.service) {
-            console.log(conf.id, conf.service.name, conf.service.partNumber)
-            //conf.service = await Service.findOne({name: conf.service.name, partNumber: undefined}) as IService
-            //conf.save()
+            //console.log(conf.id, conf.service.name, conf.service.id)
+            conf.service = await Service.findOne({name: conf.service.name, partNumber: undefined}) as IService
+            conf.save()
         }
     }
 }
 
 export default defineNitroPlugin(() => {
     //refRoles()
-    //servicesFix();
+    servicesFix();
     setInterval(() => {
         deleteRegistrations()
     }, 1000 * 3600)
