@@ -51,8 +51,10 @@ router.get('/roles', defineEventHandler(async (event) => {
 async function refRoles() {
     const users = await User.find().populate('roles')
     for (const user of users) {
+        console.log(user.email, user.role, user.roles)
         if (user.roles.map(r => r.name).includes('admin')) {
             user.role = 'admin'
+
         } else if (user.email.includes('qtech.ru')) {
             user.role = 'Internal'
         } else {
