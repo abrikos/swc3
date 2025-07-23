@@ -120,7 +120,7 @@ schema.virtual('isAdmin')
     })
 schema.virtual('isNetwork')
     .get(function () {
-        return ['admin', 'Internal'].includes(this.role);
+        return true;//['admin', 'Internal'].includes(this.role);
     })
 schema.virtual('isEmployer')
     .get(function () {
