@@ -53,6 +53,10 @@ const tabsArrayType = computed(() => {
   return category?.children || []
 })
 
+const confColor = computed(()=>conf.value?.powerCoefficient === 0 ? '' : conf.value?.powerCoefficient < 70 ? 'green'
+    :
+    conf.value?.powerCoefficient < 85 ? 'orange'
+        : 'red')
 </script>
 
 <template lang="pug">
@@ -86,7 +90,7 @@ const tabsArrayType = computed(() => {
             tr
               td( v-if="loggedUser.isAdmin") {{ conf.powerConsumption }}
               td {{ conf.power }}
-              td {{ conf.powerCoefficient.toFixed(0) }}%
+              td(:class="`bg-${confColor}`")  {{ conf.powerCoefficient.toFixed(0) }}%
 
         ConfBasket(:conf="conf")
   div(v-else)

@@ -32,6 +32,7 @@ export interface IConf extends mongoose.Document {
     description: string
     priceService: number
     storagePrice: number
+    powerCoefficient: number
 
 }
 
@@ -68,7 +69,7 @@ schema.statics.getPopulation = () => population
 schema.statics.createCustom = async function (chassisId, user) {
     const chassis = await Chassis.findById(chassisId)
     if (!chassis) return null;
-    const service = await Service.findOne({level: 'BAS', period: 5, partNumber:undefined})
+    const service = await Service.findOne({level: 'BAS', period: 3, partNumber:undefined})
     console.log('zzzzzzz', service)
     const configuration = await this.create({
         chassis,

@@ -99,13 +99,14 @@ async function refRoles() {
 
 }
 
-refRoles()
+
 //User.find({role:undefined}).then(console.log).catch(console.error)
 
 
 //clearConfigurations()
 
 export default defineNitroPlugin(() => {
+    //refRoles()
     setInterval(() => {
         deleteRegistrations()
     }, 1000 * 3600)
