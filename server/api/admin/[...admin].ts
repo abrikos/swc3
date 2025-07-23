@@ -12,6 +12,7 @@ import {
 } from "~/server/utils/import";
 import {LogAdmin} from "~/server/models/log.model";
 import {H3Event} from "h3";
+import moment from "moment";
 
 const router = createRouter()
 
@@ -176,6 +177,12 @@ router.post('/registration/reject/:_id', defineEventHandler(async (event) => {
     await Registration.deleteOne({_id})
 }))
 
+router.get('/import-list', defineEventHandler(async (event) => {
+    checkAdmin(event.context.user)
+    const storage = useStorage();
+    return  storage.keys('excel')
+}))
+
 router.post('/import/:type', defineEventHandler(async (event) => {
     checkAdmin(event.context.user)
     await logAction(event)
@@ -183,7 +190,7 @@ router.post('/import/:type', defineEventHandler(async (event) => {
     let formData = await readMultipartFormData(event)
     const storage = useStorage("excel");
     if (formData) {
-        await storage.setItemRaw(formData[0].name as string, formData[0].data);
+        await storage.setItemRaw(`${moment().format('YYYY-MM-DD')}-${formData[0].name}`, formData[0].data);
         switch (type) {
             case 'net':
                 return parseNetworkXLS(formData[0].data)
