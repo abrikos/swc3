@@ -44,8 +44,6 @@ const $q = useQuasar()
 async function update() {
   await useNuxtApp().$POST(`/conf/update/${route.params.id}`, conf.value)
   //$q.notify({message:'aaaa', color: 'green'})
-
-
 }
 
 const tabsArrayType = computed(() => {

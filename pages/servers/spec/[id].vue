@@ -39,6 +39,11 @@ async function cloneConf(id:string){
   await useNuxtApp().$PUT(`/conf/clone/${id}`,spec.value)
   await load()
 }
+async function confUpdate(conf:IConf) {
+  await useNuxtApp().$POST(`/conf/update/${conf.id}`, conf)
+  //$q.notify({message:'aaaa', color: 'green'})
+}
+
 </script>
 
 <template lang="pug">
@@ -82,6 +87,10 @@ div(v-if="spec")
       tr(v-for="conf of spec.configurations" :key="conf.id")
         td
           router-link(:to="`/servers/conf/${conf.id}?category=CPU`") {{conf.name}}
+          q-btn(icon="mdi-pencil" size="sm" )
+            q-popup-edit.full-widthBAK(v-model="conf.name" auto-save v-slot="scope")
+              q-input(v-model="conf.name" autofocus @keyup.enter.prevent="confUpdate(conf)" hint="Enter для сохранения"  v-close-popup)
+
         td {{ conf.description }}
         td
           q-input(v-model="conf.count" type="number" min="1" @update:model-value="saveConf(conf)")
