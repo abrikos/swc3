@@ -14,6 +14,7 @@ const columns = [
   {field: 'level', label: 'Уровень'},
   {field: 'coefficient', label: 'Коэффициент'},
   {field: 'period', label: 'Период'},
+  {field: 'order', label: 'Сортировка'},
   {field: 'controls', label: ''},
 ].map(item => ({...item, name: item.field}))
 
@@ -59,9 +60,11 @@ const levels = ['ADV', 'PRE', 'BAS']
         td
           q-select(v-model="row.level" :options="levels" @update:model-value="update(row)")
         td
-          q-input(v-model="row.coefficient" type="number" :min="0" :max="1" :step="0.05" @update:model-value="update(row)")
+          q-input(v-model.number="row.coefficient" type="number" :min="0" :max="1" :step="0.05" @update:model-value="update(row)")
         td
-          q-input(v-model="row.period" type="number" :min="3" :max="5" @update:model-value="update(row)")
+          q-input(v-model.number="row.period" type="number" :min="3" :max="5" @update:model-value="update(row)")
+        td
+          q-input(v-model.number="row.order" type="number" :min="-3" :max="5" @update:model-value="update(row)")
         td
           DeleteButton(path="/admin/services-delete" :name="row.name" event="load-services" :id="row.id" @update:model-value="update(row)")
 

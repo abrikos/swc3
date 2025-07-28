@@ -123,6 +123,7 @@ router.post('/services-update', defineEventHandler(async (event) => {
     checkAdmin(event.context.user)
     await logAction(event)
     const body = await readBody(event)
+    console.log(body)
     return Service.updateOne({_id: body.id}, body)
 }))
 
