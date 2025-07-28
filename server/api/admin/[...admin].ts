@@ -106,7 +106,7 @@ router.get('/user/:id', defineEventHandler(async (event) => {
 
 router.get('/specs', defineEventHandler(async (event) => {
     checkAdmin(event.context.user)
-    const specs = await Spec.find().populate({path: 'user', select: ['email']})
+    const specs = await Spec.find().sort({createdAt:-1}).populate({path: 'user', select: ['email']})
     return specs.map((s:ISpec)=>({id:s.id,name:s.name,date:s.date,user:s.user?.email}))
 }))
 

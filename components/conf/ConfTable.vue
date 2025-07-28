@@ -34,7 +34,7 @@ const rowClassFn = (row:any)=>row.count>0 ? 'selected' : ''
 </script>
 
 <template lang="pug">
-  q-table(:rows="componentsCurrent" :columns="columns" row-key="id" :pagination="{rowsNumber:100, rowsPerPage:100}" :table-row-class-fn="rowClassFn" wrap-cells)
+  q-table(:rows="componentsCurrent" :columns="columns" row-key="id" :pagination="{rowsNumber:100, rowsPerPage:100}" :table-row-class-fn="rowClassFn" wrap-cells flat)
     template(v-slot:body-cell-count="{row}")
       q-td
         select(v-if="!(row.countDisabled && !calcCount(row))" @change="(e)=>addPart(e,row)")
