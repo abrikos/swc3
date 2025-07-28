@@ -1,39 +1,31 @@
 <script setup lang="ts">
-import OrderBasket from "~/components/order/OrderBasket.vue";
-import NetworkCategories from "~/components/order/NetworkCategories.vue";
-import DeviceTable from "~/components/order/DeviceTable.vue";
-const items = ref<{device:IDevice, count:number}[]>([])
-function handler(e){
-  navigateTo({path:"/servers/chassis", query:{platform:e.name}})
-}
-const tabsList = [
-  {label: 'Intel Gen2', name: 'G2', handler},
-  {label: 'Intel Gen3', name: 'G3', handler},
-  {label: 'AMD', name: 'AMD', handler},
-  {label: 'Дисковые полки (JBOD)', name: 'JBOD', handler},
-  {label: 'Intel Gen2R', name: 'G2R', handler},
-  {label: 'Intel Gen3R', name: 'G3R', handler},
-  {label: 'Intel Gen4', name: 'G4', handler},
-]
+import {useCustomStore} from "~/store/custom-store";
 
-const tree = [{
-  label: 'Сервера',
-  selectable: true,
-  children: tabsList
-}]
+const {loggedUser} = useCustomStore()
+
+const categories = [
+  {name: 'Серверы', show: loggedUser?.isInternal, icon: 'mdi-server', server:1},
+  {name: 'VoIP', show: loggedUser?.isInternal, icon: 'mdi-phone-voip'},
+  {name: 'Wi-Fi решения', show: loggedUser?.isInternal, icon: 'mdi-wifi'},
+  {name: 'Коммутаторы Enterprise', show: loggedUser?.isInternal, icon: 'mdi-switch'},
+  {name: 'Коммутаторы SMB', show: loggedUser?.isInternal, icon: 'mdi-switch'},
+  {name: 'Маршрутизаторы', show: loggedUser?.isInternal, icon: 'mdi-router-network'},
+  {name: 'Оптические модули', show: loggedUser?.isInternal, icon: 'mdi-toslink'},
+  {name: 'Оптические трансиверы xWDM', show: loggedUser?.isInternal, icon: 'mdi-toslink'},
+]
 </script>
 
 <template lang="pug">
-  div.row
-    div.col-3-sm.q-px-sm
-      //DeviceChoose(v-model="items")
-      q-tree(:nodes="tree" node-key="label")
-      NetworkCategories
-    div.col-sm
-      DeviceTable(v-model="items" )
-
-    div.col-sm.q-px-sm
-      OrderBasket(v-model="items")
+  div.flex
+    div(v-for="category in categories")
+      q-card.q-ma-sm(v-if="category.server || loggedUser.isEmployer" style="width: 200px; height:200px" @click="navigateTo(category.server ? '/servers/chassis':'/network/choose')")
+        q-card-section.text-center
+          q-icon(:name="category.icon" size="70px" color="primary")
+          br
+          br
+          div {{ category.name }}
+      //q-card-actions(v-if="loggedUser.isAdmin")
+        q-btn(icon="mdi-image-edit" )
 
 </template>
 

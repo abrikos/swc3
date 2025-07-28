@@ -12,17 +12,7 @@ const themeWidth = useCookie<string>('themeWidth');
 const drawerSide = useCookie<string>('drawerSide');
 await getSettings()
 const leftDrawerOpen = ref(true);
-const pages = [
-  //{to: '/', label: 'Начало', icon: 'mdi-home'},
-  {to: '/new-spec', label: 'Создать спецификацию', icon: 'mdi-new-box', forLogged: true},
-  {to: '/network/choose', label: 'Сетевое оборудование', icon: 'mdi-network-outline', forLogged: true},
-  {to: '/servers/chassis', label: 'Сервера', icon: 'mdi-server-outline', forLogged: true},
-  {to: '/servers/spec/list', label: 'Спецификации', icon: 'mdi-list-box-outline', forLogged: true},
-  {to: '/project/list', label: 'Проекты', icon: 'mdi-briefcase-outline', forLogged: true},
-  {to: '/user/login', label: 'Вход', icon: 'mdi-account', forLogged: false},
-  {to: '/user/registration', label: 'Зарегистрироваться', icon: 'mdi-account-plus', forLogged: false},
-  {to: '/user/password-restore', label: 'Восстановить пароль', icon: 'mdi-form-textbox-password', forLogged: false},
-]
+const pages = ref()
 
 const pagesAdmin = [
   {to: '/admin/user-registrations', label: 'Заявки на регистрацию', icon: 'mdi-account-alert-outline'},
@@ -38,6 +28,17 @@ onMounted(()=>{
   useNuxtApp().$GET('/git-commit').then((res)=>{
     version.value = res;
   })
+  pages.value = [
+    //{to: '/', label: 'Начало', icon: 'mdi-home'},
+    {to: '/new-spec', label: 'Создать спецификацию', icon: 'mdi-new-box', showItem: true},
+    //{to: '/network/choose', label: 'Сетевое оборудование', icon: 'mdi-network-outline', showItem: loggedUser.value?.isInternal},
+    {to: '/servers/chassis', label: 'Серверы', icon: 'mdi-server-outline', showItem: true},
+    {to: '/servers/spec/list', label: 'Спецификации', icon: 'mdi-list-box-outline', showItem: true},
+    {to: '/project/list', label: 'Проекты', icon: 'mdi-briefcase-outline', showItem: true},
+    {to: '/user/login', label: 'Вход', icon: 'mdi-account', showItem: false},
+    {to: '/user/registration', label: 'Зарегистрироваться', icon: 'mdi-account-plus', showItem: false},
+    {to: '/user/password-restore', label: 'Восстановить пароль', icon: 'mdi-form-textbox-password', showItem: false},
+  ]
 })
 </script>
 
@@ -69,7 +70,7 @@ onMounted(()=>{
       q-list
         //q-item(to="http://srvgfg.qtech.ru:8080")
           q-item-section Старая версия
-        q-item(v-for="page in pages.filter(p=>p.forLogged===!!loggedUser)" :to="page.to")
+        q-item(v-if="pages" v-for="page in pages.filter(p=>p.showItem)" :to="page.to")
           q-item-section(avatar)
             q-icon(:name="page.icon")
           q-item-section {{page.label}}

@@ -16,7 +16,7 @@ async function uploadImage(e: any) {
 
 <template lang="pug">
   input( type="file" accept="image/*" @change="uploadImage" ref="input" hidden)
-  q-btn(@click="()=>input.click()" icon="mdi-upload" color="secondary" round )
+  q-btn(@click="()=>input.click()" icon="mdi-image-edit" color="secondary" round )
     q-tooltip Загрузить изображение
 </template>
 
