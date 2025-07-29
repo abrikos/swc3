@@ -52,10 +52,8 @@ div(v-if="order")
     q-toolbar-title.cursor-pointer {{order.name}}
       EditField(v-model="order.name" :update="save")
   div.row
-    div.col-sm(v-if="showCategories")
-      NetworkCategories
-    div.col-sm(v-if="showCategories")
-      DeviceTable(v-model="order.items" )
+    div.col-sm-4(v-if="showCategories")
+      NetworkCategories(v-model="order.items" )
     div.col-sm.q-pa-sm
       //q-input(v-model="order.name" @focus="(input) => input.target.select()" label="Название конфигурации")
       q-card
@@ -88,10 +86,10 @@ div(v-if="order")
 
     div.col-sm.q-pa-sm(v-if="!showCategories")
       AddToSpec(type="order")
-      OrderServices(:order="order")
-      OrderTranscievers(:order="order")
-      OrderPowers(:order="order")
-      OrderWifi(:order="order")
+      OrderServices(v-model="order")
+      OrderTranscievers(v-model="order")
+      OrderPowers(v-model="order")
+      OrderWifi(v-model="order")
   //Dialog(v-model="showCategories" title="Добавление устройства" )
     div.row
       div.col-sm-4

@@ -1,54 +1,65 @@
 <script setup lang="ts">
+import icons from "~/pages/network/net-cat-icons"
+const items = defineModel<{device:IDevice, count:number}[]>()
 const {$event} = useNuxtApp()
 const selected = ref()
-//const route =useRoute()
+const route = useRoute()
 const categories = ref<ICategory[]>([])
-async function load(){
+const devices = ref<IDevice[]>([])
+
+async function load() {
   categories.value = await useNuxtApp().$GET('/order/categories') as ICategory[]
-  expandNode()
+  await getDevices()
 }
+
+async function getDevices() {
+  if(!route.query.sub) return
+  devices.value = await useNuxtApp().$GET('/order/devices/' + route.query.sub) as IDevice[]
+}
+
+watch(() => route.query.sub, getDevices)
 onMounted(load)
-const expanded = ref()
-
-function expandNode(id?:string){
-  for(const c of categories.value){
-    if(c.subcategories.map(cc=>cc.id).includes(id|| selected.value)){
-      expanded.value = [c.name]
-    }
+const subcats = computed(() => categories.value?.find(c => c.id === route.query.cat)?.subcategories || [])
+function addDevice(device:IDevice){
+  $event('order:addDevice',device)
+  const exists = items.value?.find((i:any)=>i.device.id === device.id)
+  if(exists){
+    exists.count++
+  }else {
+    items.value?.push({device, count: 1})
   }
 }
 
-function handler(e:any){
-  $event('order:category', e.id)
-  selected.value = e.id
-  //navigateTo({query:{sub:e.id}})
-  //expandNode(e.id)
-}
-const tree = computed(()=>{
-  const t =[]
-  for(const category of categories.value){
-    t.push({
-      label: category.name,
-      selectable: true,
-      handler:(e:any)=>{ expanded.value=[category.name]},
-      children: category.subcategories
-          .filter((c:ISubCategory)=>!c.deleted)
-          .map((c:ISubCategory)=>({id:c.id, label:c.name, handler, selectable:true, disabled:c.id===selected.value})),
-    })
-  }
-  return t
-})
 </script>
 
 <template lang="pug">
-  q-tree(:nodes="tree" node-key="label" v-model:expanded="expanded" )
-    template(v-slot:header-active="props")
-      div.selected {{subcat}}
+  q-list
+    q-item(v-for="category in categories")
+      q-item-section(avatar)
+        q-icon(:name="icons[category.name]" color="primary" size="30px")
+      q-item-section
+        router-link(:to="{query:{cat:category.id}}") {{category.name}}
+        div.subcat(v-for="sub in subcats" v-if="category.id === route.query.cat")
+          router-link(:to="{query:{...route.query, sub:sub.id}}") {{sub.name}}
+          div.device(v-for="device in devices" v-if="sub.id === route.query.sub" @click="addDevice(device)")
+            q-tooltip(max-width="400px" ) {{device.description}}
+            div.flex.items-center.justify-between
+              div {{device.name}}
+              //div
+                q-btn(icon="mdi-plus-circle-outline")
+
 </template>
 
 <style scoped lang="sass">
+.subcat
+  padding-left: 20px
+.device
+  padding-left: 20px
+  border-bottom: 1px solid silver
+  //width: 400px
 div
   cursor: pointer
+
 div.selected
   cursor: default
 </style>

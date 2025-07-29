@@ -1,7 +1,5 @@
 <script setup lang="ts">
-const {order} = defineProps({
-  order: {type: Object, required: true},
-})
+const order = defineModel()
 const errors = ref<any[]>([])
 const warnings = ref<any[]>([])
 const {$listen} = useNuxtApp()
@@ -10,8 +8,8 @@ onMounted(checkErrors)
 function checkErrors() {
   errors.value=[]
   warnings.value=[]
-  for (const item of order.items) {
-    const powerForDevice = order.items.filter((i: IOrderItem) => i.powerForDevice?.id === item.device?.id).reduce((a: number, b: IOrderItem) => a + b.count, 0)
+  for (const item of order.value.items) {
+    const powerForDevice = order.value.items.filter((i: IOrderItem) => i.powerForDevice?.id === item.device?.id).reduce((a: number, b: IOrderItem) => a + b.count, 0)
 
     if (item.device?.powerCount > powerForDevice) {
       errors.value.push({item, needed: item.device?.powerCount * item.count - powerForDevice})
@@ -24,7 +22,7 @@ function checkErrors() {
 }
 
 async function addPowers(item: IDevice, pwr: IDevice, err: any) {
-  //await this.$axios.$put(`/network/order/${this.order.id}/power`, {item,pwr,err})
+  //await this.$axios.$put(`/network/order/${this.order.value.id}/power`, {item,pwr,err})
   const add = {
     device: pwr,
     count: err.needed,
@@ -32,11 +30,11 @@ async function addPowers(item: IDevice, pwr: IDevice, err: any) {
     powerForDevice: err.item.device,
     notDevice: true
   }
-  const exists = order.items.find((i: IOrderItem) => i.device?.id === pwr.id)
+  const exists = order.value.items.find((i: IOrderItem) => i.device?.id === pwr.id)
   if (exists) {
     exists.count = exists.count * 1 + err.needed * 1
   } else {
-    order.items.push(add)
+    order.value.items.push(add)
   }
   checkErrors()
 }

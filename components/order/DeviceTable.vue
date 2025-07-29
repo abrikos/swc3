@@ -14,6 +14,7 @@ async function load(){
 onMounted(load)
 
 function addDevice(device:IDevice){
+  return
   $event('order:addDevice',device)
   const exists = items.value?.find((i:any)=>i.device.id === device.id)
   if(exists){

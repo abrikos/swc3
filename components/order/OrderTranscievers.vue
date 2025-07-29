@@ -1,19 +1,17 @@
 <script setup lang="ts">
-const {order} = defineProps({
-  order: {type: Object, required: true},
-})
+const order = defineModel()
 
 const itemsWithoutTrans = computed(() => {
-  return order.items.filter((i: IOrderItem) => i.device?.trans?.length)
+  return order.value.items.filter((i: IOrderItem) => i.device?.trans?.length)
       .filter((i:IOrderItem)=>{
-        const trans = order.items.filter((s:IOrderItem)=>s.transForDevice).map((i:IOrderItem)=>i.sortName)
+        const trans = order.value.items.filter((s:IOrderItem)=>s.transForDevice).map((i:IOrderItem)=>i.sortName)
         return !trans.includes(i.device.name)
       })
 })
 
 const transList = computed(() => {
   const ret =[]
-  for(const d of order.items.filter((i: IOrderItem) => i.device?.trans.length)){
+  for(const d of order.value.items.filter((i: IOrderItem) => i.device?.trans.length)){
     ret.push(...d.device.trans)
   }
   return ret
@@ -22,11 +20,11 @@ const transList = computed(() => {
 const selected = ref()
 async function addTrans(trans:IDevice) {
   const add = {device: trans, count: 1, sortName:selected.value?.device.name, transForDevice:selected.value?.device, notDevice:true}
-  const exists = order.items.find((i:IOrderItem) => i.device?.id === trans.id)
+  const exists = order.value.items.find((i:IOrderItem) => i.device?.id === trans.id)
   if (exists) {
     exists.count++
   } else {
-    order.items.push(add)
+    order.value.items.push(add)
   }
   showDialog.value=false
 }

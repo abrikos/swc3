@@ -1,11 +1,9 @@
 <script setup lang="ts">
-const {order} = defineProps({
-  order: {type: Object, required: true},
-})
+const order = defineModel()
 const itemsWithoutServices = computed(() => {
-  return order.items.filter((i: IOrderItem) => i.device?.services?.length)
+  return order.value.items.filter((i: IOrderItem) => i.device?.services?.length)
       .filter((i:IOrderItem)=>{
-        const services = order.items.filter((s:IOrderItem)=>s.service).map((i:IOrderItem)=>i.sortName)
+        const services = order.value.items.filter((s:IOrderItem)=>s.service).map((i:IOrderItem)=>i.sortName)
         return !services.includes(i.device.name)
       })
 })
@@ -19,7 +17,7 @@ async function showServicesDialog(item:IOrderItem){
 
 async function addService(service:INetService){
   const add = {service, count: 1, sortName: itemSelected.value?.device.name, notDevice:true}
-  order.items.push(add)
+  order.value.items.push(add)
   showDialog.value=false
 }
 
