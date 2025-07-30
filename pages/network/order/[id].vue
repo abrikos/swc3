@@ -30,6 +30,7 @@ const order = ref()
 const showCategories = ref(false)
 async function load() {
   order.value = await useNuxtApp().$GET('/order/'+route.params.id)
+  $event('power:check')
 }
 onMounted(load)
 function filterZero(){

@@ -21,7 +21,12 @@ watch(() => route.query.sub, getDevices)
 onMounted(load)
 const subcats = computed(() => categories.value?.find(c => c.id === route.query.cat)?.subcategories || [])
 function addDevice(device:IDevice){
-  $event('order:addDevice',device)
+  const exists = items.value?.find((i:any)=>i.device.id === device.id)
+  if(exists){
+    exists.count++
+  }else {
+    items.value?.push({device, count: 1})
+  }
 }
 
 </script>

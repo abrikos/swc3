@@ -5,20 +5,23 @@ const warnings = ref<any[]>([])
 const {$listen} = useNuxtApp()
 $listen('power:check', checkErrors)
 onMounted(checkErrors)
-function checkErrors() {
-  errors.value=[]
-  warnings.value=[]
-  for (const item of order.value.items) {
-    const powerForDevice = order.value.items.filter((i: IOrderItem) => i.powerForDevice?.id === item.device?.id).reduce((a: number, b: IOrderItem) => a + b.count, 0)
 
-    if (item.device?.powerCount > powerForDevice) {
-      errors.value.push({item, needed: item.device?.powerCount * item.count - powerForDevice})
+function checkErrors() {
+  setTimeout(() => {
+    errors.value = []
+    warnings.value = []
+    for (const item of order.value.items) {
+      const powerForDevice = order.value.items.filter((i: IOrderItem) => i.powerForDevice?.id === item.device?.id).reduce((a: number, b: IOrderItem) => a + b.count, 0)
+
+      if (item.device?.powerCount > powerForDevice) {
+        errors.value.push({item, needed: item.device?.powerCount * item.count - powerForDevice})
+      }
+      if (item.device?.powerCount < powerForDevice) {
+        warnings.value.push({item, needed: item.device?.powerCount * item.count - powerForDevice})
+      }
+      //console.log(item.device.name, powerForDevice)
     }
-    if (item.device?.powerCount < powerForDevice) {
-      warnings.value.push({item, needed: item.device?.powerCount * item.count - powerForDevice})
-    }
-    //console.log(item.device.name, powerForDevice)
-  }
+  }, 200)
 }
 
 async function addPowers(item: IDevice, pwr: IDevice, err: any) {
