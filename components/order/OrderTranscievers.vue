@@ -5,7 +5,6 @@ const {$listen,$event} = useNuxtApp()
 const itemsForAdding = computed(() => {
   return order.value.items.filter((i: IOrderItem) => i.device?.trans?.length)
       .filter((i:IOrderItem)=>{
-        console.log(i.device.name, i.subItems.map(s=>s.device?.name).filter(n=>i.device.trans.map(s=>s.name).includes(n)).length)
         return !i.subItems.map(s=>s.device?.name).filter(n=>i.device.trans.map(s=>s.name).includes(n)).length
       })
 })

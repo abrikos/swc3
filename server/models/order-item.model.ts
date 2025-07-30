@@ -34,7 +34,7 @@ const schema = new Schema<IOrderItem>({
 
 schema.virtual('powerItemsCount')
     .get(function () {
-        return this.subItems.filter(s=>this.device.powers.map(p=>p.name).includes(s.device?.name)).reduce((a: number, b: IOrderSubItem) => a + b.count, 0)
+        return this.subItems?.filter(s=>this.device.powers.map(p=>p.name).includes(s.device?.name)).reduce((a: number, b: IOrderSubItem) => a + b.count, 0)
     })
 
 

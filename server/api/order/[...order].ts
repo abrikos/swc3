@@ -31,20 +31,35 @@ router.post('/update/:_id', defineEventHandler(async (event) => {
     await order.save()
 }))
 
+router.post('/item/add', defineEventHandler(async (event) => {
+    const user = event.context.user
+    if (!user || !user.isNetwork) throw createError({statusCode: 403, message: 'Доступ запрещён',})
+    const body = await readBody(event)
+    if(!body.id) {
+        return OrderItem.create(body)
+    }else{
+        return OrderItem.updateOne({_id: body.id}, body)
+    }
+}))
+
 router.post('/item/update', defineEventHandler(async (event) => {
     const user = event.context.user
     if (!user || !user.isNetwork) throw createError({statusCode: 403, message: 'Доступ запрещён',})
     const body = await readBody(event)
-    return OrderItem.updateOne({_id:body.id},{count:body.count})
+    if(body.count>0) {
+        return OrderItem.updateOne({_id: body.id}, body)
+    }else{
+        return OrderItem.deleteOne({_id: body.id})
+    }
 }))
 
 router.post('/sub/update', defineEventHandler(async (event) => {
     const user = event.context.user
     if (!user || !user.isNetwork) throw createError({statusCode: 403, message: 'Доступ запрещён',})
     const body = await readBody(event)
-    if(body.count>0) {
+    if (body.count > 0) {
         return OrderSubItem.updateOne({_id: body.id}, {count: body.count})
-    }else{
+    } else {
         return OrderSubItem.deleteOne({_id: body.id})
     }
 }))
@@ -89,7 +104,7 @@ router.put('/clone/:id', defineEventHandler(async (event) => {
     const spec2 = await readBody(event)
     const conf = await Order.findById(id)
     if (!conf) throw createError({statusCode: 404, message: ('Конфигурация не найдена'),})
-    const spec = await Spec.findOne({_id:spec2.id, user})
+    const spec = await Spec.findOne({_id: spec2.id, user})
     if (!spec) throw createError({statusCode: 404, message: ('Спецификация не найдена'),})
     conf._id = new mongoose.Types.ObjectId;
     conf.name = 'Клон ' + conf.name
@@ -97,17 +112,16 @@ router.put('/clone/:id', defineEventHandler(async (event) => {
     await conf.save()
     spec.orders.push(conf)
     await spec.save()
-    const parts = await OrderItem.find({order:id})
+    const parts = await OrderItem.find({order: id})
     for (const part of parts) {
         part._id = new mongoose.Types.ObjectId;
         part.isNew = true;
-        part.order  = conf
+        part.order = conf
         await part.save()
     }
     return conf.id
 
 }))
-
 
 
 router.get('/devices/:subcategory', defineEventHandler(async (event) => {

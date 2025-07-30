@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import icons from "~/pages/network/net-cat-icons"
-const items = defineModel<{device:IDevice, count:number}[]>()
+
+const items = defineModel<{ device: IDevice, count: number }[]>()
 const {$event} = useNuxtApp()
 const selected = ref()
 const route = useRoute()
@@ -13,19 +14,23 @@ async function load() {
 }
 
 async function getDevices() {
-  if(!route.query.sub) return
+  if (!route.query.sub) return
   devices.value = await useNuxtApp().$GET('/order/devices/' + route.query.sub) as IDevice[]
 }
 
 watch(() => route.query.sub, getDevices)
 onMounted(load)
 const subcats = computed(() => categories.value?.find(c => c.id === route.query.cat)?.subcategories || [])
-function addDevice(device:IDevice){
-  const exists = items.value?.find((i:any)=>i.device.id === device.id)
-  if(exists){
+
+function addDevice(device: IDevice) {
+  const exists = items.value?.find((i: any) => i.device.id === device.id)
+  if (exists) {
     exists.count++
-  }else {
+  } else {
     items.value?.push({device, count: 1})
+  }
+  if(route.params.id){
+    useNuxtApp().$POST('/order/item/add', exists || {device, count: 1, order:route.params.id})
   }
 }
 
@@ -52,10 +57,11 @@ function addDevice(device:IDevice){
 <style scoped lang="sass">
 .subcat
   padding-left: 20px
+
 .device
   padding-left: 20px
   border-bottom: 1px solid silver
-  //width: 400px
+//width: 400px
 div
   cursor: pointer
 

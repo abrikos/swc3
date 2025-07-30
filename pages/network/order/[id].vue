@@ -67,6 +67,7 @@ div(v-if="order")
   div.row
     div.col-sm-4(v-if="showCategories")
       NetworkCategories(v-model="order.items" )
+      q-btn(label="Закрыть" @click="showCategories=false")
     div.col-sm.q-pa-sm
       //q-input(v-model="order.name" @focus="(input) => input.target.select()" label="Название конфигурации")
       q-card.q-mb-sm(v-for="(item, i1) of itemsSorted" :key="item.id")
