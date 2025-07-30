@@ -61,6 +61,34 @@ router.get('/categories', defineEventHandler(async (event) => {
     }).sort('name').populate('subcategories')
 }))
 
+router.put('/clone/:id', defineEventHandler(async (event) => {
+    const user = event.context.user
+    if (!user && !user.isNetwork) throw createError({statusCode: 403, message: 'Доступ запрещён',})
+    const {id} = event.context.params as Record<string, string>
+    const spec2 = await readBody(event)
+    const conf = await Order.findById(id)
+    if (!conf) throw createError({statusCode: 404, message: ('Конфигурация не найдена'),})
+    const spec = await Spec.findOne({_id:spec2.id, user})
+    if (!spec) throw createError({statusCode: 404, message: ('Спецификация не найдена'),})
+    conf._id = new mongoose.Types.ObjectId;
+    conf.name = 'Клон ' + conf.name
+    conf.isNew = true;
+    await conf.save()
+    spec.orders.push(conf)
+    await spec.save()
+    const parts = await OrderItem.find({order:id})
+    for (const part of parts) {
+        part._id = new mongoose.Types.ObjectId;
+        part.isNew = true;
+        part.order  = conf
+        await part.save()
+    }
+    return conf.id
+
+}))
+
+
+
 router.get('/devices/:subcategory', defineEventHandler(async (event) => {
     const user = event.context.user
     if (!user || !user.isNetwork) throw createError({statusCode: 403, message: 'Доступ запрещён',})

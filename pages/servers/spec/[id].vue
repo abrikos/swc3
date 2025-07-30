@@ -39,8 +39,16 @@ async function cloneConf(id:string){
   await useNuxtApp().$PUT(`/conf/clone/${id}`,spec.value)
   await load()
 }
+async function cloneOrder(id:string){
+  await useNuxtApp().$PUT(`/order/clone/${id}`,spec.value)
+  await load()
+}
 async function confUpdate(conf:IConf) {
   await useNuxtApp().$POST(`/conf/update/${conf.id}`, conf)
+  //$q.notify({message:'aaaa', color: 'green'})
+}
+async function orderUpdate(conf:IOrder) {
+  await useNuxtApp().$POST(`/order/update/${conf.id}`, conf)
   //$q.notify({message:'aaaa', color: 'green'})
 }
 
@@ -119,12 +127,18 @@ div(v-if="spec")
       tr(v-for="order of spec.orders" :key="order.id")
         td
           router-link(:to="`/network/order/${order.id}`") {{order.name || order.id}}
+          q-btn(icon="mdi-pencil" size="sm" )
+            q-popup-edit.full-widthBAK(v-model="order.name" auto-save v-slot="scope")
+              q-input(v-model="order.name" autofocus @keyup.enter.prevent="orderUpdate(order)" hint="Enter для сохранения"  v-close-popup)
+
         td {{ order.description }}
         td
           q-input(v-model="order.count" type="number" min="1" @update:model-value="saveOrder(order)")
         td.text-right {{$priceFormat($priceByCurrencyNet(order.sum))}}
         td.text-right {{$priceFormat($priceByCurrencyNet(order.sum * order.count))}}
         td
+          q-btn(icon="mdi-content-duplicate" @click.stop="cloneOrder(order.id)" round)
+            q-tooltip Клонировать
           DeleteButton(v-if="order.user === loggedUser.id"  :id="order.id" :name="order.name" path="/order/delete" event="spec:reload" )
       //tr.bg-green-1
         td.text-right(colspan="4") Итого:

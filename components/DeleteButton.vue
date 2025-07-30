@@ -10,7 +10,6 @@ const {name, path, event, id} = defineProps({
 
 async function deleteSpec() {
   await useNuxtApp().$DELETE(`${path}/${id}`)
-  console.log(event)
   $event(event)
 }
 

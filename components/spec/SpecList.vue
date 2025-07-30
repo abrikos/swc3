@@ -5,6 +5,8 @@ import CloneButton from "~/components/spec/CloneButton.vue";
 
 const {$priceFormat, $priceByCurrencyServer, $priceByCurrencyNet} = useNuxtApp()
 const {loggedUser, settings} = storeToRefs(useCustomStore())
+const {$listen} = useNuxtApp()
+$listen('specs:reload', load)
 const route = useRoute()
 const columns = computed(() => {
   const headers = [

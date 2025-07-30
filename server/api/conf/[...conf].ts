@@ -38,7 +38,7 @@ router.get('/:cid/to-spec/:sid', defineEventHandler(async (event) => {
 
 router.put('/clone/:id', defineEventHandler(async (event) => {
     const user = event.context.user
-    if (!user && user.isServer) throw createError({statusCode: 403, message: 'Доступ запрещён',})
+    if (!user && !user.isServer) throw createError({statusCode: 403, message: 'Доступ запрещён',})
     const {id} = event.context.params as Record<string, string>
     const spec2 = await readBody(event)
     const conf = await Conf.findById(id)

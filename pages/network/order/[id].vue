@@ -43,7 +43,7 @@ async function save(){
 
 const itemsSorted = computed(()=>order.value.items
     .sort((a:IOrderItem, b:IOrderItem) => (a.sortName < b.sortName) ? 1 : ((b.sortName < a.sortName) ? -1 : 0)))
-
+let i2 = 1
 </script>
 
 <template lang="pug">
@@ -61,10 +61,12 @@ div(v-if="order")
           table
             tbody
               tr
+                th(width="20")
                 th Наименование
                 th Количество
                 th Сумма, {{ loggedUser?.currency }}
-              tr(v-for="item of itemsSorted" :key="item.id" :class="item.notDevice ? 'bg-grey-4': ''")
+              tr(v-for="(item, i1) of itemsSorted" :key="item.id" :class="item.notDevice ? 'bg-grey-4': ''")
+                td {{i1+1}}
                 td
                   div(:class="item.notDevice?'q-pl-lg':''") {{item.device?.name||item.service.name}}
                     br
