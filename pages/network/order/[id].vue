@@ -55,6 +55,11 @@ async function save(){
   showCategories.value = false
 }
 
+async function sort(item: IOrderItem, inc:number){
+  await useNuxtApp().$POST('/order/item/sort/'+item.id, {inc})
+  await load()
+}
+
 </script>
 
 <template lang="pug">
@@ -72,27 +77,34 @@ div(v-if="order")
       //q-input(v-model="order.name" @focus="(input) => input.target.select()" label="Название конфигурации")
       q-card.q-mb-sm(v-for="(item, i1) of itemsSorted" :key="item.id")
         q-card-section
-          div
-            div.row
-              div.col
-                div {{item.device.name}}
-                  br
-                  small {{item.device.description}}
-              div.col-2
-                q-input(v-model.number="item.count" @update:model-value="updateItem(item)" type="number" min="0")
-                  template(v-slot:append)
-                    q-btn(@click="item.count = 0; updateItem(item)" icon="mdi-close" color="negative")
-              div.col-2.text-right(style="width:100px") {{$priceFormat($priceByCurrencyNet(item.device.price * item.count))}}
-            div.subitems
-              div.row(v-for="sub in item.subItems")
-                div.col {{sub.device?.name || sub.service.name}}
+          div.row
+            div.col-1.flex
+              div.column.self-end
+                q-btn(icon="mdi-arrow-up" @click="sort(item,1)" size="sm" title="Двинуть вверх")
+                q-btn(icon="mdi-arrow-down" @click="sort(item,-1)" size="sm"  title="Двинуть вниз")
+              div.self-start {{i1+1}}
+            div.col
+              div.row
+                div.col
+                  div {{item.device.name}}
                     br
-                    small {{sub.device?.description || sub.service.description}}
+                    small {{item.device.description}}
                 div.col-2
-                  q-input(v-model.number="sub.count" @update:model-value="updateSubItem(sub)" type="number" min="0")
+                  q-input(v-model.number="item.count" @update:model-value="updateItem(item)" type="number" min="0")
                     template(v-slot:append)
-                      q-btn(@click="sub.count = 0;updateSubItem(sub)" icon="mdi-close" color="negative")
-                div.col-2.text-right(style="width:100px") {{$priceFormat($priceByCurrencyNet((sub.device?.price || sub.service.price) * sub.count) )}}
+                      q-btn(@click="item.count = 0; updateItem(item)" icon="mdi-close" color="negative")
+                div.col-2.text-right(style="width:100px") {{$priceFormat($priceByCurrencyNet(item.device.price * item.count))}}
+              div.bg-grey-4.q-pa-sm
+                div.row(v-for="(sub, i2) in item.subItems")
+                  div.col-1 {{i1+1}}.{{i2+1}}
+                  div.col {{sub.device?.name || sub.service.name}}
+                      br
+                      small {{sub.device?.description || sub.service.description}}
+                  div.col-2
+                    q-input(v-model.number="sub.count" @update:model-value="updateSubItem(sub)" type="number" min="0")
+                      template(v-slot:append)
+                        q-btn(@click="sub.count = 0;updateSubItem(sub)" icon="mdi-close" color="negative")
+                  div.col-2.text-right(style="width:100px") {{$priceFormat($priceByCurrencyNet((sub.device?.price || sub.service.price) * sub.count) )}}
 
       q-btn(v-if="!showCategories" @click="showCategories=true" label="Добавить устройства")
 
@@ -114,7 +126,6 @@ div(v-if="order")
 
 <style scoped lang="sass">
 .subitems
-  //padding-left: 20px
   background-color: silver
 td
   max-width: 200px

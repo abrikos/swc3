@@ -31,6 +31,7 @@ function addDevice(device: IDevice) {
   }
   if(route.params.id){
     useNuxtApp().$POST('/order/item/add', exists || {device, count: 1, order:route.params.id})
+    $event('order:reload')
   }
 }
 

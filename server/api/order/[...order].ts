@@ -31,24 +31,43 @@ router.post('/update/:_id', defineEventHandler(async (event) => {
     await order.save()
 }))
 
+router.post('/item/sort/:_id', defineEventHandler(async (event) => {
+    const user = event.context.user
+    if (!user || !user.isNetwork) throw createError({statusCode: 403, message: 'Доступ запрещён',})
+    const {_id} = event.context.params as Record<string, string>
+    const body = await readBody(event)
+    const orig = await OrderItem.findById(_id)
+    if(!orig) return
+    const other = await OrderItem.findOne({order: orig.order, sort: body.inc + orig.sort})
+    if(other){
+        orig.sort = body.inc + orig.sort
+        other.sort = other.sort - body.inc
+        await orig.save()
+        await other.save()
+    }
+}))
+
 router.post('/item/add', defineEventHandler(async (event) => {
     const user = event.context.user
     if (!user || !user.isNetwork) throw createError({statusCode: 403, message: 'Доступ запрещён',})
     const body = await readBody(event)
-    if(!body.id) {
+    if (!body.id) {
+        const items = await OrderItem.find({order: body.order}).sort({sort: -1})
+        body.sort = items[0].sort + 1
         return OrderItem.create(body)
-    }else{
+    } else {
         return OrderItem.updateOne({_id: body.id}, body)
     }
 }))
+
 
 router.post('/item/update', defineEventHandler(async (event) => {
     const user = event.context.user
     if (!user || !user.isNetwork) throw createError({statusCode: 403, message: 'Доступ запрещён',})
     const body = await readBody(event)
-    if(body.count>0) {
+    if (body.count > 0) {
         return OrderItem.updateOne({_id: body.id}, body)
-    }else{
+    } else {
         return OrderItem.deleteOne({_id: body.id})
     }
 }))
@@ -137,11 +156,12 @@ router.post('/basket/save', defineEventHandler(async (event) => {
     const {spec} = getQuery(event)
     const items = await readBody(event)
     const order = await Order.create({user, name: 'Сетевая конфигурация ' + moment().format('YYYY-MM-DD HH:mm'),})
-
+    let sort = 1
     for (const item of items) {
         item.order = order
-        item.sortName = item.device.name
+        item.sort = sort
         await OrderItem.create(item)
+        sort++
     }
 
     if (spec) {
