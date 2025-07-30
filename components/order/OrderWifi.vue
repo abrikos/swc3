@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import Dialog from "~/components/Dialog.vue";
 
+const {$listen, $event} = useNuxtApp()
 const order = defineModel()
 
 const wifiServers = ref([])
@@ -24,28 +25,39 @@ const wifiNoLicense = computed(() => {
       .filter((i: IOrderItem) => !licForDev.includes(i.device?.id))
 })
 
+const itemsForAdding = computed(() => {
+  return order.value.items
+      .filter((i: IOrderItem) => i.device?.subcategory?.name?.match('точки доступа'))
+      .filter((i:IOrderItem)=>{
+        return !i.subItems.filter(n=>n.device.description.match('Лицензия')).length
+      })
+})
+
+
 const dialogWiFiServer = ref()
 const dialogLicense = ref()
 
-function addWiFiServer(device: IDevice) {
-  const add = {device, count: 1, notDevice: true}
-  const exists = order.value.items.find((i: IOrderItem) => i.device?.id === device.id)
-  if (exists) {
-    exists.count = exists.count * 1 + err.needed * 1
-  } else {
-    order.value.items.push(add)
+async function addWiFiServer(device: IDevice) {
+  const add = {
+    device,
+    count: 1,
+    order: order.value.id,
   }
+  await useNuxtApp().$POST(`/order/item/add`, add)
+  $event('order:reload')
+
   dialogWiFiServer.value = false
 }
 
-function addWiFiLicense(device: IDevice, license: IDevice) {
-  const add = {device: license, count: 1, sortName: device.name, licenseForDevice: device.id, notDevice: true}
-  const exists = order.value.items.find((i: IOrderItem) => i.device?.id === license.id)
-  if (exists) {
-    exists.count = exists.count * 1 + err.needed * 1
-  } else {
-    order.value.items.push(add)
+async function addWiFiLicense(item: IOrderItem, device: IDevice) {
+  const add = {
+    device,
+    count: 1,
+    item
   }
+  await useNuxtApp().$POST(`/order/item/add/sub`, add)
+  $event('order:reload')
+
   dialogLicense.value = false
 }
 
@@ -57,10 +69,10 @@ function addWiFiLicense(device: IDevice, license: IDevice) {
       span Необходимо самостоятельно организовать контроллер на своих вычислительных ресурсах или
       q-btn(@click="dialogWiFiServer=true") Добавить контроллер
 
-  Banner(color="info" v-for="(item,i) of wifiNoLicense" :key="i")
+  Banner(color="info" v-for="(item,i) of itemsForAdding" :key="i")
     div.flex.justify-between.items-center
       span Выбрать лицензию для {{item.device.name}}
-      q-btn(@click="wifiDevice=item.device; dialogLicense=true") Добавить лицензию
+      q-btn(@click="wifiDevice=item; dialogLicense=true") Добавить лицензию
 
   Dialog(v-model="dialogLicense" title="Выбрать лицензию")
     div(v-for="(license, i) in wifiLicenses")
