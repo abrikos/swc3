@@ -14,6 +14,7 @@ const {$listen, $event} = useNuxtApp()
 $listen('order:reload', load)
 $listen('order:addDevice', (device:IDevice)=>{
   const exists = order.value.items?.find((i:IOrderItem)=>i.device.id === device.id)
+
   if(exists){
     exists.count++
   }else {

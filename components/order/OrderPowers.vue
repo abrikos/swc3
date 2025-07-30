@@ -41,7 +41,7 @@ async function addPowers(item: IDevice, pwr: IDevice, err: any) {
 </script>
 
 <template lang="pug">
-  Banner(v-for="err of errors" :color="err.needed===2?'error':'warning'")
+  Banner(v-for="err of errors" :color="err.needed>=2?'error':'warning'")
     div.flex.justify-between.items-center
       span Для "{{err.item.device.name}}" требуются блоки питания {{err.powerNames}} в количестве {{err.needed}}
       div.flex
