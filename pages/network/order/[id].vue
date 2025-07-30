@@ -78,11 +78,13 @@ div(v-if="order")
       q-card.q-mb-sm(v-for="(item, i1) of itemsSorted" :key="item.id")
         q-card-section
           div.row
-            div.col-1.flex
-              div.column.self-end
+            div.col-1
+              div.text-right.q-pr-lg.text-weight-bold.rounded-borders {{i1+1}}
+              br
+              div.column
                 q-btn(icon="mdi-arrow-up" @click="sort(item,1)" size="sm" title="Двинуть вверх")
                 q-btn(icon="mdi-arrow-down" @click="sort(item,-1)" size="sm"  title="Двинуть вниз")
-              div.self-start {{i1+1}}
+
             div.col
               div.row
                 div.col
