@@ -1,11 +1,12 @@
 <script setup lang="ts">
 const order = defineModel()
+const {$listen,$event} = useNuxtApp()
 
-const itemsWithoutTrans = computed(() => {
+const itemsForAdding = computed(() => {
   return order.value.items.filter((i: IOrderItem) => i.device?.trans?.length)
       .filter((i:IOrderItem)=>{
-        const trans = order.value.items.filter((s:IOrderItem)=>s.transForDevice).map((i:IOrderItem)=>i.sortName)
-        return !trans.includes(i.device.name)
+        console.log(i.device.name, i.subItems.map(s=>s.device?.name).filter(n=>i.device.trans.map(s=>s.name).includes(n)).length)
+        return !i.subItems.map(s=>s.device?.name).filter(n=>i.device.trans.map(s=>s.name).includes(n)).length
       })
 })
 
@@ -18,14 +19,15 @@ const transList = computed(() => {
 })
 
 const selected = ref()
-async function addTrans(trans:IDevice) {
-  const add = {device: trans, count: 1, sortName:selected.value?.device.name, transForDevice:selected.value?.device, notDevice:true}
-  const exists = order.value.items.find((i:IOrderItem) => i.device?.id === trans.id)
-  if (exists) {
-    exists.count++
-  } else {
-    order.value.items.push(add)
+async function addTrans(device:IDevice) {
+  const add = {
+    device,
+    count: 1,
+    item: selected.value,
   }
+  await useNuxtApp().$POST(`/order/item/add/sub`, add)
+  $event('order:reload')
+
   showDialog.value=false
 }
 const showDialog = ref(false)
@@ -34,7 +36,7 @@ const showDialog = ref(false)
 
 
 <template lang="pug">
-  Banner(color="success" v-for="item of itemsWithoutTrans" )
+  Banner(color="success" v-for="item of itemsForAdding" )
     div.flex.justify-between.items-center
       div Для "{{ item.device.name }}" доступны транссиверы
       q-btn(label="Добавить трансивер" @click="showDialog=true; selected = item")

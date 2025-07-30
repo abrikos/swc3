@@ -1,33 +1,42 @@
 <script setup lang="ts">
+const {$listen, $event} = useNuxtApp()
 const order = defineModel()
-const itemsWithoutServices = computed(() => {
+
+const itemsForAdding = computed(() => {
   return order.value.items.filter((i: IOrderItem) => i.device?.services?.length)
       .filter((i:IOrderItem)=>{
-        const services = order.value.items.filter((s:IOrderItem)=>s.service).map((i:IOrderItem)=>i.sortName)
-        return !services.includes(i.device.name)
+        return !i.subItems.map(s=>s.service?.name).filter(n=>i.device.services.map(s=>s.name).includes(n)).length
       })
 })
 
+
 const showDialog = ref(false)
 const itemSelected = ref<IOrderItem>()
-async function showServicesDialog(item:IOrderItem){
+
+async function showServicesDialog(item: IOrderItem) {
   itemSelected.value = item
   showDialog.value = true
 }
 
-async function addService(service:INetService){
-  const add = {service, count: 1, sortName: itemSelected.value?.device.name, notDevice:true}
-  order.value.items.push(add)
-  showDialog.value=false
+async function addService(service: INetService) {
+  const add = {
+    service,
+    count: 1,
+    item: itemSelected.value,
+  }
+  await useNuxtApp().$POST(`/order/item/add/sub`, add)
+  $event('order:reload')
+  showDialog.value = false
 }
 
 </script>
 
 <template lang="pug">
-  Banner(color="warning" v-for="item of itemsWithoutServices" )
+  Banner(color="warning" v-for="warn of itemsForAdding" )
     div.flex.justify-between
-      div Для "{{ item.device.name }}" рекомендуем тех.поддержку
-      q-btn(label="Добавить сервис" @click="showServicesDialog(item)")
+      div Для "{{ warn.device.name }}" рекомендуем тех.поддержку
+      q-btn(label="Добавить сервис" @click="showServicesDialog(warn)")
+
   Dialog(v-model="showDialog" title="Выбрать сервис")
     table
       tbody

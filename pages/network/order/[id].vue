@@ -9,6 +9,7 @@ import NetworkCategories from "~/components/order/NetworkCategories.vue";
 import DeviceTable from "~/components/order/DeviceTable.vue";
 import EditButton from "~/components/EditButton.vue";
 import EditField from "~/components/EditField.vue";
+import type {IOrderSubItem} from "~/server/models/order-subitem";
 
 const {$listen, $event} = useNuxtApp()
 $listen('order:reload', load)
@@ -33,19 +34,27 @@ async function load() {
   $event('power:check')
 }
 onMounted(load)
-function filterZero(){
-  order.value.items = order.value.items?.filter((i:any) => i.count!==0)
-  $event('power:check')
+
+async function updateItem(item:IOrderItem){
+  await useNuxtApp().$POST('/order/item/update', item)
+  await load()
+  showCategories.value = false
 }
+async function updateSubItem(item:IOrderSubItem){
+  await useNuxtApp().$POST('/order/sub/update', item)
+  await load()
+  showCategories.value = false
+}
+
+const itemsSorted = computed(()=>order.value.items
+    .sort((a:IOrderItem, b:IOrderItem) => (a.sort < b.sort) ? 1 : ((b.sort < a.sort) ? -1 : 0)))
+let i2 = 1
 
 async function save(){
   await useNuxtApp().$POST('/order/update/'+route.params.id, order.value)
   showCategories.value = false
 }
 
-const itemsSorted = computed(()=>order.value.items
-    .sort((a:IOrderItem, b:IOrderItem) => (a.sortName < b.sortName) ? 1 : ((b.sortName < a.sortName) ? -1 : 0)))
-let i2 = 1
 </script>
 
 <template lang="pug">
@@ -53,40 +62,39 @@ div(v-if="order")
   q-toolbar
     q-toolbar-title.cursor-pointer {{order.name}}
       EditField(v-model="order.name" :update="save")
+    q-space
+    strong Сумма: {{$priceFormat($priceByCurrencyNet(order.total))}}
   div.row
     div.col-sm-4(v-if="showCategories")
       NetworkCategories(v-model="order.items" )
     div.col-sm.q-pa-sm
       //q-input(v-model="order.name" @focus="(input) => input.target.select()" label="Название конфигурации")
-      q-card
+      q-card.q-mb-sm(v-for="(item, i1) of itemsSorted" :key="item.id")
         q-card-section
-          table
-            tbody
-              tr
-                th(width="20")
-                th Наименование
-                th Количество
-                th Сумма, {{ loggedUser?.currency }}
-              tr(v-for="(item, i1) of itemsSorted" :key="item.id" :class="item.notDevice ? 'bg-grey-4': ''")
-                td {{i1+1}}
-                td
-                  div(:class="item.notDevice?'q-pl-lg':''") {{item.device?.name||item.service.name}}
+          div
+            div.row
+              div.col
+                div {{item.device.name}}
+                  br
+                  small {{item.device.description}}
+              div.col-2
+                q-input(v-model.number="item.count" @update:model-value="updateItem(item)" type="number" min="0")
+                  template(v-slot:append)
+                    q-btn(@click="item.count = 0; updateItem(item)" icon="mdi-close" color="negative")
+              div.col-2.text-right(style="width:100px") {{$priceFormat($priceByCurrencyNet(item.device.price * item.count))}}
+            div.subitems
+              div.row(v-for="sub in item.subItems")
+                div.col {{sub.device?.name || sub.service.name}}
                     br
-                    small {{item.device?.description||item.service.description}}
-                td(style="width:100px")
-                  q-input(v-model.number="item.count" @update:model-value="filterZero" type="number" min="0")
+                    small {{sub.device?.description || sub.service.description}}
+                div.col-2
+                  q-input(v-model.number="sub.count" @update:model-value="updateSubItem(sub)" type="number" min="0")
                     template(v-slot:append)
-                      q-btn(@click="item.count = 0; filterZero()" icon="mdi-close" color="negative")
-                td.text-right(style="width:100px") {{$priceFormat($priceByCurrencyNet(item.device?.price || item.service?.price||0) * item.count)}}
+                      q-btn(@click="sub.count = 0;updateSubItem(sub)" icon="mdi-close" color="negative")
+                div.col-2.text-right(style="width:100px") {{$priceFormat($priceByCurrencyNet((sub.device?.price || sub.service.price) * sub.count) )}}
 
-              tr
-                td.text-right(colspan="2") Итого:
-                td.text-right {{$priceFormat($priceByCurrencyNet(order.items.reduce((sum, item)=>sum + ((item.device?.price||item.service.price) * item.count)||0, 0)))}}
+      q-btn(v-if="!showCategories" @click="showCategories=true" label="Добавить устройства")
 
-          q-card-actions.flex.justify-between
-            q-btn(@click="save" label="Сохранить" color="primary")
-            q-btn(v-if="!showCategories" @click="showCategories=true" label="Добавить устройства")
-            q-btn(@click="showCategories=false; load()" label="Сбросить")
 
     div.col-sm.q-pa-sm(v-if="!showCategories")
       AddToSpec(type="order")
@@ -104,6 +112,9 @@ div(v-if="order")
 </template>
 
 <style scoped lang="sass">
+.subitems
+  //padding-left: 20px
+  background-color: silver
 td
   max-width: 200px
 </style>

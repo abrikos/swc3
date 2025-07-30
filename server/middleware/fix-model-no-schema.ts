@@ -17,4 +17,5 @@ export default defineEventHandler(async (event) => {
     new SubCategory()
     new Category()
     new FileModel()
+    new OrderItem()
 })

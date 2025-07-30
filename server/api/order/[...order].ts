@@ -1,5 +1,6 @@
 import moment from "moment";
 import mongoose from "mongoose";
+import {OrderSubItem} from "~/server/models/order-subitem";
 
 const router = createRouter()
 
@@ -28,14 +29,34 @@ router.post('/update/:_id', defineEventHandler(async (event) => {
     order.name = body.name
     order.count = body.count
     await order.save()
-    await OrderItem.deleteMany({order})
-    for (const item of body.items) {
-        item.order = order
-        await OrderItem.create(item)
+}))
+
+router.post('/item/update', defineEventHandler(async (event) => {
+    const user = event.context.user
+    if (!user || !user.isNetwork) throw createError({statusCode: 403, message: 'Доступ запрещён',})
+    const body = await readBody(event)
+    return OrderItem.updateOne({_id:body.id},{count:body.count})
+}))
+
+router.post('/sub/update', defineEventHandler(async (event) => {
+    const user = event.context.user
+    if (!user || !user.isNetwork) throw createError({statusCode: 403, message: 'Доступ запрещён',})
+    const body = await readBody(event)
+    if(body.count>0) {
+        return OrderSubItem.updateOne({_id: body.id}, {count: body.count})
+    }else{
+        return OrderSubItem.deleteOne({_id: body.id})
     }
 }))
 
-//OrderItem.findOne({powerForDevice:{$ne:null}}).populate(OrderItem.getPopulation()).then(console.log)
+router.post('/item/add/sub', defineEventHandler(async (event) => {
+    const user = event.context.user
+    if (!user || !user.isNetwork) throw createError({statusCode: 403, message: 'Доступ запрещён',})
+    const body = await readBody(event)
+    return OrderSubItem.create(body)
+}))
+
+//OrderSubItem.find().populate('item').then(console.log)
 //Device.findOne({name:'QSW-6910-26F'}).populate('subcategory').then(console.log)
 
 router.get('/wifi-servers', defineEventHandler(async (event) => {

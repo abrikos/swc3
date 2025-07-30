@@ -1,56 +1,34 @@
 <script setup lang="ts">
 const order = defineModel()
-const errors = ref<any[]>([])
-const warnings = ref<any[]>([])
-const {$listen} = useNuxtApp()
-$listen('power:check', checkErrors)
-onMounted(checkErrors)
+const {$listen,$event} = useNuxtApp()
 
-function checkErrors() {
-  setTimeout(() => {
-    errors.value = []
-    warnings.value = []
-    for (const item of order.value.items) {
-      const powerForDevice = order.value.items.filter((i: IOrderItem) => i.powerForDevice?.id === item.device?.id).reduce((a: number, b: IOrderItem) => a + b.count, 0)
+const itemsForAdding = computed(() => {
+  return order.value.items.filter((i: IOrderItem) => i.device?.powers?.length)
+      .filter((i:IOrderItem)=>{
+        return i.powerItemsCount < i.device.powerCount * i.count
+      })
+})
 
-      if (item.device?.powerCount > powerForDevice) {
-        errors.value.push({item, needed: item.device?.powerCount * item.count - powerForDevice})
-      }
-      if (item.device?.powerCount < powerForDevice) {
-        warnings.value.push({item, needed: item.device?.powerCount * item.count - powerForDevice})
-      }
-      //console.log(item.device.name, powerForDevice)
-    }
-  }, 200)
-}
 
-async function addPowers(item: IDevice, pwr: IDevice, err: any) {
-  //await this.$axios.$put(`/network/order/${this.order.value.id}/power`, {item,pwr,err})
+async function addPowers(item: IOrderItem, device: IDevice) {
   const add = {
-    device: pwr,
-    count: err.needed,
-    sortName: err.item.device?.name,
-    powerForDevice: err.item.device,
-    notDevice: true
+    device,
+    count: item.device.powerCount * item.count - item.powerItemsCount,
+    item
   }
-  // const exists = order.value.items.find((i: IOrderItem) => i.device?.id === pwr.id)
-  // if (exists) {
-  //   exists.count = exists.count * 1 + err.needed * 1
-  // } else {
-  //   order.value.items.push(add)
-  // }
-  order.value.items.push(add)
-  checkErrors()
+  await useNuxtApp().$POST(`/order/item/add/sub`, add)
+  $event('order:reload')
 }
 </script>
 
 <template lang="pug">
-  Banner(v-for="err of errors" :color="err.needed>=2?'error':'warning'")
+
+  Banner(v-for="item of itemsForAdding" :color="item.powerItemsCount ? item.device.powerCount * item.count> item.powerItemsCount  ? 'warning':'':'error'") zz
     div.flex.justify-between.items-center
-      span Для "{{err.item.device.name}}" требуются блоки питания {{err.powerNames}} в количестве {{err.needed}}
+      span Для "{{item.device.name}}" не хватает блоков питания {{item.device.powerCount * item.count - item.powerItemsCount}}
       div.flex
-        div(v-for="(pwr,i2) of err.item.device.powers" :key="i2") &nbsp;
-          q-btn(@click="addPowers(err.item, pwr,err)" small :label="pwr.name")
+        div(v-for="(pwr,i2) of item.device.powers" :key="i2") &nbsp;
+          q-btn(@click="addPowers(item, pwr)" small :label="pwr.name")
             q-tooltip {{pwr.description}}
 
 </template>
