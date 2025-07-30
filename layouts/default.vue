@@ -71,7 +71,7 @@ onMounted(()=>{
         //q-item(to="http://srvgfg.qtech.ru:8080")
           q-item-section Старая версия
         div(v-for="page in pages")
-          q-item(:to="page.to" v-if="page.hideForExternal ? loggedUser.isNetwork : true" )
+          q-item(:to="page.to" v-if="page.hideForExternal ? loggedUser?.isNetwork : true" )
             q-item-section(avatar)
               q-icon(:name="page.icon")
             q-item-section {{page.label}}
