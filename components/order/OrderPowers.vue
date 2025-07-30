@@ -33,12 +33,13 @@ async function addPowers(item: IDevice, pwr: IDevice, err: any) {
     powerForDevice: err.item.device,
     notDevice: true
   }
-  const exists = order.value.items.find((i: IOrderItem) => i.device?.id === pwr.id)
-  if (exists) {
-    exists.count = exists.count * 1 + err.needed * 1
-  } else {
-    order.value.items.push(add)
-  }
+  // const exists = order.value.items.find((i: IOrderItem) => i.device?.id === pwr.id)
+  // if (exists) {
+  //   exists.count = exists.count * 1 + err.needed * 1
+  // } else {
+  //   order.value.items.push(add)
+  // }
+  order.value.items.push(add)
   checkErrors()
 }
 </script>
