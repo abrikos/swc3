@@ -44,7 +44,7 @@ schema.virtual('date')
 schema.virtual('sum')
     .get(function () {
         return this.items.reduce(function (sum: number, item) {
-            return sum + (item.device.price * item.count) + item.subItems.reduce(function (sum, sub) {return sum + (sub.device?.price||sub.service.price) * sub.count}, 0)
+            return sum + (item.device?.price * item.count) + item.subItems.reduce(function (sum, sub) {return sum + (sub.device?.price||sub.service?.price) * sub.count}, 0)
         }, 0);
     })
 schema.virtual('description')
