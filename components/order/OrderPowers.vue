@@ -23,7 +23,7 @@ async function addPowers(item: IOrderItem, device: IDevice) {
 
 <template lang="pug">
 
-  Banner(v-for="item of itemsForAdding" :color="item.powerItemsCount ? item.device.powerCount * item.count> item.powerItemsCount  ? 'warning':'':'error'") zz
+  Banner(v-for="item of itemsForAdding" :color="item.powerItemsCount ? item.device.powerCount * item.count> item.powerItemsCount  ? 'warning':'':'error'")
     div.flex.justify-between.items-center
       span Для "{{item.device.name}}" не хватает блоков питания {{item.device.powerCount * item.count - item.powerItemsCount}}
       div.flex
