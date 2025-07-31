@@ -150,7 +150,7 @@ export function servSpec(worksheet: Excel.Worksheet, spec: ISpec, confidential: 
         }
         if (conf.service) {
             const data = [
-                conf.service.article,
+                `SUP-${conf.service.level}-${conf.service.period}Y-${conf.chassis.partNumber}`,
                 conf.service.name,
                 {formula: `+C${rowSummary.number}`},
                 conf.priceService * (confidential || user.currency === 'USD' ? 1 : course),
@@ -165,7 +165,7 @@ export function servSpec(worksheet: Excel.Worksheet, spec: ISpec, confidential: 
             serviceRow.getCell(8).value = {formula: `G${serviceRow.number}*C${serviceRow.number}`}
             const servicePercent = conf.service.name.match('Base') ? 0 : (conf.service.name.match('36 месяцев') ? 0.1 : 0.15)
             if (confidential) {
-                serviceRow.getCell(11).value = {formula: `K${rowSummary.number}*${conf.service.coefficient}`} //???????
+                serviceRow.getCell(11).value = {formula: `K${rowSummary.number}*0.1`} //???????
                 serviceRow.getCell(12).value = {formula: `K${serviceRow.number}*C${serviceRow.number}`}
                 serviceRow.getCell(10).fill = fill
                 serviceRow.getCell(11).fill = fill
@@ -180,7 +180,7 @@ export function servSpec(worksheet: Excel.Worksheet, spec: ISpec, confidential: 
                 formula.push(`E${num}*0.2`)
             }
             const data = [
-                'NRD',
+                'SUP-NR-DRIVE',
                 'Невозврат неисправных накопителей',
                 {formula: `+C${rowSummary.number}`},
                 conf.storagePrice * (confidential || user.currency === 'USD' ? 1 : course),
