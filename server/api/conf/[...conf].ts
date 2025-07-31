@@ -87,7 +87,8 @@ router.post('/update/:_id', defineEventHandler(async (event) => {
     const user = event.context.user
     if (!user && !user.isServer) throw createError({statusCode: 403, message: ('Доступ запрещён'),})
     const {_id} = event.context.params as Record<string, string>
-    const conf = await Conf.findOne({_id, user}).populate(Conf.getPopulation()) as IConf
+    const filter = user.isAdmin ? { _id } : { _id, user }
+    const conf = await Conf.findOne(filter).populate(Conf.getPopulation()) as IConf
     if (!conf) throw createError({statusCode: 404, message: ('Конфигурация не найдена'),})
     const body = await readBody(event)
     if (body.count) conf.count = body.count
@@ -98,11 +99,11 @@ router.post('/update/:_id', defineEventHandler(async (event) => {
 }))
 
 router.get('/broken-storage-switch/:_id', defineEventHandler(async (event) => {
-    console.log('zzzzzzz')
     const user = event.context.user
     if (!user && !user.isServer) throw createError({statusCode: 403, message: ('Доступ запрещён'),})
     const {_id} = event.context.params as Record<string, string>
-    const conf = await Conf.findOne({_id, user}).populate(Conf.getPopulation()) as IConf
+    const filter = user.isAdmin ? { _id } : { _id, user }
+    const conf = await Conf.findOne(filter).populate(Conf.getPopulation()) as IConf
     if (!conf) throw createError({statusCode: 404, message: ('Конфигурация не найдена'),})
     conf.brokenStorageService = !conf.brokenStorageService
     await conf.save()
@@ -113,7 +114,8 @@ router.post('/component-count/:_id', defineEventHandler(async (event) => {
     const user = event.context.user
     if (!user && !user.isServer) throw createError({statusCode: 403, message: ('Доступ запрещён'),})
     const {_id} = event.context.params as Record<string, string>
-    const configuration = await Conf.findOne({_id, user}).populate(Conf.getPopulation()) as IConf
+    const filter = user.isAdmin ? { _id } : { _id, user }
+    const configuration = await Conf.findOne(filter).populate(Conf.getPopulation()) as IConf
     if (!configuration) throw createError({statusCode: 404, message: ('Конфигурация не найдена'),})
     const [cid,count] = await readBody(event)
     const component = await Component.findById(cid);
