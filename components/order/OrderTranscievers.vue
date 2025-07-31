@@ -21,7 +21,7 @@ const selected = ref()
 async function addTrans(device:IDevice) {
   const add = {
     device,
-    count: 1,
+    count: selected.value.count,
     item: selected.value,
   }
   await useNuxtApp().$POST(`/order/item/add/sub`, add)

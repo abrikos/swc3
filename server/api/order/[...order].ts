@@ -66,7 +66,13 @@ router.post('/item/update', defineEventHandler(async (event) => {
     if (!user || !user.isNetwork) throw createError({statusCode: 403, message: 'Доступ запрещён',})
     const body = await readBody(event)
     if (body.count > 0) {
-        return OrderItem.updateOne({_id: body.id}, body)
+        const item = await OrderItem.findById(body.id).populate(OrderItem.getPopulation()) as IOrderItem
+        item.count = body.count
+        await item.save()
+        for(const sub of item.subItems) {
+            sub.count = item.count * (item.device?.isPower ? 2 : 1)
+            await sub.save()
+        }
     } else {
         return OrderItem.deleteOne({_id: body.id})
     }
@@ -87,7 +93,16 @@ router.post('/item/add/sub', defineEventHandler(async (event) => {
     const user = event.context.user
     if (!user || !user.isNetwork) throw createError({statusCode: 403, message: 'Доступ запрещён',})
     const body = await readBody(event)
-    return OrderSubItem.create(body)
+    console.log(body)
+    const item = await OrderItem.findById(body.item.id).populate(OrderItem.getPopulation()) as IOrderItem
+    const sub = item.subItems.find(s=>s.device?.id === body.device?.id)
+    if(sub){
+        sub.count += body.count
+        await sub.save()
+    }else{
+        return OrderSubItem.create(body)
+    }
+
 }))
 
 //OrderSubItem.find().populate('item').then(console.log)

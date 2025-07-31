@@ -52,7 +52,7 @@ async function addWiFiServer(device: IDevice) {
 async function addWiFiLicense(item: IOrderItem, device: IDevice) {
   const add = {
     device,
-    count: 1,
+    count: item.count,
     item
   }
   await useNuxtApp().$POST(`/order/item/add/sub`, add)

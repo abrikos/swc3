@@ -56,6 +56,8 @@ function addDevice(device: IDevice) {
 </template>
 
 <style scoped lang="sass">
+a
+  color: black
 .subcat
   padding-left: 20px
 

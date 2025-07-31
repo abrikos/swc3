@@ -38,12 +38,12 @@ onMounted(load)
 async function updateItem(item:IOrderItem){
   await useNuxtApp().$POST('/order/item/update', item)
   await load()
-  showCategories.value = false
+  //showCategories.value = false
 }
 async function updateSubItem(item:IOrderSubItem){
   await useNuxtApp().$POST('/order/sub/update', item)
   await load()
-  showCategories.value = false
+  //showCategories.value = false
 }
 
 const itemsSorted = computed(()=>order.value.items
@@ -68,12 +68,17 @@ div(v-if="order")
     q-toolbar-title.cursor-pointer {{order.name}}
       EditField(v-model="order.name" :update="save")
     q-space
-    strong Сумма: {{$priceFormat($priceByCurrencyNet(order.total))}}
   div.row
     div.col-sm-4(v-if="showCategories")
-      NetworkCategories(v-model="order.items" )
-      q-btn(label="Закрыть" @click="showCategories=false")
-    div.col-sm.q-pa-sm
+      q-card
+        q-toolbar
+          q-toolbar-title Добавление устройств
+          q-btn(icon="mdi-close" @click="showCategories=false")
+        q-card-section
+          NetworkCategories(v-model="order.items" )
+        q-card-actions
+          q-btn(label="Закрыть" @click="showCategories=false")
+    div.col-sm.q-px-sm
       //q-input(v-model="order.name" @focus="(input) => input.target.select()" label="Название конфигурации")
       q-card.q-mb-sm(v-for="(item, i1) of itemsSorted" :key="item.id")
         q-card-section
@@ -107,12 +112,13 @@ div(v-if="order")
                       template(v-slot:append)
                         q-btn(@click="sub.count = 0;updateSubItem(sub)" icon="mdi-close" color="negative")
                   div.col-2.text-right(style="width:100px") {{$priceFormat($priceByCurrencyNet((sub.device?.price || sub.service.price) * sub.count) )}}
+        div.text-right.text-weight-bold Итого: {{$priceFormat($priceByCurrencyNet(order.total))}}
 
-      q-btn(v-if="!showCategories" @click="showCategories=true" label="Добавить устройства")
 
 
-    div.col-sm.q-pa-sm(v-if="!showCategories")
+    div.col-sm.q-px-sm(v-if="!showCategories")
       AddToSpec(type="order")
+      q-btn(v-if="!showCategories" @click="showCategories=true" label="Добавить устройства")
       OrderServices(v-model="order")
       OrderTranscievers(v-model="order")
       OrderPowers(v-model="order")

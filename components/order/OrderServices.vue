@@ -5,7 +5,9 @@ const order = defineModel()
 const itemsForAdding = computed(() => {
   return order.value.items.filter((i: IOrderItem) => i.device?.services?.length)
       .filter((i:IOrderItem)=>{
-        return !i.subItems.map(s=>s.service?.name).filter(n=>i.device.services.map(s=>s.name).includes(n)).length
+        const service = i.subItems.find(s=>s.service)
+        return !(service && service.count >= i.count)
+        //return !i.subItems.map(s=>s.service?.name).filter(n=>i.device.services.map(s=>s.name).includes(n)).length
       })
 })
 
@@ -21,7 +23,7 @@ async function showServicesDialog(item: IOrderItem) {
 async function addService(service: INetService) {
   const add = {
     service,
-    count: 1,
+    count: itemSelected.value.count,
     item: itemSelected.value,
   }
   await useNuxtApp().$POST(`/order/item/add/sub`, add)
