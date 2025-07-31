@@ -45,13 +45,15 @@ async function cloneOrder(id:string){
 }
 async function confUpdate(conf:IConf) {
   await useNuxtApp().$POST(`/conf/update/${conf.id}`, conf)
+  editConf.value = null
   //$q.notify({message:'aaaa', color: 'green'})
 }
 async function orderUpdate(conf:IOrder) {
   await useNuxtApp().$POST(`/order/update/${conf.id}`, conf)
-  //$q.notify({message:'aaaa', color: 'green'})
+  editOrder.value = null
 }
-
+const editConf = ref()
+const editOrder = ref()
 </script>
 
 <template lang="pug">
@@ -94,10 +96,11 @@ div(v-if="spec")
         td
       tr(v-for="conf of spec.configurations" :key="conf.id")
         td
-          router-link(:to="`/servers/conf/${conf.id}?category=CPU`") {{conf.name}}
-          q-btn(icon="mdi-pencil" size="sm" )
-            q-popup-edit.full-widthBAK(v-model="conf.name" auto-save v-slot="scope")
-              q-input(v-model="conf.name" autofocus @keyup.enter.prevent="confUpdate(conf)" hint="Enter для сохранения"  v-close-popup)
+          span(v-if="editConf!==conf.id")
+            router-link(:to="`/servers/conf/${conf.id}?category=CPU`") {{conf.name}}
+            q-btn(icon="mdi-pencil" size="sm" @click="editConf=conf.id")
+              //q-popup-edit.full-width(v-model="conf.name" auto-save v-slot="scope")
+          q-input(v-else v-model="conf.name" autofocus @keyup.enter.prevent="confUpdate(conf)" hint="Enter для сохранения"  v-close-popup @focus="(input) => input.target.select()")
 
         td {{ conf.description }}
         td
@@ -126,10 +129,11 @@ div(v-if="spec")
         td
       tr(v-for="order of spec.orders" :key="order.id")
         td
-          router-link(:to="`/network/order/${order.id}`") {{order.name || order.id}}
-          q-btn(icon="mdi-pencil" size="sm" )
-            q-popup-edit.full-widthBAK(v-model="order.name" auto-save v-slot="scope")
-              q-input(v-model="order.name" autofocus @keyup.enter.prevent="orderUpdate(order)" hint="Enter для сохранения"  v-close-popup)
+          span(v-if="editOrder!==order.id")
+            router-link(:to="`/network/order/${order.id}`") {{order.name || order.id}}
+            q-btn(icon="mdi-pencil" size="sm" @click="editOrder = order.id" )
+            //q-popup-edit.full-widthBAK(v-model="order.name" auto-save v-slot="scope")
+          q-input(v-else v-model="order.name" autofocus @keyup.enter.prevent="orderUpdate(order)" hint="Enter для сохранения"  v-close-popup @focus="(input) => input.target.select()")
 
         td {{ order.description }}
         td
