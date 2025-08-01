@@ -31,20 +31,25 @@ router.post('/update/:_id', defineEventHandler(async (event) => {
     await order.save()
 }))
 
-router.post('/item/sort/:_id', defineEventHandler(async (event) => {
+router.post('/item/sort', defineEventHandler(async (event) => {
     const user = event.context.user
     if (!user || !user.isNetwork) throw createError({statusCode: 403, message: 'Доступ запрещён',})
-    const {_id} = event.context.params as Record<string, string>
-    const body = await readBody(event)
-    const orig = await OrderItem.findById(_id)
-    if(!orig) return
-    const other = await OrderItem.findOne({order: orig.order, sort: body.inc + orig.sort})
-    if(other){
-        orig.sort = body.inc + orig.sort
-        other.sort = other.sort - body.inc
-        await orig.save()
-        await other.save()
+    const {targetItem, item, inc} = await readBody(event)
+    const items = await OrderItem.find({order:item.order}).sort({sort:-1}) as IOrderItem[]
+    const movedIdx = items.map(item => item.id).indexOf(item.id)
+    const targetIdx = items.map(item => item.id).indexOf(targetItem.id)
+    items.splice(targetIdx + inc, 0, items[movedIdx])
+    items.splice(movedIdx > targetIdx ? movedIdx + 1: movedIdx, 1)
+
+    let i = items.length - 1
+    for (const item of items) {
+        console.log(item.sort, i)
+        item.sort = i
+        await item.save()
+        i--
     }
+    return console.log('zzzzzzz', movedIdx, targetIdx)
+
 }))
 
 router.post('/item/add', defineEventHandler(async (event) => {
@@ -56,7 +61,7 @@ router.post('/item/add', defineEventHandler(async (event) => {
         exists.count++
         await exists.save()
     } else {
-        const last = await OrderItem.findOne({order:body.order}).sort({ sort: -1 }) as IOrderItem
+        const last = await OrderItem.findOne({order: body.order}).sort({sort: -1}) as IOrderItem
         body.sort = last.sort + 1
         await OrderItem.create(body)
     }
@@ -71,7 +76,7 @@ router.post('/item/update', defineEventHandler(async (event) => {
         const item = await OrderItem.findById(body.id).populate(OrderItem.getPopulation()) as IOrderItem
         item.count = body.count
         await item.save()
-        for(const sub of item.subItems) {
+        for (const sub of item.subItems) {
             sub.count = item.count * (item.device?.isPower ? 2 : 1)
             await sub.save()
         }
@@ -97,11 +102,11 @@ router.post('/item/move', defineEventHandler(async (event) => {
     const {toItem, fromItem} = await readBody(event)
     if (toItem?.id && fromItem?.id) {
         const item = await OrderItem.findById(toItem.id).populate(OrderItem.getPopulation()) as IOrderItem
-        const sub = item.subItems.find(s=>s.device?.id === fromItem.device?.id)
-        if(sub){
-            sub.count ++
+        const sub = item.subItems.find(s => s.device?.id === fromItem.device?.id)
+        if (sub) {
+            sub.count++
             await sub.save()
-        }else{
+        } else {
             await OrderSubItem.create({item, device: fromItem.device, count: fromItem.count})
         }
         OrderItem.findByIdAndDelete(fromItem.id).then(console.log)
@@ -114,11 +119,11 @@ router.post('/item/add/sub', defineEventHandler(async (event) => {
     if (!user || !user.isNetwork) throw createError({statusCode: 403, message: 'Доступ запрещён',})
     const body = await readBody(event)
     const item = await OrderItem.findById(body.item.id).populate(OrderItem.getPopulation()) as IOrderItem
-    const sub = item.subItems.find(s=>s.device?.id === body.device?.id)
-    if(sub){
+    const sub = item.subItems.find(s => s.device?.id === body.device?.id)
+    if (sub) {
         sub.count += body.count
         await sub.save()
-    }else{
+    } else {
         return OrderSubItem.create(body)
     }
 
