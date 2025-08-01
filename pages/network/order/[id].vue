@@ -31,6 +31,7 @@ const order = ref()
 const showCategories = ref(false)
 async function load() {
   order.value = await useNuxtApp().$GET('/order/'+route.params.id)
+  console.log('fffff',order.value.items.length)
   $event('power:check')
 }
 onMounted(load)
@@ -60,6 +61,10 @@ async function sort(item: IOrderItem, inc:number){
   await load()
 }
 
+async function moveTo(toItem:IOrderItem, fromItem:IOrderItem){
+  await useNuxtApp().$POST('/order/item/move', {toItem, fromItem})
+  await load()
+}
 </script>
 
 <template lang="pug">
@@ -85,36 +90,42 @@ div(v-if="order")
           div.row
             div.col-1
               div.text-right.q-pr-lg.text-weight-bold.rounded-borders {{i1+1}}
-              br
-              div.column
-                q-btn(icon="mdi-arrow-up" @click="sort(item,1)" size="sm" title="Двинуть вверх")
-                q-btn(icon="mdi-arrow-down" @click="sort(item,-1)" size="sm"  title="Двинуть вниз")
-
             div.col
-              div.row
-                div.col
-                  div {{item.device.name}}
-                    br
-                    small {{item.device.description}}
+              div.row.items-center
+                div.col  {{item.device.name}}
                 div.col-2
                   q-input(v-model.number="item.count" @update:model-value="updateItem(item)" type="number" min="0")
                     template(v-slot:append)
                       q-btn(@click="item.count = 0; updateItem(item)" icon="mdi-close" color="negative")
                 div.col-2.text-right(style="width:100px") {{$priceFormat($priceByCurrencyNet(item.device.price * item.count))}}
-              div.bg-grey-4.q-pa-sm
-                div.row(v-for="(sub, i2) in item.subItems")
-                  div.col-1 {{i1+1}}.{{i2+1}}
-                  div.col {{sub.device?.name || sub.service.name}}
-                      br
-                      small {{sub.device?.description || sub.service.description}}
-                  div.col-2
-                    q-input(v-model.number="sub.count" @update:model-value="updateSubItem(sub)" type="number" min="0")
-                      template(v-slot:append)
-                        q-btn(@click="sub.count = 0;updateSubItem(sub)" icon="mdi-close" color="negative")
-                  div.col-2.text-right(style="width:100px") {{$priceFormat($priceByCurrencyNet((sub.device?.price || sub.service.price) * sub.count) )}}
-        div.text-right.text-weight-bold Итого: {{$priceFormat($priceByCurrencyNet(order.total))}}
+              small {{item.device.description}}
+              div.bg-grey-4.q-pa-sm(v-if="item.subItems.length")
+                div(v-for="(sub, i2) in item.subItems")
+                  div.row.items-center
+                    div.col-1 {{i1+1}}.{{i2+1}}
+                    div.col {{sub.device?.name || sub.service.name}}
+                    div.col-2
+                      q-input(v-model.number="sub.count" @update:model-value="updateSubItem(sub)" type="number" min="0")
+                        template(v-slot:append)
+                          q-btn(@click="sub.count = 0;updateSubItem(sub)" icon="mdi-close" color="negative")
+                    div.col-2.text-right(style="width:100px") {{$priceFormat($priceByCurrencyNet((sub.device?.price || sub.service.price) * sub.count) )}}
+                  small {{sub.device?.description || sub.service.description}}
+            div.col-1.text-center
+              //small Сортировка
+              q-btn(icon="mdi-arrow-up" @click="sort(item,1)" size="sm" title="Двинуть вверх")
+              q-btn(icon="mdi-arrow-down" @click="sort(item,-1)" size="sm"  title="Двинуть вниз")
+              hr
+              q-btn(icon="mdi-file-document-arrow-right" size="sm"  title="Переместить в устройство")
+                q-popup-proxy
+                  q-card
+                    q-toolbar
+                      q-toolbar-title В какое устройство переместить
+                    q-card-section
+                      div(v-for="moveToItem in order.items.filter(i=>i.id!==item.id)")
+                        q-btn( :label="moveToItem.device.name" @click="moveTo(moveToItem, item)")
+                          q-tooltip {{moveToItem.device.description}}
 
-
+      div.col.text-right.text-weight-bold Итого: {{$priceFormat($priceByCurrencyNet(order.total))}}
 
     div.col-sm.q-px-sm(v-if="!showCategories")
       AddToSpec(type="order")

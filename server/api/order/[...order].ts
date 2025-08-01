@@ -51,12 +51,14 @@ router.post('/item/add', defineEventHandler(async (event) => {
     const user = event.context.user
     if (!user || !user.isNetwork) throw createError({statusCode: 403, message: 'Доступ запрещён',})
     const body = await readBody(event)
-    if (!body.id) {
-        const items = await OrderItem.find({order: body.order}).sort({sort: -1})
-        body.sort = items[0].sort + 1
-        return OrderItem.create(body)
+    const exists = await OrderItem.findOne({device: body.device.id})
+    if (exists) {
+        exists.count++
+        await exists.save()
     } else {
-        return OrderItem.updateOne({_id: body.id}, body)
+        const last = await OrderItem.findOne({order:body.order}).sort({ sort: -1 }) as IOrderItem
+        body.sort = last.sort + 1
+        await OrderItem.create(body)
     }
 }))
 
@@ -89,11 +91,28 @@ router.post('/sub/update', defineEventHandler(async (event) => {
     }
 }))
 
+router.post('/item/move', defineEventHandler(async (event) => {
+    const user = event.context.user
+    if (!user || !user.isNetwork) throw createError({statusCode: 403, message: 'Доступ запрещён',})
+    const {toItem, fromItem} = await readBody(event)
+    if (toItem?.id && fromItem?.id) {
+        const item = await OrderItem.findById(toItem.id).populate(OrderItem.getPopulation()) as IOrderItem
+        const sub = item.subItems.find(s=>s.device?.id === fromItem.device?.id)
+        if(sub){
+            sub.count ++
+            await sub.save()
+        }else{
+            await OrderSubItem.create({item, device: fromItem.device, count: fromItem.count})
+        }
+        OrderItem.findByIdAndDelete(fromItem.id).then(console.log)
+    }
+}))
+
+
 router.post('/item/add/sub', defineEventHandler(async (event) => {
     const user = event.context.user
     if (!user || !user.isNetwork) throw createError({statusCode: 403, message: 'Доступ запрещён',})
     const body = await readBody(event)
-    console.log(body)
     const item = await OrderItem.findById(body.item.id).populate(OrderItem.getPopulation()) as IOrderItem
     const sub = item.subItems.find(s=>s.device?.id === body.device?.id)
     if(sub){

@@ -22,16 +22,17 @@ watch(() => route.query.sub, getDevices)
 onMounted(load)
 const subcats = computed(() => categories.value?.find(c => c.id === route.query.cat)?.subcategories || [])
 
-function addDevice(device: IDevice) {
-  const exists = items.value?.find((i: any) => i.device.id === device.id)
-  if (exists) {
-    exists.count++
-  } else {
-    items.value?.push({device, count: 1})
-  }
-  if(route.params.id){
-    useNuxtApp().$POST('/order/item/add', exists || {device, count: 1, order:route.params.id})
+async function addDevice(device: IDevice) {
+  if (route.params.id) {
+    await useNuxtApp().$POST('/order/item/add', {device, count: 1, order: route.params.id})
     $event('order:reload')
+  }else{
+    const exists = items.value?.find((i: any) => i.device.id === device.id)
+    if (exists) {
+      exists.count++
+    } else {
+      items.value?.push({device, count: 1})
+    }
   }
 }
 
@@ -58,6 +59,7 @@ function addDevice(device: IDevice) {
 <style scoped lang="sass">
 a
   color: black
+
 .subcat
   padding-left: 20px
 

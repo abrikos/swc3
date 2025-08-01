@@ -64,7 +64,7 @@ const levels = ['ADV', 'PRE', 'BAS']
         td
           q-input(v-model.number="row.period" type="number" :min="3" :max="5" @update:model-value="update(row)")
         td
-          q-input(v-model.number="row.order" type="number" :min="-3" :max="5" @update:model-value="update(row)")
+          q-input(v-model.number="row.order" type="number" @update:model-value="update(row)")
         td
           DeleteButton(path="/admin/services-delete" :name="row.name" event="load-services" :id="row.id" @update:model-value="update(row)")
 
