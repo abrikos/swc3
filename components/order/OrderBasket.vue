@@ -37,7 +37,7 @@ table
     tr
       td(colspan="2").text-right Итого:
       td.text-right {{$priceFormat($priceByCurrencyNet(items.reduce((a,b)=>a+b.device.price * b.count,0)))}}
-q-btn(color="primary" label="Сохранить" @click="save" v-if="items.length>0")
+q-btn(color="primary" label="Создать конфигурацию" @click="save" v-if="items.length>0" :flat="false")
 </template>
 
 <style scoped lang="sass">

@@ -86,34 +86,33 @@ async function sortTo(targetItem: IOrderItem, item: IOrderItem, inc: number) {
             NetworkCategories(v-model="order.items" )
           q-card-actions
             q-btn(label="Закрыть" @click="showCategories=false")
-      div.col-sm.q-px-sm
+      div.col-sm-8.q-px-sm
         //q-input(v-model="order.name" @focus="(input) => input.target.select()" label="Название конфигурации")
-        q-card.q-mb-sm(v-for="(item, i1) of itemsSorted" :key="item.id")
+        q-card.q-mb-sm(v-for="(item, i1) of itemsSorted" :key="item.id" :class="i1 % 2 ? 'bg-grey-3':''" )
           q-card-section
             div.row
-              div.col-1
-                div.text-right.q-pr-lg.text-weight-bold.rounded-borders {{i1+1}}
-              div.col
+              div.col-sm
                 div.row.items-center
-                  div.col  {{item.device.name}}
-                  div.col-2
+                  div.col-1-sm.text-right.q-pr-sm.text-weight-bold {{i1+1}}
+                  div.col-sm  {{item.device.name}}
+                  div.col-2-sm
                     q-input(v-model.number="item.count" @update:model-value="updateItem(item)" type="number" min="0")
                       template(v-slot:append)
                         q-btn(@click="item.count = 0; updateItem(item)" icon="mdi-close" color="negative")
-                  div.col-2.text-right(style="width:100px") {{$priceFormat($priceByCurrencyNet(item.device.price * item.count))}}
+                  div.col-2-sm.text-right(style="width:100px") {{$priceFormat($priceByCurrencyNet(item.device.price * item.count))}}
                 small {{item.device.description}}
-                div.bg-grey-4.q-pa-sm(v-if="item.subItems.length")
+                div.q-pa-sm.subitems(v-if="item.subItems.length")
                   div(v-for="(sub, i2) in item.subItems")
                     div.row.items-center
-                      div.col-1.text-weight-bold {{i1+1}}.{{i2+1}}
-                      div.col {{sub.device?.name || sub.service.name}}
-                      div.col-2
+                      div.col-2-sm.text-right.q-pr-sm.text-weight-bold {{i1+1}}.{{i2+1}}
+                      div.col-sm {{sub.device?.name || sub.service.name}}
+                      div.col-2-sm
                         q-input(v-model.number="sub.count" @update:model-value="updateSubItem(sub)" type="number" min="0")
                           template(v-slot:append)
                             q-btn(@click="sub.count = 0;updateSubItem(sub)" icon="mdi-close" color="negative")
                       div.col-2.text-right(style="width:100px") {{$priceFormat($priceByCurrencyNet((sub.device?.price || sub.service.price) * sub.count) )}}
                     small {{sub.device?.description || sub.service.description}}
-              div.col-1.text-center
+              div.col-sm-1.text-center
                 q-btn(icon="mdi-arrow-up-down" size="sm"  title="Выбрать позицию")
                   q-popup-proxy
                     q-card
@@ -155,7 +154,7 @@ async function sortTo(targetItem: IOrderItem, item: IOrderItem, inc: number) {
 
 <style scoped lang="sass">
 .subitems
-  background-color: silver
+  border-left: 4px solid gray
 
 td
   max-width: 200px
