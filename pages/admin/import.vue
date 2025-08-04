@@ -32,7 +32,7 @@ function rejected(e: {files:File[], xhr:XMLHttpRequest}) {
       //div {{item.name}}
       ul
         li(v-if="files" v-for="file of files.filter(f=>f.match(`import-${item.name}-`))" )
-          a(:href="`/upload/excel/${file.replace('excel:','')}`" target="_blank") {{file.replace('excel:','')}}
+          a(:href="`/upload/excel/${file.replace('excel:','')}`" target="_blank") {{file.replace(`excel:import-${item.name}-`,'')}}
 
   Banner(color="success" v-if="response") {{response}}
   Banner(color="error" v-if="fail") {{fail}}
