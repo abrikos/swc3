@@ -96,11 +96,10 @@ div(v-if="spec")
         td
       tr(v-for="conf of spec.configurations" :key="conf.id")
         td
-          span
-            router-link(:to="`/servers/conf/${conf.id}?category=CPU`") {{conf.name}}
-            q-btn(icon="mdi-pencil" size="sm")
-              q-popup-edit(v-model="conf.name" auto-save v-slot="scope" style="width:50%")
-                q-input(v-model="conf.name" autofocus @keyup.prevent="confUpdate(conf)" @focus="(input) => input.target.select()")
+          router-link(:to="`/servers/conf/${conf.id}?category=CPU`") {{conf.name}}
+          q-btn(icon="mdi-pencil" size="sm")
+            q-popup-edit(v-model="conf.name" style="width:450px")
+              q-input(v-model="conf.name" autofocus @keyup.prevent="confUpdate(conf)" @focus="(input) => input.target.select()")
 
         td {{ conf.description }}
         td
@@ -132,7 +131,7 @@ div(v-if="spec")
           span
             router-link(:to="`/network/order/${order.id}`") {{order.name || order.id}}
             q-btn(icon="mdi-pencil" size="sm")
-              q-popup-edit.full-widthBAK(v-model="order.name" auto-save v-slot="scope" style="width:50%")
+              q-popup-edit(v-model="order.name" style="width:450px")
                 q-input(v-model="order.name" autofocus @keyup.prevent="orderUpdate(order)" @focus="(input) => input.target.select()")
 
         td {{ order.description }}
