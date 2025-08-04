@@ -190,6 +190,12 @@ export function servSpec(worksheet: Excel.Worksheet, spec: ISpec, confidential: 
             brokenStorageRow.getCell(6).value = {formula: `+F18`}
             brokenStorageRow.getCell(7).value = {formula: `D${brokenStorageRow.number}-D${brokenStorageRow.number}*F${brokenStorageRow.number}`}
             brokenStorageRow.getCell(8).value = {formula: `G${brokenStorageRow.number}*C${brokenStorageRow.number}`}
+            if (confidential) {
+                brokenStorageRow.getCell(12).value = {formula: `C${brokenStorageRow.number}*D${brokenStorageRow.number}`}
+                brokenStorageRow.getCell(10).fill = fill
+                brokenStorageRow.getCell(11).fill = fill
+                brokenStorageRow.getCell(12).fill = fill
+            }
             summaryRows.push(brokenStorageRow.number)
         }
 
