@@ -190,9 +190,9 @@ router.post('/import/:type', defineEventHandler(async (event) => {
     await logAction(event)
     const {type} = event.context.params as Record<string, string>
     let formData = await readMultipartFormData(event)
-    const storage = useStorage("excel");
+    const storage = useStorage('excel');
     if (formData) {
-        await storage.setItemRaw(`${moment().format('YYYY-MM-DD')}-${formData[0].name}`, formData[0].data);
+        await storage.setItemRaw(`import-${type}-${moment().format('YYYY-MM-DD')}-${formData[0].name}`, formData[0].data);
         switch (type) {
             case 'net':
                 return parseNetworkXLS(formData[0].data)

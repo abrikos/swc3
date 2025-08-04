@@ -15,6 +15,7 @@ const response = ref()
 const fail = ref()
 function uploaded(e: {files:File[], xhr:XMLHttpRequest }){
   response.value = e.xhr.responseText
+  load()
 }
 
 function rejected(e: {files:File[], xhr:XMLHttpRequest}) {
@@ -23,14 +24,19 @@ function rejected(e: {files:File[], xhr:XMLHttpRequest}) {
 </script>
 
 <template lang="pug">
-  div.flex.justify-center
-    div.q-ma-sm(v-for="(item,index) in types")
+  div.row
+    div.col.q-ma-sm(v-for="(item,index) in types")
       q-uploader(auto-upload :label="item.title" :url="`/api/admin/import/${item.name}`" @uploaded="uploaded" @failed="rejected")
       span Пример файла
         a(:href="'/'+item.file" target="_blank") {{item.file}}
+      //div {{item.name}}
+      ul
+        li(v-if="files" v-for="file of files.filter(f=>f.match(`import-${item.name}-`))" )
+          a(:href="`/upload/excel/${file.replace('excel:','')}`" target="_blank") {{file.replace('excel:','')}}
+
   Banner(color="success" v-if="response") {{response}}
   Banner(color="error" v-if="fail") {{fail}}
-  q-card
+  //q-card
     q-toolbar
       q-toolbar-title Загруженные файлы
     q-card-section
