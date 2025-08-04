@@ -110,7 +110,10 @@ router.post('/item/move', defineEventHandler(async (event) => {
             await OrderSubItem.create({item, device: fromItem.device, count: fromItem.count})
         }
         OrderItem.findByIdAndDelete(fromItem.id).then(console.log)
+    }else{
+        throw createError({statusCode: 406, message: 'No items',})
     }
+    return {ok:9999}
 }))
 
 

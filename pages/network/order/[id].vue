@@ -68,6 +68,10 @@ async function sortTo(targetItem: IOrderItem, item: IOrderItem, inc: number) {
   await useNuxtApp().$POST('/order/item/sort', {targetItem, item, inc})
   await load()
 }
+async function moveTo(toItem: IOrderItem, fromItem: IOrderItem) {
+  await useNuxtApp().$POST('/order/item/move', {toItem, fromItem})
+  await load()
+}
 </script>
 
 <template lang="pug">
