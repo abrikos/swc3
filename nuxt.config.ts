@@ -15,6 +15,7 @@ export default defineNuxtConfig({
         mailUser: process.env.MAIL_USER,
         mailPassword: process.env.MAIL_PASSWORD,
         devMode: process.env.NODE_ENV !== 'production',
+        dadata: process.env.DADATA,
         public: {
             devMode: process.env.NODE_ENV !== 'production',
             authExpiration: 3600 * 24 * 30,

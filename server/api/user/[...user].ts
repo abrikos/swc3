@@ -4,11 +4,11 @@ import crypto from "crypto";
 
 //User.deleteMany().then(console.log)
 const router = createRouter()
+const config = useRuntimeConfig()
 
 router.post('/inn', defineEventHandler(async (event) => {
     const {inn} = await readBody(event)
     const url = "http://suggestions.dadata.ru/suggestions/api/4_1/rs/findById/party";
-    const token = "257cfbf98eb1c4e3a91808b98089ca998c42e34a";
     const query = "7707083893";
     const response = await fetch(url, {
         method: "POST",
@@ -16,7 +16,7 @@ router.post('/inn', defineEventHandler(async (event) => {
         headers: {
             "Content-Type": "application/json",
             "Accept": "application/json",
-            "Authorization": "Token " + token
+            "Authorization": "Token " + config.dadata
         },
         body: JSON.stringify({query: inn})
     })
