@@ -35,9 +35,9 @@ onMounted(()=>{
     {to: '/servers/chassis', label: 'Серверы', icon: 'mdi-server-outline', showItem: true},
     {to: '/servers/spec/list', label: 'Спецификации', icon: 'mdi-list-box-outline', showItem: true},
     {to: '/project/list', label: 'Проекты', icon: 'mdi-briefcase-outline', showItem: true},
-    {to: '/user/login', label: 'Вход', icon: 'mdi-account', showItem: false},
-    {to: '/user/registration', label: 'Зарегистрироваться', icon: 'mdi-account-plus', showItem: false},
-    {to: '/user/password-restore', label: 'Восстановить пароль', icon: 'mdi-form-textbox-password', showItem: false},
+    // {to: '/user/login', label: 'Вход', icon: 'mdi-account', showItem: false},
+    // {to: '/user/registration', label: 'Зарегистрироваться', icon: 'mdi-account-plus', showItem: false},
+    // {to: '/user/password-restore', label: 'Восстановить пароль', icon: 'mdi-form-textbox-password', showItem: false},
   ]
 })
 </script>
@@ -47,7 +47,7 @@ onMounted(()=>{
     q-header
       q-linear-progress#progress(color="orange" indeterminate v-if="loading" )
       q-toolbar.bg-grey-6
-        q-btn( flat @click="leftDrawerOpen = !leftDrawerOpen" round dense icon="mdi-menu")
+        q-btn(v-if="loggedUser"  flat @click="leftDrawerOpen = !leftDrawerOpen" round dense icon="mdi-menu")
         img(src="/logo.png" style="max-height: 20px;max-width: 230px;cursor:pointer" @click="navigateTo('/')")
         //q-btn(v-if="loggedUser" flat round dense icon="menu" @click="toggleDrawer")
         q-toolbar-title
@@ -65,8 +65,7 @@ onMounted(()=>{
         q-btn(v-if="loggedUser" @click="logUserOut" icon="mdi-logout" )
         //q-btn(v-if="!loggedUser" to="/user/login" icon="mdi-login" )
         //ThemeSwitch
-    q-drawer(v-model="leftDrawerOpen" bordered :side="drawerSide || 'left'")
-      div {{drawerSide}}
+    q-drawer(v-if="loggedUser" v-model="leftDrawerOpen" bordered :side="drawerSide || 'left'")
       q-list
         //q-item(to="http://srvgfg.qtech.ru:8080")
           q-item-section Старая версия

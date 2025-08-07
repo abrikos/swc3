@@ -29,6 +29,11 @@ q-card.q-pa-sm.fixed-center
     q-card-actions
       q-btn(type="submit" label="Отправить" color="primary" :flat="false")
       q-btn(type="reset" label="Сбросить")
+    q-card-section
+      div
+        router-link(to="/user/registration") Зарегистрироваться
+      div
+        router-link(to="/user/password-restore") Восстановить пароль
 </template>
 
 <style scoped>
