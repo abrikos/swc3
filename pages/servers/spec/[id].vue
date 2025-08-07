@@ -61,10 +61,8 @@ div(v-if="spec")
   q-toolbar
     q-toolbar-title.cursor-pointer {{spec.name}}
       EditField(v-model="spec.name" :update="save")
-  q-toolbar
-    div Сумма:&nbsp;
-      strong {{$priceFormat($priceByCurrencyServer(servPrice) + $priceByCurrencyNet(netPrice))}}
     q-space
+    strong {{$priceFormat($priceByCurrencyServer(servPrice) + $priceByCurrencyNet(netPrice))}}
     ExcelButton(:id="spec.id" path="/spec" )
     ExcelButton(:id="spec.id" path="/spec" :confidential="true")
     q-btn(icon="mdi-server-outline" color="orange" :to="{path:'/servers/chassis', query:{spec:spec.id}}")
@@ -77,11 +75,11 @@ div(v-if="spec")
 
   div.flex.justify-between.items-center
     div
-  table.fit
+  table
     tbody
       tr
-        th
-        th(width="400") Описание
+        th(style="width:300px") Название
+        th(style="width:500px") Описание
         th(width="100") Кол-во
         th.text-right Цена
         th.text-right Сумма
@@ -146,6 +144,11 @@ div(v-if="spec")
       //tr.bg-green-1
         td.text-right(colspan="4") Итого:
         td.text-right.text-weight-bold {{$priceFormat($priceByCurrencyNet(netPrice))}}
+        td
+    tbody
+      tr.bg-grey-4
+        td.text-right(colspan="4")  Итого
+        td.text-right.text-weight-bold {{$priceFormat($priceByCurrencyServer(servPrice) + $priceByCurrencyNet(netPrice))}}
         td
 </template>
 
