@@ -26,9 +26,8 @@ q-card.q-pa-sm.fixed-center
     q-input(v-model="user.email" label="Логин")
     br
     q-input(v-model="user.password" label="Пароль" type="password" )
-    q-card-actions
-      q-btn(type="submit" label="Отправить" color="primary" :flat="false")
-      q-btn(type="reset" label="Сбросить")
+    q-card-section.text-center
+      q-btn.full-width(type="submit" label="Вход" color="primary" :flat="false")
     q-card-section
       div
         router-link(to="/user/registration") Зарегистрироваться
