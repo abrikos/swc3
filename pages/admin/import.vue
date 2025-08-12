@@ -24,15 +24,21 @@ function rejected(e: {files:File[], xhr:XMLHttpRequest}) {
 </script>
 
 <template lang="pug">
-  div.row
-    div.col.q-ma-sm(v-for="(item,index) in types")
+  div.flex
+    div.q-ma-sm(v-for="(item,index) in types")
       q-uploader(auto-upload :label="item.title" :url="`/api/admin/import/${item.name}`" @uploaded="uploaded" @failed="rejected")
-      span Пример файла
-        a(:href="'/'+item.file" target="_blank") {{item.file}}
-      div.text-weight-bold Импортированные файлы:
-      ul
-        li(v-if="files" v-for="file of files.filter(f=>f.match(`import-${item.name}-`))" )
-          a(:href="`/upload/excel/${file.replace('excel:','')}`" target="_blank") {{file.replace(`excel:import-${item.name}-`,'')}}
+      q-btn(label="Файлы" :flat="false")
+        q-popup-proxy
+          q-card
+            q-toolbar
+              q-toolbar-title {{item.title}}
+            q-card-section
+              span Пример файла
+                a(:href="'/'+item.file" target="_blank") {{item.file}}
+              div.text-weight-bold Импортированные файлы:
+              ul
+                li(v-if="files" v-for="file of files.filter(f=>f.match(`import-${item.name}-`))" )
+                  a(:href="`/upload/excel/${file.replace('excel:','')}`" target="_blank") {{file.replace(`excel:import-${item.name}-`,'')}}
 
   Banner(color="success" v-if="response") {{response}}
   Banner(color="error" v-if="fail") {{fail}}
