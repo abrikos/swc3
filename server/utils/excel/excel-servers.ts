@@ -4,7 +4,7 @@ import FillPattern from "exceljs/index";
 
 export function servSpec(worksheet: Excel.Worksheet, spec: ISpec, confidential: boolean, user: IUser, course: number) {
     const currName = confidential ? '$' : user.currency
-    const numFmt = `_(* #,##0.00_)"${currName === 'Рубли' ? 'Р' : '$'}";_(* (#,##0.00);_(* "-"??_);_(@_)`
+    const numFmt = `_(* #,##0.00_)"${currName === 'Рубли' ? 'Р' : '$'}"`
 
     const data = [
         "АРТИКУЛ",
@@ -159,13 +159,13 @@ export function servSpec(worksheet: Excel.Worksheet, spec: ISpec, confidential: 
 
             ]
             const serviceRow = worksheet.addRow(data)
-            serviceRow.getCell(4).value = {formula: `D${rowSummary.number}*${conf.service.coefficient}`}
+            serviceRow.getCell(4).value = confidential ? {formula: `D${rowSummary.number}*${conf.service.coefficient}`} : conf.price * (user.currency === 'USD' ? 1 : course) * conf.service.coefficient
             serviceRow.getCell(5).value = {formula: `C${serviceRow.number}*D${serviceRow.number}`}
             serviceRow.getCell(7).value = {formula: `D${serviceRow.number}-D${serviceRow.number}*F${serviceRow.number}`}
             serviceRow.getCell(8).value = {formula: `G${serviceRow.number}*C${serviceRow.number}`}
             const servicePercent = conf.service.name.match('Base') ? 0 : (conf.service.name.match('36 месяцев') ? 0.1 : 0.15)
             if (confidential) {
-                serviceRow.getCell(11).value = {formula: `K${rowSummary.number}*0.1`} //???????
+                serviceRow.getCell(11).value = conf.service.level==='BAS' && conf.service.period===3 ? 0 : {formula: `K${rowSummary.number}*0.1`} //???????
                 serviceRow.getCell(12).value = {formula: `K${serviceRow.number}*C${serviceRow.number}`}
                 serviceRow.getCell(10).fill = fill
                 serviceRow.getCell(11).fill = fill

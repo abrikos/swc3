@@ -6,7 +6,7 @@ import Column from "exceljs/index"
 
 export const specToXls = async (spec: ISpec, user: IUser, confidential: boolean, course: number) => {
     const currName = confidential ? '$' : user.currency
-    const numFmt = `_(* #,##0.00_)"${currName === 'Рубли' ? 'Р' : '$'}";_(* (#,##0.00);_(* "-"??_);_(@_)`
+    const numFmt = `_(* #,##0.00_)"${currName === 'Рубли' ? 'Р' : '$'}"`
     const workbook = new Excel.Workbook();
     const imageId1 = workbook.addImage({
         filename: process.cwd() + '/public/logo.png',
