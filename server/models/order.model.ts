@@ -43,13 +43,14 @@ schema.virtual('date')
 
 schema.virtual('sum')
     .get(function () {
-        return this.items.reduce(function (sum: number, item) {
-            return sum + (item.device?.price * item.count) + item.subItems.reduce(function (sum, sub) {return sum + (sub.device?.price||sub.service?.price) * sub.count}, 0)
-        }, 0);
+        return this.items ? this.items.reduce(function (sum: number, item) {
+            return sum + (item.device?.price * item.count)
+                + (item.subItems ? item.subItems.reduce(function (sum, sub) {return sum + (sub.device?.price||sub.service?.price) * sub.count}, 0) : 0)
+        }, 0) : 0;
     })
 schema.virtual('description')
     .get(function () {
-        return this.items.map(i=>i.device.name).join(', ');
+        return this.items?.map(i=>i.device.name).join(', ');
     })
 schema.virtual('total')
     .get(function () {

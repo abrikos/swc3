@@ -28,7 +28,7 @@ $listen('order:addDevice', (device: IDevice) => {
 const {loggedUser} = storeToRefs(useCustomStore())
 const route = useRoute()
 const order = ref()
-const showCategories = ref(false)
+const showCategories = computed(()=>route.query.cat || route.query.sub)
 
 async function load() {
   order.value = await useNuxtApp().$GET('/order/' + route.params.id)
@@ -56,7 +56,6 @@ let i2 = 1
 
 async function save() {
   await useNuxtApp().$POST('/order/update/' + route.params.id, order.value)
-  showCategories.value = false
 }
 
 async function sort(item: IOrderItem, inc: number) {
@@ -85,17 +84,18 @@ async function moveTo(toItem: IOrderItem, fromItem: IOrderItem) {
         q-card
           q-toolbar
             q-toolbar-title Добавление устройств
-            q-btn(icon="mdi-close" @click="showCategories=false")
+            q-btn(icon="mdi-close" @click="navigateTo({query: {}})")
           q-card-section
             NetworkCategories(v-model="order.items" )
           q-card-actions
-            q-btn(label="Закрыть" @click="showCategories=false")
+            q-btn(label="Закрыть" @click="navigateTo({query: {}})")
       div.col-sm-8.q-px-sm
         //q-input(v-model="order.name" @focus="(input) => input.target.select()" label="Название конфигурации")
-        q-card.q-mb-sm(v-for="(item, i1) of itemsSorted" :key="item.id" :class="i1 % 2 ? 'bg-grey-3':''" )
+        q-card.q-mb-sm(v-for="(item, i1) of itemsSorted" :key="item.id" :class="route.query.device===item.id? 'bg-red-4' : i1 % 2 ? 'bg-grey-3':''" )
           q-card-section
             div.row
               div.col-sm
+                div.text-white(v-if="route.query.device===item.id") Добавляться будут сюда
                 div.row.items-center
                   div.col-1-sm.text-right.q-pr-sm.text-weight-bold {{i1+1}}
                   div.col-sm  {{item.device.name}}
@@ -116,6 +116,8 @@ async function moveTo(toItem: IOrderItem, fromItem: IOrderItem) {
                             q-btn(@click="sub.count = 0;updateSubItem(sub)" icon="mdi-close" color="negative")
                       div.col-2.text-right(style="width:100px") {{$priceFormat($priceByCurrencyNet((sub.device?.price || sub.service.price) * sub.count) )}}
                     small {{sub.device?.description || sub.service.description}}
+                div.text-center
+                  q-btn(v-if="route.query.device!==item.id" @click="navigateTo({query:{cat:1, device:item.id}})" :label="`Добавить устройства для ${item.device.name}`" :flat="false" color="blue")
               div.col-sm-1.text-center
                 q-btn(icon="mdi-arrow-up-down" size="sm"  title="Выбрать позицию")
                   q-popup-proxy
@@ -142,7 +144,7 @@ async function moveTo(toItem: IOrderItem, fromItem: IOrderItem) {
 
       div.col-sm.q-px-sm(v-if="!showCategories")
         AddToSpec(type="order")
-        q-btn(v-if="!showCategories" @click="showCategories=true" label="Добавить устройства")
+        q-btn(v-if="!showCategories" @click="navigateTo({query:{cat:1}})" label="Добавить устройства")
         OrderServices(v-model="order")
         OrderTranscievers(v-model="order")
         OrderPowers(v-model="order")

@@ -30,7 +30,7 @@ const transporter = nodemailer.createTransport({
         pass: mailPassword,
     },
 });
-transporter.verify().then(e=>console.log('Mail verify', e)).catch(e=>console.error('mail send ERROR: ', e));
+//transporter.verify().then(e=>console.log('Mail verify', e)).catch(e=>console.error('mail send ERROR: ', e));
 //sendMail({to:'abrikoz@gmail.com'}).then(console.log)
 
 export function sendMail(mailData: any) {

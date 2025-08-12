@@ -24,15 +24,28 @@ const subcats = computed(() => categories.value?.find(c => c.id === route.query.
 
 async function addDevice(device: IDevice) {
   if (route.params.id) {
-    await useNuxtApp().$POST('/order/item/add', {device, count: 1, order: route.params.id})
-    $event('order:reload')
-  }else{
-    const exists = items.value?.find((i: any) => i.device.id === device.id)
-    if (exists) {
-      exists.count++
+    if (!route.query.device) {
+      await useNuxtApp().$POST('/order/item/add', {device, count: 1, order: route.params.id})
     } else {
-      items.value?.push({device, count: 1})
+      await useNuxtApp().$POST('/order/item/add/sub', {
+        item: {id: route.query.device},
+        device,
+        count: 1,
+        order: route.params.id
+      })
     }
+    $event('order:reload')
+  } else {
+    const order = await useNuxtApp().$POST('/order/basket/save', [{device, count: 1}]) as IOrder
+    if (order) {
+      navigateTo({path: '/network/order/' + order._id, query: route.query})
+    }
+    // const exists = items.value?.find((i: any) => i.device.id === device.id)
+    // if (exists) {
+    //   exists.count++
+    // } else {
+    //   items.value?.push({device, count: 1})
+    // }
   }
 }
 
@@ -44,7 +57,7 @@ async function addDevice(device: IDevice) {
       q-item-section(avatar)
         q-icon(:name="icons[category.name]" color="primary" size="30px")
       q-item-section
-        router-link(:to="{query:{cat:category.id}}") {{category.name}}
+        router-link(:to="{query:{...route.query, cat:category.id}}") {{category.name}}
         div.subcat(v-for="sub in subcats" v-if="category.id === route.query.cat")
           router-link(:to="{query:{...route.query, sub:sub.id}}") {{sub.name}}
           div.device(v-for="device in devices" v-if="sub.id === route.query.sub" @click="addDevice(device)")

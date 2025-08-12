@@ -35,11 +35,11 @@ router.post('/item/sort', defineEventHandler(async (event) => {
     const user = event.context.user
     if (!user || !user.isNetwork) throw createError({statusCode: 403, message: 'Доступ запрещён',})
     const {targetItem, item, inc} = await readBody(event)
-    const items = await OrderItem.find({order:item.order}).sort({sort:-1}) as IOrderItem[]
+    const items = await OrderItem.find({order: item.order}).sort({sort: -1}) as IOrderItem[]
     const movedIdx = items.map(item => item.id).indexOf(item.id)
     const targetIdx = items.map(item => item.id).indexOf(targetItem.id)
     items.splice(targetIdx + inc, 0, items[movedIdx])
-    items.splice(movedIdx > targetIdx ? movedIdx + 1: movedIdx, 1)
+    items.splice(movedIdx > targetIdx ? movedIdx + 1 : movedIdx, 1)
 
     let i = items.length - 1
     for (const item of items) {
@@ -48,7 +48,7 @@ router.post('/item/sort', defineEventHandler(async (event) => {
         await item.save()
         i--
     }
-    return console.log('zzzzzzz', movedIdx, targetIdx)
+    //return console.log('zzzzzzz', movedIdx, targetIdx)
 
 }))
 
@@ -56,15 +56,17 @@ router.post('/item/add', defineEventHandler(async (event) => {
     const user = event.context.user
     if (!user || !user.isNetwork) throw createError({statusCode: 403, message: 'Доступ запрещён',})
     const body = await readBody(event)
-    const exists = await OrderItem.findOne({device: body.device.id})
-    if (exists) {
-        exists.count++
-        await exists.save()
-    } else {
-        const last = await OrderItem.findOne({order: body.order}).sort({sort: -1}) as IOrderItem
-        body.sort = last.sort + 1
-        await OrderItem.create(body)
-    }
+    // const exists = await OrderItem.findOne({device: body.device.id, order: body.order})
+    //
+    // if (exists) {
+    //     exists.count++
+    //     await exists.save()
+    // } else {
+    const last = await OrderItem.findOne({order: body.order}).sort({sort: -1}) as IOrderItem
+    body.sort = last.sort + 1
+    await OrderItem.create(body)
+    // }
+    // console.log(exists)
 }))
 
 
@@ -110,10 +112,10 @@ router.post('/item/move', defineEventHandler(async (event) => {
             await OrderSubItem.create({item, device: fromItem.device, count: fromItem.count})
         }
         OrderItem.findByIdAndDelete(fromItem.id).then(console.log)
-    }else{
+    } else {
         throw createError({statusCode: 406, message: 'No items',})
     }
-    return {ok:9999}
+    return {ok: 9999}
 }))
 
 
@@ -127,7 +129,9 @@ router.post('/item/add/sub', defineEventHandler(async (event) => {
         sub.count += body.count
         await sub.save()
     } else {
-        return OrderSubItem.create(body)
+        const fields = {device:body.device.id, item:body.item.id}
+        console.log(fields)
+        return OrderSubItem.create(fields)
     }
 
 }))
@@ -213,7 +217,7 @@ router.post('/basket/save', defineEventHandler(async (event) => {
             await s.save()
         }
     }
-    return order.id
+    return order
 }))
 
 export default useBase('/api/order', router.handler)
