@@ -12,7 +12,7 @@ export const specToXls = async (spec: ISpec, user: IUser, confidential: boolean,
         filename: process.cwd() + '/public/logo.png',
         extension: 'jpeg',
     });
-    const worksheet = workbook.addWorksheet(spec.name.replace(/[\*|\?|:|\\|\/|\[|\]]/g, '-'));
+    const worksheet = workbook.addWorksheet(spec.name.replace(/[^а-яА-Яa-zA-Z0-9]/g, '-'));
     worksheet.addImage(imageId1, 'A1:A6');
 
     const fill = confidential ? {
