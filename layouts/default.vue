@@ -53,7 +53,8 @@ onMounted(()=>{
         q-toolbar-title
           //q-btn(to="/")
         CurrencySwitch
-
+        q-space
+        q-btn(label="Обратная связь" to="/feedback")
         //q-btn-dropdown(flat label="Admin" v-if="loggedUser?.isAdmin")
           q-list
             q-item
@@ -63,7 +64,7 @@ onMounted(()=>{
         q-space
         q-btn.flex.la-align-center(flat dense no-caps v-if="loggedUser" to="/user/cabinet") {{loggedUser.email}}
         q-btn(v-if="loggedUser" @click="logUserOut" icon="mdi-logout" )
-        //q-btn(v-if="!loggedUser" to="/user/login" icon="mdi-login" )
+        q-btn(v-if="!loggedUser" to="/user/login" icon="mdi-login" )
         //ThemeSwitch
     q-drawer(v-if="loggedUser" v-model="leftDrawerOpen" bordered :side="drawerSide || 'left'")
       q-list

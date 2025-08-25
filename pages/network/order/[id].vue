@@ -140,11 +140,12 @@ async function moveTo(toItem: IOrderItem, fromItem: IOrderItem) {
                           q-btn( :label="moveToItem.device.name" @click="moveTo(moveToItem, item)")
                             q-tooltip {{moveToItem.device.description}}
 
+        q-btn(v-if="!showCategories" @click="navigateTo({query:{cat:1}})" label="Добавить новые устройства" color="blue" )
         div.col.text-right.text-weight-bold Итого: {{$priceFormat($priceByCurrencyNet(order.total))}}
 
       div.col-sm.q-px-sm(v-if="!showCategories")
         AddToSpec(type="order")
-        q-btn(v-if="!showCategories" @click="navigateTo({query:{cat:1}})" label="Добавить устройства")
+
         OrderServices(v-model="order")
         OrderTranscievers(v-model="order")
         OrderPowers(v-model="order")
