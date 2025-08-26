@@ -67,11 +67,14 @@ async function clearConfigurations() {
     const date30 = new Date(day30.year(), day30.month(), day30.date());
     const specs = await Spec.find({'configurations.1': {$exists: true}});
     const ids = []
+    const idsOrder = []
     for (const spec of specs) {
         ids.push(...spec.configurations)
+        idsOrder.push(...spec.orders)
     }
     const confs = await Conf.deleteMany({_id: {$nin: ids}, createdAt: {$lt: date2}});
-    const specDel = await Spec.deleteMany({'configurations.1': {$exists: false}, createdAt: {$lt: date30}});
+    const orders = await Order.deleteMany({_id: {$nin: idsOrder}, createdAt: {$lt: date2}});
+    const specDel = await Spec.deleteMany({'configurations.1': {$exists: false}, 'orders.1': {$exists: false}, createdAt: {$lt: date30}});
     console.log(confs, specDel);
 
 }
@@ -129,5 +132,6 @@ export default defineNitroPlugin(() => {
     }, 3600 * 1000 * 24)
 
     setInterval(quartNotifications, 1000 * 3600 * 24);
+    //setInterval(clearConfigurations, 1000 * 3600 * 24);
     setInterval(setCourse, 1000 * 3600)
 })
