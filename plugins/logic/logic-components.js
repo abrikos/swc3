@@ -10,6 +10,8 @@ export default (configuration, components, tab) => {
             if (component.unitFix && (component.unitFix !== configuration.chassis.units)) return
             if (!component.platforms.includes(configuration.chassis.platform)) return
             switch (tab.category) {
+                case 'Cables':
+                    return component.forUnitInPN ? configuration.chassis.units === component.forUnitInPN : true
                 case 'CPU':
                     return configuration.chassis.cpu === component.type && component.platforms.includes(configuration.chassis.platform)
                 case 'Storage':

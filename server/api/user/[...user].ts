@@ -1,5 +1,4 @@
 import {Token} from "~/server/models/token.model";
-import {User, validateEmail} from "~/server/models/user.model";
 import crypto from "crypto";
 
 //User.deleteMany().then(console.log)
@@ -46,7 +45,6 @@ router.post('/request-restore-password', defineEventHandler(async (event) => {
 
 router.get('/process-restore-password/:code', defineEventHandler(async (event) => {
     const {code} = event.context.params as Record<string, string>
-    console.log('zzzzzzzzz',code)
     const user = await User.findOne({restorePassword: code});
     console.log('user',user)
     if (!user) return

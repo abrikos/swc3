@@ -131,7 +131,11 @@ schema.virtual('description')
             if (part.component.category === 'Power' && this.chassis.lanPort1Gb) {
                 confName.push(this.chassis.lanPort1Gb + '*1GbE LAN')
             }
-            confName.push(part.count + '* ' + part.component.description)
+            if(part.component.partNumber.match('BEZEL')){
+                confName.push(part.component.partNumber)
+            }else {
+                confName.push(part.count + '* ' + part.component.description)
+            }
         }
         confName.push('1G dedicated RJ45 IPMI, Rails')
         confName.push(this.service ? this.service.name : 'Техническая поддержка Base 8х5, 36 месяцев')

@@ -195,6 +195,12 @@ schema.virtual('riserUnit')
         return match ? parseInt(match[1]) : 0;
     })
 
+schema.virtual('forUnitInPN')
+    .get(function () {
+        const match = this.partNumber?.match(/(\d)U/)
+        return match ? parseInt(match[1]) : 0;
+    })
+
 
 schema.virtual('description')
     .get(function () {
