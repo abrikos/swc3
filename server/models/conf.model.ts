@@ -207,6 +207,10 @@ schema.virtual('M2expnvmeCount')
     .get(function () {
         return this.parts.filter(p => p.component.partNumber === 'M2expnvme').reduce((a, b) => a + b.count, 0)
     })
+schema.virtual('M2RaidCount')
+    .get(function () {
+        return this.parts.filter(p => p.component.partNumber === 'M2Raid').reduce((a, b) => a + b.count, 0)
+    })
 schema.virtual('U2expnvmeCount')
     .get(function () {
         return this.parts.filter(p => p.component.partNumber === 'U2expnvme').reduce((a, b) => a + b.count, 0)

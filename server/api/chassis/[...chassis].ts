@@ -6,13 +6,13 @@ const router = createRouter()
 
 router.get('/list', defineEventHandler(async (event) => {
     const user = event.context.user
-    if (!user && user.isServer) throw createError({statusCode: 403, message: 'Доступ запрещён',})
+    if (!user && !user.isServer) throw createError({statusCode: 403, message: 'Доступ запрещён',})
     return Chassis.find({})
 }))
 
 router.put('/hide/:id', defineEventHandler(async (event) => {
     const user = event.context.user
-    if (!user && user.isAdmin) throw createError({statusCode: 403, message: 'Доступ запрещён',})
+    if (!user && !user.isAdmin) throw createError({statusCode: 403, message: 'Доступ запрещён',})
     const {id} = event.context.params as Record<string, string>
     const chassis = await Chassis.findById(id)
     if (!chassis) throw createError({statusCode: 404, message: ('Chassis not found'),})

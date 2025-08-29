@@ -50,7 +50,8 @@ export default (configuration, tab) => {
         case 'SSD m.2':
             if (configuration.M2expnvmeCount) return Array.from(Array(configuration.M2expnvmeCount * 2 + 1).keys())
             if (configuration.chassis.platform === 'G2R') {
-                return [0, 1]
+                return[0,1]
+                return configuration.M2RaidCount ? Array.from(Array(configuration.M2RaidCount * 2 + 2).keys()):[0, 1]
             }
             return [0, 1, 2]
         case 'Rear bay':
