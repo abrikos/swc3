@@ -38,7 +38,7 @@ async function createSpec() {
         ExcelButton(:id="spec.id" path="/spec" )
         ExcelButton(:id="spec.id" path="/spec" :confidential="true")
 
-      q-btn(v-if="!inSpecs.length" color="primary" @click="createSpec") Добавить в спецификацию
+      q-btn(v-if="!inSpecs.length" color="primary" @click="createSpec") Создать спецификацию
   //q-card
     q-toolbar
       q-toolbar-title Спецификации
