@@ -1,5 +1,5 @@
 #!/bin/bash
-cd ~/swc3
+cd ~/swc3 || exit
 GIT=`git pull`
 if [[ $GIT =~ "актуально." ]]; then
   echo $GIT
