@@ -119,7 +119,7 @@ async function moveTo(toItem: IOrderItem, fromItem: IOrderItem) {
                     small {{sub.device?.description || sub.service.description}}
                 div.text-center
                   //q-btn(v-if="route.query.device!==item.id" @click="navigateTo({query:{cat:1, device:item.id}})" :label="`Добавить устройства для ${item.device.name}`" :flat="false" color="blue")
-                  q-btn(v-if="item.device.canAdd" @click="navigateTo(`/network/device/${item.id}`)" label="Добавить устройства" :flat="false" color="green")
+                  q-btn(v-if="item.device.canAdd" @click="navigateTo(`/network/device/${item.id}`)" label="Редактировать комплектацию" :flat="false" color="green")
               div.col-sm-1.text-center
                 q-btn(icon="mdi-arrow-up-down" size="sm"  title="Выбрать позицию")
                   q-popup-proxy

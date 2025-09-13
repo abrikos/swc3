@@ -56,7 +56,7 @@ function counts(d: IDevice) {
       div.col-sm-9
         q-tabs(v-model="tab"  dense no-caps indicator-color="primary" outside-arrows  mobile-arrows)
           q-route-tab(v-for="t of item.device.tabs" :label="t.label" :name="t.name" :to="{query:{tab:t.name}}" :icon="t.icon")
-        q-tab-panels(v-model="tab" animated swipeable vertical )
+        q-tab-panels(v-model="tab" animated swipeable )
           q-tab-panel(v-for="t of item.device.tabs" :name="t.name" )
             table
               tbody
