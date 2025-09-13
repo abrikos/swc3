@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 import {ISubCategory} from "~/server/models/subcategory";
 import {IConf} from "~/server/models/conf.model";
+import {IOrderSubItem} from "~/server/models/order-subitem";
 
 const model = 'device';
 
@@ -14,6 +15,8 @@ export interface IDevice extends mongoose.Document {
     discount2: number
     discount3: number
     deleted: boolean
+    canAdd: boolean
+    tabs: any[]
     powerNames: string[]
     powerCount: number
     subcategory: ISubCategory
@@ -23,7 +26,7 @@ export interface IDevice extends mongoose.Document {
 }
 
 interface IDeviceModel extends mongoose.Model<IDevice> {
-    getPopulation: ()=>[]
+    getPopulation: () => []
 }
 
 
@@ -49,7 +52,24 @@ const schema = new Schema<IDevice>({
     toObject: {virtuals: true},
     toJSON: {virtuals: true}
 })
-schema.statics.getPopulation = () => ['powers', 'services', 'trans', 'subcategory']
+schema.statics.getPopulation = () => ['powers', 'services', 'trans', {path: 'subcategory', populate: 'category'}]
+
+schema.virtual('canAdd')
+    .get(function () {
+        return !!this.tabs.length
+    })
+
+schema.virtual('tabs')
+    .get(function () {
+        const r = []
+        if (this.powers.length) r.push({name: 'powers', label: 'Блоки питания', icon:'mdi-power-plug'})
+        if (this.services?.length) r.push({name: 'services', label: 'Тех. поддержка', icon:'mdi-face-agent'})
+        if (this.trans.length) r.push({name: 'trans', label: 'Трансиверы', icon:'mdi-toslink'})
+        //if(this.subcategory.name.match('точки доступа')) r.push({name:'licenses',label:'Лицензии'})
+        return r
+
+    })
+
 
 schema.virtual('services', {
     ref: 'netservice',

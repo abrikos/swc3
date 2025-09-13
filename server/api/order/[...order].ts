@@ -12,6 +12,16 @@ router.get('/:_id', defineEventHandler(async (event) => {
     return Order.findOne({_id, user}).populate(['user', ...Order.getPopulation()])
 }))
 
+router.get('/item/:_id', defineEventHandler(async (event) => {
+    const user = event.context.user
+    if (!user || !user.isNetwork) throw createError({statusCode: 403, message: 'Доступ запрещён',})
+    const {_id} = event.context.params as Record<string, string>
+    return OrderItem.findOne({_id}).populate([{
+        path: 'order',
+        populate: Order.getPopulation()
+    }, ...OrderItem.getPopulation()])
+}))
+
 router.delete('/delete/:_id', defineEventHandler(async (event) => {
     const user = event.context.user
     if (!user || !user.isNetwork) throw createError({statusCode: 403, message: 'Доступ запрещён',})
@@ -126,12 +136,19 @@ router.post('/item/add/sub', defineEventHandler(async (event) => {
     const item = await OrderItem.findById(body.item.id).populate(OrderItem.getPopulation()) as IOrderItem
     const sub = item.subItems.find(s => s.device?.id === body.device?.id)
     if (sub) {
-        sub.count += body.count
-        await sub.save()
-    } else {
-        const fields = {device:body.device.id, item:body.item.id}
-        console.log(fields)
+        if(body.count*1) {
+            sub.count = body.count
+            await sub.save()
+        }else{
+            await OrderSubItem.deleteOne({_id: sub.id})
+        }
+    } else if(body.device){
+        const fields = {device: body.device.id, item: body.item.id}
         return OrderSubItem.create(fields)
+    }else{
+        const fields = {service: body.service.id, item: body.item.id}
+        return OrderSubItem.create(fields)
+
     }
 
 }))

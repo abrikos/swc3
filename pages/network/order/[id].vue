@@ -75,11 +75,12 @@ async function moveTo(toItem: IOrderItem, fromItem: IOrderItem) {
 
 <template lang="pug">
   div(v-if="order")
-    q-toolbar
+    q-toolbar.bg-grey-4
       q-toolbar-title.cursor-pointer {{order.name}}
         EditField(v-model="order.name" :update="save")
       q-space
-    div.row
+      span {{$priceFormat($priceByCurrencyNet(order.total))}}
+    div.row.q-pt-sm
       div.col-sm-4(v-if="showCategories")
         q-card
           q-toolbar
@@ -117,7 +118,8 @@ async function moveTo(toItem: IOrderItem, fromItem: IOrderItem) {
                       div.col-2.text-right(style="width:100px") {{$priceFormat($priceByCurrencyNet((sub.device?.price || sub.service.price) * sub.count) )}}
                     small {{sub.device?.description || sub.service.description}}
                 div.text-center
-                  q-btn(v-if="route.query.device!==item.id" @click="navigateTo({query:{cat:1, device:item.id}})" :label="`Добавить устройства для ${item.device.name}`" :flat="false" color="blue")
+                  //q-btn(v-if="route.query.device!==item.id" @click="navigateTo({query:{cat:1, device:item.id}})" :label="`Добавить устройства для ${item.device.name}`" :flat="false" color="blue")
+                  q-btn(v-if="item.device.canAdd" @click="navigateTo(`/network/device/${item.id}`)" label="Добавить устройства" :flat="false" color="green")
               div.col-sm-1.text-center
                 q-btn(icon="mdi-arrow-up-down" size="sm"  title="Выбрать позицию")
                   q-popup-proxy

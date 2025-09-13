@@ -29,7 +29,7 @@ const itemsForAdding = computed(() => {
   return order.value.items
       .filter((i: IOrderItem) => i.device?.subcategory?.name?.match('точки доступа'))
       .filter((i:IOrderItem)=>{
-        return !i.subItems.filter(n=>n.device.description.match('Лицензия')).length
+        return !i.subItems.filter(n=>n.device?.description.match('Лицензия')).length
       })
 })
 

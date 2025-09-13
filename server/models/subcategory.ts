@@ -15,7 +15,6 @@ const schema = new Schema<ISubCategory>({
     deleted: {type: Boolean, default: false},
 
 }, {
-    timestamps: {createdAt: 'createdAt'},
     toObject: {virtuals: true},
     toJSON: {virtuals: true}
 })
