@@ -65,8 +65,8 @@ function counts(d: IDevice) {
                     br
                     small {{d.description}}
                   td(width="5%")
-                    input(v-if="t.name==='services'" @change="addSub(counts(d)?0:1,d,'services')" type="checkbox" :checked="counts(d)" :disabled="!counts(d) && item.subItems.filter(s=>s.service).length")
-                    input(v-else :value="counts(d)" @change="e=>addSub(e.target.value,d, t.name)" type="number" min="0" style="width:50px")
+                    input(v-if="t.name==='services'" @change="addSub(counts(d)?0:item.count,d,'services')" type="checkbox" :checked="counts(d)" :disabled="!counts(d) && item.subItems.filter(s=>s.service).length")
+                    input(v-else :value="counts(d)" @change="e=>addSub(e.target.value,d, t.name)" type="number" min="0" style="width:50px" :step="item.count")
                   td.text-right(width="10%") {{$priceFormat($priceByCurrencyNet(d.price))}}
                   td.text-right(width="10%") {{$priceFormat($priceByCurrencyNet(d.price * counts(d)))}}
       div.col

@@ -135,6 +135,7 @@ router.post('/item/add/sub', defineEventHandler(async (event) => {
     const body = await readBody(event)
     const item = await OrderItem.findById(body.item.id).populate(OrderItem.getPopulation()) as IOrderItem
     const sub = item.subItems.find(s => s.device?.id === body.device?.id)
+    console.log(body.count)
     if (sub) {
         if(body.count*1) {
             sub.count = body.count
@@ -142,13 +143,8 @@ router.post('/item/add/sub', defineEventHandler(async (event) => {
         }else{
             await OrderSubItem.deleteOne({_id: sub.id})
         }
-    } else if(body.device){
-        const fields = {device: body.device.id, item: body.item.id}
-        return OrderSubItem.create(fields)
-    }else{
-        const fields = {service: body.service.id, item: body.item.id}
-        return OrderSubItem.create(fields)
-
+    } else {
+        return OrderSubItem.create({...body})
     }
 
 }))
