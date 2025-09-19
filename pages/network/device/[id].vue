@@ -9,7 +9,7 @@ async function load() {
   categories.value = await useNuxtApp().$GET('/order/categories')
   item.value = await useNuxtApp().$GET(`/order/item/${route.params.id}`)
   if (item.value.device.subcategory.name.match('точки доступа')) {
-    item.value.device.tabs.push({name: 'licenses', label: 'Лицензии', icon: 'mdi-license'})
+    //item.value.device.tabs.push({name: 'licenses', label: 'Лицензии', icon: 'mdi-license'})
     item.value.device.licenses = await useNuxtApp().$GET('/order/wifi-licenses')
   }
   if (!route.query.tab) {

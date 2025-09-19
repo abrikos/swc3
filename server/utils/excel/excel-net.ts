@@ -33,10 +33,10 @@ export function netSpec(worksheet:Excel.Worksheet, spec:ISpec, confidential:bool
         const orderRowNumbers = []
         for (const item of order.items) {
             const deviceRow = worksheet.addRow([
-                item.device?.name || item.service.name,
+                item.device?.name,
                 item.device?.description,
-                item.count,
-                (item.device?.price || item.service.price) / (confidential || user.currency === 'USD' ? course : 1)
+                {formula:`C${orderRow.number}*${item.count}`},
+                (item.device?.price) / (confidential || user.currency === 'USD' ? course : 1)
             ])
             orderRowNumbers.push(deviceRow.number)
             deviceRow.getCell(5).value = {formula: `D${deviceRow.number}*C${deviceRow.number}`}
@@ -44,14 +44,24 @@ export function netSpec(worksheet:Excel.Worksheet, spec:ISpec, confidential:bool
                 deviceRow.getCell(6).value = item.device?.discount1
                 deviceRow.getCell(6).style = {numFmt: '0%'}
                 deviceRow.getCell(7).value = {formula: `E${deviceRow.number} - E${deviceRow.number}*F${deviceRow.number}`}
-                // deviceRow.getCell(8).value = item.device?.discount2
-                // deviceRow.getCell(8).style = { numFmt: '0%' }
-                // deviceRow.getCell(9).value = {formula: `E${deviceRow.number} - E${deviceRow.number}*H${deviceRow.number}`}
-                // deviceRow.getCell(9).style = {numFmt}
-                // deviceRow.getCell(10).value = item.device?.discount3
-                // deviceRow.getCell(10).style = { numFmt: '0%' }
-                // deviceRow.getCell(11).value = {formula: `E${deviceRow.number} - E${deviceRow.number}*J${deviceRow.number}`}
-                // deviceRow.getCell(11).style = {numFmt}
+            }
+            if(item.subItems?.length){
+                for(const sub of item.subItems){
+                    const subDeviceRow = worksheet.addRow([
+                        sub.device?.name || sub.service.name,
+                        sub.device?.description || sub.service.description,
+                        {formula:`C${orderRow.number}*${sub.count}`},
+                        (sub.device?.price || sub.service.price) / (confidential || user.currency === 'USD' ? course : 1)
+                    ])
+                    orderRowNumbers.push(subDeviceRow.number)
+                    subDeviceRow.getCell(5).value = {formula: `D${subDeviceRow.number}*C${subDeviceRow.number}`}
+                    if (user.isEmployer) {
+                        subDeviceRow.getCell(6).value = item.device?.discount1
+                        subDeviceRow.getCell(6).style = {numFmt: '0%'}
+                        subDeviceRow.getCell(7).value = {formula: `E${subDeviceRow.number} - E${subDeviceRow.number}*F${subDeviceRow.number}`}
+                    }
+
+                }
             }
             /*if (item.service) {
                 const serviceRow = worksheet.addRow(['', item.service.description, item.count, item.service.price * (confidential || user.currency === 'USD' ? 1 : settings.course)])

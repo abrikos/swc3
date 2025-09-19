@@ -62,7 +62,7 @@ schema.virtual('canAdd')
 
 schema.virtual('isCommutator')
     .get(function () {
-        return !!this.name.match('QSW|QSR')
+        return !! (this.name.match('QSW') || this.name.match('QSR'))
     })
 
 schema.virtual('tabs')
@@ -85,7 +85,7 @@ schema.virtual('tabs')
             icon: 'mdi-face-agent'
         })
         if (this.isCommutator) {
-            r.push({name: 'licenses', label: 'Лицензии', icon: 'mdi-license'})
+            //r.push({name: 'licenses', label: 'Лицензии', icon: 'mdi-license'})
         }
         if (this.name.match('QWP|QWO')) r.push({name: 'licenses', label: 'Лицензии', icon: 'mdi-license'})
         return r
