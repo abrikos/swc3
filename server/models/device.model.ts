@@ -16,6 +16,7 @@ export interface IDevice extends mongoose.Document {
     discount3: number
     deleted: boolean
     canAdd: boolean
+    isCommutator: boolean
     tabs: any[]
     powerNames: string[]
     powerCount: number
@@ -59,13 +60,34 @@ schema.virtual('canAdd')
         return !!this.tabs.length
     })
 
+schema.virtual('isCommutator')
+    .get(function () {
+        return !!this.name.match('QSW|QSR')
+    })
+
 schema.virtual('tabs')
     .get(function () {
         const r = []
-        if (this.powers.length) r.push({name: 'powers', label: 'Блоки питания', icon:'mdi-power-plug'})
-        if (this.services?.length) r.push({name: 'services', label: 'Тех. поддержка', icon:'mdi-face-agent'})
-        if (this.trans.length) r.push({name: 'trans', label: 'Трансиверы', icon:'mdi-toslink'})
-        //if(this.subcategory.name.match('точки доступа')) r.push({name:'licenses',label:'Лицензии'})
+        if (this.isCommutator || this.powers.length) {
+            r.push({name: 'powers', label: 'Блоки питания', icon: 'mdi-power-plug'})
+        }
+        if (this.isCommutator) {
+            r.push({name: 'cables', label: 'Кабели', icon: 'mdi-power-socket'})
+        }
+        if (this.trans.length || this.isCommutator) r.push({
+            name: 'trans',
+            label: 'Трансиверы и кабельные сборки',
+            icon: 'mdi-toslink'
+        })
+        if (this.services?.length || this.isCommutator) r.push({
+            name: 'services',
+            label: 'Тех. поддержка',
+            icon: 'mdi-face-agent'
+        })
+        if (this.isCommutator) {
+            r.push({name: 'licenses', label: 'Лицензии', icon: 'mdi-license'})
+        }
+        if (this.name.match('QWP|QWO')) r.push({name: 'licenses', label: 'Лицензии', icon: 'mdi-license'})
         return r
 
     })

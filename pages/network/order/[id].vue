@@ -51,7 +51,7 @@ async function updateSubItem(item: IOrderSubItem) {
 }
 
 const itemsSorted = computed(() => order.value.items
-    .sort((a: IOrderItem, b: IOrderItem) => (a.sort < b.sort) ? 1 : ((b.sort < a.sort) ? -1 : 0)))
+    .sort((a: IOrderItem, b: IOrderItem) => (a.sort < b.sort) ? -1 : ((b.sort < a.sort) ? 1 : 0)))
 let i2 = 1
 
 async function save() {
@@ -144,12 +144,12 @@ async function moveTo(toItem: IOrderItem, fromItem: IOrderItem) {
 
 
         div.col.text-right.text-weight-bold Итого: {{$priceFormat($priceByCurrencyNet(order.total))}}
-
+        q-btn(label="Завершить" @click="navigateTo({query: {}})" color="green")
       div.col-sm.q-px-sm(v-if="!showCategories")
         AddToSpec(type="order")
         q-card
           q-card-section
-            q-btn(v-if="!showCategories" :to="{query:{cat:1}}" label="Добавить новые устройства" color="blue" )
+            q-btn(v-if="!showCategories" :to="{query:{cat:1}}" label="Дополнить конфигурацию" color="blue" )
 
         OrderServices(v-model="order")
         OrderTranscievers(v-model="order")
