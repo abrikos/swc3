@@ -125,16 +125,16 @@ schema.statics.createCustom = async function (chassisId, user) {
 schema.virtual('description')
     .get(function () {
         if (!this.chassis) return
-        const anyBayBackplane = this.partsSorted.find(c => c.component.descFull.match('AnyBay'))
+        const anyBayBackplane = this.partsSorted.find(c => c.component?.descFull.match('AnyBay'))
         const confName = [this.chassis.name + ' ' + (anyBayBackplane ? 'AnyBay' : 'SASS/SATA')]
-        for (const part of this.partsSorted.filter(p => p.component.partNumber !== 'C13-SCH')) {
-            if (part.component.category === 'Power' && this.chassis.lanPort1Gb) {
+        for (const part of this.partsSorted.filter(p => p.component?.partNumber !== 'C13-SCH')) {
+            if (part.component?.category === 'Power' && this.chassis.lanPort1Gb) {
                 confName.push(this.chassis.lanPort1Gb + '*1GbE LAN')
             }
-            if(part.component.partNumber.match('BEZEL')){
-                confName.push(part.component.partNumber)
+            if(part.component?.partNumber.match('BEZEL')){
+                confName.push(part.component?.partNumber)
             }else {
-                confName.push(part.count + '* ' + part.component.description)
+                confName.push(part.count + '* ' + part.component?.description)
             }
         }
         confName.push('1G dedicated RJ45 IPMI, Rails')
@@ -149,8 +149,8 @@ schema.virtual('partsSorted')
     .get(function () {
         if (!this.parts) return []
         const x = this.parts.sort((a: any, b: any) => {
-            if (a.component.basketOrder < b.component.basketOrder) return -1
-            if (a.component.basketOrder > b.component.basketOrder) return 1
+            if (a.component?.basketOrder < b.component?.basketOrder) return -1
+            if (a.component?.basketOrder > b.component?.basketOrder) return 1
             return 0
         })
         return x
@@ -163,7 +163,7 @@ schema.virtual('date')
 
 schema.virtual('storagePrice')
     .get(function () {
-        return this.parts.filter((p: IPart) => ['HDD', 'SSD 2.5', 'SSD m.2', 'SSD U.2 NVMe'].includes(p.component.type)).reduce((a, b) => a + b.price, 0) * 0.2;
+        return this.parts.filter((p: IPart) => ['HDD', 'SSD 2.5', 'SSD m.2', 'SSD U.2 NVMe'].includes(p.component?.type)).reduce((a, b) => a + b.price, 0) * 0.2;
     })
 
 schema.virtual('priceService')
@@ -200,25 +200,25 @@ schema.virtual('isRearBayNeeded')
 
 schema.virtual('ssdM2Count')
     .get(function () {
-        return this.parts.filter(p => p.component.type === 'SSD m.2').reduce((a, b) => a + b.count, 0)
+        return this.parts.filter(p => p.component?.type === 'SSD m.2').reduce((a, b) => a + b.count, 0)
     })
 
 schema.virtual('M2expnvmeCount')
     .get(function () {
-        return this.parts.filter(p => p.component.partNumber === 'M2expnvme').reduce((a, b) => a + b.count, 0)
+        return this.parts.filter(p => p.component?.partNumber === 'M2expnvme').reduce((a, b) => a + b.count, 0)
     })
 schema.virtual('M2RaidCount')
     .get(function () {
-        return this.parts.filter(p => p.component.partNumber === 'M2Raid').reduce((a, b) => a + b.count, 0)
+        return this.parts.filter(p => p.component?.partNumber === 'M2Raid').reduce((a, b) => a + b.count, 0)
     })
 schema.virtual('U2expnvmeCount')
     .get(function () {
-        return this.parts.filter(p => p.component.partNumber === 'U2expnvme').reduce((a, b) => a + b.count, 0)
+        return this.parts.filter(p => p.component?.partNumber === 'U2expnvme').reduce((a, b) => a + b.count, 0)
     })
 
 schema.virtual('anybayCount')
     .get(function () {
-        return this.parts.filter(p => p.component.type === 'Backplane' && p.component.description.match('AnyBay')).reduce((a, b) => a + b.count, 0)
+        return this.parts.filter(p => p.component?.type === 'Backplane' && p.component?.description.match('AnyBay')).reduce((a, b) => a + b.count, 0)
     })
 
 schema.virtual('rearBayNeeded')
@@ -229,17 +229,17 @@ schema.virtual('rearBayNeeded')
 
 schema.virtual('memCount')
     .get(function () {
-        return this.parts.filter(p => p.component.category === 'Memory').reduce((a, b) => a + b.count, 0)
+        return this.parts.filter(p => p.component?.category === 'Memory').reduce((a, b) => a + b.count, 0)
     })
 
 schema.virtual('raidTrimodeCount')
     .get(function () {
-        return this.parts.filter(p => p.component.partNumber === '94008IR').reduce((a, b) => a + b.count, 0)
+        return this.parts.filter(p => p.component?.partNumber === '94008IR').reduce((a, b) => a + b.count, 0)
     })
 
 schema.virtual('additionalNvmeDisksByBackplane')
     .get(function () {
-        const backplaneCanAddDisks = this.parts.find(p => ['bplnab2u', 'bplnab1u'].includes(p.component.partNumber))
+        const backplaneCanAddDisks = this.parts.find(p => ['bplnab2u', 'bplnab1u'].includes(p.component?.partNumber))
         if (!backplaneCanAddDisks) return 0;
         //Искусственное ограничение от Бондаренко П.
         return 8
@@ -248,103 +248,103 @@ schema.virtual('additionalNvmeDisksByBackplane')
 
 schema.virtual('raid8iCount')
     .get(function () {
-        return this.parts.filter(p => p.component.type === 'RAID' && p.component.partNumber.match('8I')).reduce((a, b) => a + b.count, 0)
+        return this.parts.filter(p => p.component?.type === 'RAID' && p.component?.partNumber.match('8I')).reduce((a, b) => a + b.count, 0)
     })
 
 schema.virtual('raidTrimode8iCount')
     .get(function () {
-        return this.parts.filter(p => p.component.type === 'RAID' && p.component.partNumber.match('8I')).reduce((a, b) => a + b.count, 0)
+        return this.parts.filter(p => p.component?.type === 'RAID' && p.component?.partNumber.match('8I')).reduce((a, b) => a + b.count, 0)
     })
 
 schema.virtual('raidTrimode16iCount')
     .get(function () {
-        return this.parts.filter(p => p.component.type === 'RAID' && p.component.partNumber.match('16I')).reduce((a, b) => a + b.count, 0)
+        return this.parts.filter(p => p.component?.type === 'RAID' && p.component?.partNumber.match('16I')).reduce((a, b) => a + b.count, 0)
     })
 
 schema.virtual('sasRaidCount')
     .get(function () {
-        return this.parts.filter(p => p.component.type === 'RAID' && p.component.description.match('SAS')).reduce((a, b) => a + b.count, 0)
+        return this.parts.filter(p => p.component?.type === 'RAID' && p.component?.description.match('SAS')).reduce((a, b) => a + b.count, 0)
     })
 schema.virtual('sasDiskCount')
     .get(function () {
-        return this.parts.filter(p => p.component.isDiskSAS).reduce((a, b) => a + b.count, 0)
+        return this.parts.filter(p => p.component?.isDiskSAS).reduce((a, b) => a + b.count, 0)
     })
 schema.virtual('sataDiskCount')
     .get(function () {
-        return this.parts.filter(p => p.component.isDiskSATA).reduce((a, b) => a + b.count, 0)
+        return this.parts.filter(p => p.component?.isDiskSATA).reduce((a, b) => a + b.count, 0)
     })
 schema.virtual('sataM2DiskCount')
     .get(function () {
-        return this.parts.filter(p => p.component.isDiskM2SATA).reduce((a, b) => a + b.count, 0)
+        return this.parts.filter(p => p.component?.isDiskM2SATA).reduce((a, b) => a + b.count, 0)
     })
 schema.virtual('nvmeM2DiskCount')
     .get(function () {
-        return this.parts.filter(p => p.component.isDiskM2NVME).reduce((a, b) => a + b.count, 0)
+        return this.parts.filter(p => p.component?.isDiskM2NVME).reduce((a, b) => a + b.count, 0)
     })
 schema.virtual('sffDiskCount')
     .get(function () {
-        return this.parts.filter(p => p.component.category === 'HDD' && p.component.isSFF).reduce((a, b) => a + b.count, 0)
+        return this.parts.filter(p => p.component?.category === 'HDD' && p.component?.isSFF).reduce((a, b) => a + b.count, 0)
     })
 schema.virtual('lffDiskCount')
     .get(function () {
-        return this.parts.filter(p => p.component.category === 'HDD' && p.component.isLFF).reduce((a, b) => a + b.count, 0)
+        return this.parts.filter(p => p.component?.category === 'HDD' && p.component?.isLFF).reduce((a, b) => a + b.count, 0)
     })
 schema.virtual('sasRearBayCount')
     .get(function () {
-        return this.parts.filter(p => p.component.isRearBaySAS).reduce((a, b) => a + b.count, 0)
+        return this.parts.filter(p => p.component?.isRearBaySAS).reduce((a, b) => a + b.count, 0)
     })
 schema.virtual('nvmeRearBayCount')
     .get(function () {
-        return this.parts.filter(p => p.component.isRearBayNVMe).reduce((a, b) => a + b.count, 0)
+        return this.parts.filter(p => p.component?.isRearBayNVMe).reduce((a, b) => a + b.count, 0)
     })
 
 schema.virtual('cable8643Count')
     .get(function () {
-        return this.parts.filter(p => p.component.type === 'Cable' && p.component.partNumber.match('8643')).reduce((a, b) => a + b.count, 0)
+        return this.parts.filter(p => p.component?.type === 'Cable' && p.component?.partNumber.match('8643')).reduce((a, b) => a + b.count, 0)
     })
 
 schema.virtual('cableSataCount')
     .get(function () {
-        return this.parts.filter(p => p.component.type === 'Cable' && p.component.partNumber === 'SATA-SATA').reduce((a, b) => a + b.count, 0)
+        return this.parts.filter(p => p.component?.type === 'Cable' && p.component?.partNumber === 'SATA-SATA').reduce((a, b) => a + b.count, 0)
     })
 
 schema.virtual('hbaCount')
     .get(function () {
-        return this.parts.filter(p => p.component.type === 'RAID' && p.component.partNumber.match('HBA')).reduce((a, b) => a + b.count, 0)
+        return this.parts.filter(p => p.component?.type === 'RAID' && p.component?.partNumber.match('HBA')).reduce((a, b) => a + b.count, 0)
     })
 
 schema.virtual('raid93Count')
     .get(function () {
-        return this.parts.filter(p => p.component.type === 'RAID'
-            && p.component.partNumber.match('93')
-            && p.component.description.match(/(\d)GB/)
+        return this.parts.filter(p => p.component?.type === 'RAID'
+            && p.component?.partNumber.match('93')
+            && p.component?.description.match(/(\d)GB/)
         ).reduce((a, b) => a + b.count, 0)
     })
 
 schema.virtual('cacheModule93Count')
     .get(function () {
-        return this.parts.filter(p => p.component.type === 'RAID' && p.component.partNumber === 'CVM02').reduce((a, b) => a + b.count, 0)
+        return this.parts.filter(p => p.component?.type === 'RAID' && p.component?.partNumber === 'CVM02').reduce((a, b) => a + b.count, 0)
     })
 
 schema.virtual('raid94Count')
     .get(function () {
         return this.parts.filter(p =>
-            p.component.type === 'RAID'
-            && p.component.partNumber.match(/94|95/)
-            && p.component.description.match(/(\d)GB/)
+            p.component?.type === 'RAID'
+            && p.component?.partNumber.match(/94|95/)
+            && p.component?.description.match(/(\d)GB/)
         )
             .reduce((a, b) => a + b.count, 0)
     })
 
 schema.virtual('cacheModule94Count')
     .get(function () {
-        return this.parts.filter(p => p.component.type === 'RAID' && p.component.partNumber === 'CVPM05').reduce((a, b) => a + b.count, 0)
+        return this.parts.filter(p => p.component?.type === 'RAID' && p.component?.partNumber === 'CVPM05').reduce((a, b) => a + b.count, 0)
     })
 
 schema.virtual('memModuleSize')
     .get(function () {
-        const module = this.parts.find(p => p.component.category === 'Memory')
-        if (module) return module.component.memorySize
+        const module = this.parts.find(p => p.component?.category === 'Memory')
+        if (module) return module.component?.memorySize
     })
 
 schema.virtual('memMaxCount')
@@ -357,151 +357,151 @@ schema.virtual('memMaxCount')
 
 schema.virtual('cpuCount')
     .get(function () {
-        return this.parts.filter(p => p.component.category === 'CPU').reduce((a, b) => a + b.count, 0)
+        return this.parts.filter(p => p.component?.category === 'CPU').reduce((a, b) => a + b.count, 0)
     })
 schema.virtual('m2raidCount')
     .get(function () {
-        return this.parts.filter(p => p.component.partNumber === 'M2Raid').reduce((a, b) => a + b.count, 0)
+        return this.parts.filter(p => p.component?.partNumber === 'M2Raid').reduce((a, b) => a + b.count, 0)
     })
 
 schema.virtual('ocpCount')
     .get(function () {
-        return this.parts.filter(p => p.component.type === 'LAN OCP 3.0').reduce((a, b) => a + b.count, 0)
+        return this.parts.filter(p => p.component?.type === 'LAN OCP 3.0').reduce((a, b) => a + b.count, 0)
     })
 
 schema.virtual('gpuCount')
     .get(function () {
-        return this.parts.filter(p => p.component.type === 'GPU').reduce((a, b) => a + b.count, 0)
+        return this.parts.filter(p => p.component?.type === 'GPU').reduce((a, b) => a + b.count, 0)
     })
 
 schema.virtual('lanCount')
     .get(function () {
-        return this.parts.filter(p => p.component.type === 'LAN').reduce((a, b) => a + b.count, 0)
+        return this.parts.filter(p => p.component?.type === 'LAN').reduce((a, b) => a + b.count, 0)
     })
 
 schema.virtual('lanPortsCount')
     .get(function () {
-        return this.parts.filter(p => p.component.type === 'LAN' || p.component.type === 'LAN OCP 3.0').reduce((a, b) => a + b.component.lanPorts * b.count, 0)
+        return this.parts.filter(p => p.component?.type === 'LAN' || p.component?.type === 'LAN OCP 3.0').reduce((a, b) => a + b.component?.lanPorts * b.count, 0)
     })
 
 schema.virtual('lanCount100')
     .get(function () {
-        return this.parts.filter(p => p.component.type === 'LAN' && p.component.lanSpeed === 100).reduce((a, b) => a + b.count, 0)
+        return this.parts.filter(p => p.component?.type === 'LAN' && p.component?.lanSpeed === 100).reduce((a, b) => a + b.count, 0)
     })
 
 schema.virtual('sfpCount')
     .get(function () {
-        return this.parts.filter(p => p.component.type === 'Transceiver' && p.component.description.match('SFP')).reduce((a, b) => a + b.count, 0)
+        return this.parts.filter(p => p.component?.type === 'Transceiver' && p.component?.description.match('SFP')).reduce((a, b) => a + b.count, 0)
     })
 
 schema.virtual('cableCount')
     .get(function () {
-        return this.parts.filter(p => p.component.type === 'Transceiver' && p.component.partNumber.match('CAB')).reduce((a, b) => a + b.count, 0)
+        return this.parts.filter(p => p.component?.type === 'Transceiver' && p.component?.partNumber.match('CAB')).reduce((a, b) => a + b.count, 0)
     })
 
 schema.virtual('transceiverCount')
     .get(function () {
-        return this.parts.filter(p => p.component.type === 'Transceiver').reduce((a, b) => a + b.count, 0)
+        return this.parts.filter(p => p.component?.type === 'Transceiver').reduce((a, b) => a + b.count, 0)
     })
 
 schema.virtual('cable4U2Count')
     .get(function () {
-        return this.parts.filter(p => p.component.partNumber === '1*SFF-8643 - 1*SFF-8643').reduce((a, b) => a + b.count, 0)
+        return this.parts.filter(p => p.component?.partNumber === '1*SFF-8643 - 1*SFF-8643').reduce((a, b) => a + b.count, 0)
     })
 
 schema.virtual('ssdU2Count')
     .get(function () {
-        return this.parts.filter(p => p.component.type === 'SSD U.2 NVMe').reduce((a, b) => a + b.count, 0)
+        return this.parts.filter(p => p.component?.type === 'SSD U.2 NVMe').reduce((a, b) => a + b.count, 0)
     })
 
 schema.virtual('raidCount')
     .get(function () {
-        return this.parts.filter(p => !['M2expnvme', 'U2expnvme'].includes(p.component.partNumber) && p.component.type === 'RAID' && !p.component.description.match('Модуль')).reduce((a, b) => a + b.count, 0)
+        return this.parts.filter(p => !['M2expnvme', 'U2expnvme'].includes(p.component?.partNumber) && p.component?.type === 'RAID' && !p.component?.description.match('Модуль')).reduce((a, b) => a + b.count, 0)
     })
 
 schema.virtual('cacheModuleCount')
     .get(function () {
-        return this.parts.filter(p => p.component.type === 'RAID' && ['CVM02', 'CVPM05'].includes(p.component.partNumber)).reduce((a, b) => a + b.count, 0)
+        return this.parts.filter(p => p.component?.type === 'RAID' && ['CVM02', 'CVPM05'].includes(p.component?.partNumber)).reduce((a, b) => a + b.count, 0)
     })
 
 schema.virtual('vrocModuleCount')
     .get(function () {
-        return this.parts.filter(p => p.component.type === 'RAID' && ['VROCSTNMOD', 'VROCPREMOD'].includes(p.component.partNumber)).reduce((a, b) => a + b.count, 0)
+        return this.parts.filter(p => p.component?.type === 'RAID' && ['VROCSTNMOD', 'VROCPREMOD'].includes(p.component?.partNumber)).reduce((a, b) => a + b.count, 0)
     })
 
 schema.virtual('fcCount')
     .get(function () {
-        return this.parts.filter(p => p.component.type === 'FC').reduce((a, b) => a + b.count, 0)
+        return this.parts.filter(p => p.component?.type === 'FC').reduce((a, b) => a + b.count, 0)
     })
 
 schema.virtual('nvmeCount')
     .get(function () {
-        return this.parts.filter(p => p.component.type === 'SSD U.2 NVMe').reduce((a, b) => a + b.count, 0)
+        return this.parts.filter(p => p.component?.type === 'SSD U.2 NVMe').reduce((a, b) => a + b.count, 0)
     })
 
 schema.virtual('rearBayCount')
     .get(function () {
-        return this.parts.filter(p => p.component.type === 'Rear bay').reduce((a, b) => a + b.count, 0)
+        return this.parts.filter(p => p.component?.type === 'Rear bay').reduce((a, b) => a + b.count, 0)
     })
 
 schema.virtual('rearBayNotNVMeSFFCount')
     .get(function () {
-        return this.parts.filter(p => p.component.type === 'Rear bay' && !p.component.description.match('NVMe') && p.component.partNumber.match('SFF')).reduce((a, b) => a + b.count, 0)
+        return this.parts.filter(p => p.component?.type === 'Rear bay' && !p.component?.description.match('NVMe') && p.component?.partNumber.match('SFF')).reduce((a, b) => a + b.count, 0)
     })
 
 schema.virtual('rearBaySasSataCount')
     .get(function () {
-        return this.parts.filter(p => p.component.type === 'Rear bay' && p.component.partNumber.match('SAS')).reduce((a, b) => a + b.count, 0)
+        return this.parts.filter(p => p.component?.type === 'Rear bay' && p.component?.partNumber.match('SAS')).reduce((a, b) => a + b.count, 0)
     })
 
 schema.virtual('rearBayAllSFFCount')
     .get(function () {
-        return this.parts.filter(p => p.component.type === 'Rear bay' && p.component.partNumber.match('SFF')).reduce((a, b) => a + b.count, 0)
+        return this.parts.filter(p => p.component?.type === 'Rear bay' && p.component?.partNumber.match('SFF')).reduce((a, b) => a + b.count, 0)
     })
 
 schema.virtual('rearBayLFFCount')
     .get(function () {
-        return this.parts.filter(p => p.component.type === 'Rear bay' && !p.component.description.match('NVMe') && p.component.partNumber.match('LFF')).reduce((a, b) => a + b.count, 0)
+        return this.parts.filter(p => p.component?.type === 'Rear bay' && !p.component?.description.match('NVMe') && p.component?.partNumber.match('LFF')).reduce((a, b) => a + b.count, 0)
     })
 
 schema.virtual('diskLFFCount')
     .get(function () {
-        return this.parts.filter(p => p.component.type === 'HDD' && p.component.isLFF).reduce((a, b) => a + b.count, 0)
+        return this.parts.filter(p => p.component?.type === 'HDD' && p.component?.isLFF).reduce((a, b) => a + b.count, 0)
     })
 
 schema.virtual('diskSFFCount')
     .get(function () {
-        return this.parts.filter(p => p.component.type === 'HDD' && p.component.isSFF).reduce((a, b) => a + b.count, 0)
+        return this.parts.filter(p => p.component?.type === 'HDD' && p.component?.isSFF).reduce((a, b) => a + b.count, 0)
     })
 
 
 schema.virtual('rearBayU2Count')
     .get(function () {
-        return this.parts.filter(p => p.component.partNumber === 'rbaySFFU2').reduce((a, b) => a + b.count, 0)
+        return this.parts.filter(p => p.component?.partNumber === 'rbaySFFU2').reduce((a, b) => a + b.count, 0)
     })
 
 schema.virtual('diskCount')
     .get(function () {
-        return this.parts.filter(p => ['HDD', 'SSD 2.5', 'SSD U.2 NVMe'].includes(p.component.type)).reduce((a, b) => a + b.count * 1, 0)
+        return this.parts.filter(p => ['HDD', 'SSD 2.5', 'SSD U.2 NVMe'].includes(p.component?.type)).reduce((a, b) => a + b.count * 1, 0)
     })
 
 schema.virtual('diskSsdHddCount')
     .get(function () {
-        return this.parts.filter(p => ['HDD', 'SSD 2.5'].includes(p.component.type)).reduce((a, b) => a + b.count * 1, 0)
+        return this.parts.filter(p => ['HDD', 'SSD 2.5'].includes(p.component?.type)).reduce((a, b) => a + b.count * 1, 0)
     })
 schema.virtual('diskSsd25Count')
     .get(function () {
-        return this.parts.filter(p => ['SSD 2.5'].includes(p.component.type)).reduce((a, b) => a + b.count * 1, 0)
+        return this.parts.filter(p => ['SSD 2.5'].includes(p.component?.type)).reduce((a, b) => a + b.count * 1, 0)
     })
 
 schema.virtual('trimod16ICount')
     .get(function () {
-        return this.parts.filter(p => p.component.description.match('16i') && p.component.description.match('Trimode')).reduce((a, b) => a + b.count, 0)
+        return this.parts.filter(p => p.component?.description.match('16i') && p.component?.description.match('Trimode')).reduce((a, b) => a + b.count, 0)
     })
 
 schema.virtual('raid16ICount')
     .get(function () {
-        return this.parts.filter(p => p.component.description.match('16i')).reduce((a, b) => a + b.count, 0)
+        return this.parts.filter(p => p.component?.description.match('16i')).reduce((a, b) => a + b.count, 0)
     })
 
 schema.virtual('powerCoefficient')
@@ -512,33 +512,33 @@ schema.virtual('powerCoefficient')
 
 schema.virtual('powerConsumption')
     .get(function () {
-        return this.parts.filter(p => p.component.category !== 'Power').reduce((a, b) => a + b.component.powerConsumption * b.count, 0)
+        return this.parts.filter(p => p.component?.category !== 'Power').reduce((a, b) => a + b.component?.powerConsumption * b.count, 0)
     })
 
 schema.virtual('power')
     .get(function () {
-        return this.parts.filter(p => p.component.category === 'Power').reduce((a, b) => a + b.component.power, 0)
+        return this.parts.filter(p => p.component?.category === 'Power').reduce((a, b) => a + b.component?.power, 0)
     })
 
 schema.virtual('powerCount')
     .get(function () {
-        return this.parts.filter(p => p.component.category === 'Power').reduce((a, b) => a + b.count, 0)
+        return this.parts.filter(p => p.component?.category === 'Power').reduce((a, b) => a + b.count, 0)
     })
 schema.virtual('cablesCount')
     .get(function () {
-        return this.parts.filter(p => p.component.category === 'Cables').reduce((a, b) => a + b.count, 0)
+        return this.parts.filter(p => p.component?.category === 'Cables').reduce((a, b) => a + b.count, 0)
     })
 
 schema.virtual('backplaneCount')
     .get(function () {
-        return this.parts.filter(p => p.component.type === 'Backplane').reduce((a, b) => a + b.count, 0)
+        return this.parts.filter(p => p.component?.type === 'Backplane').reduce((a, b) => a + b.count, 0)
     })
 
 schema.virtual('pcieCount')
     .get(function () {
         return this.parts
-            .filter(p => (p.component.category === 'PCI-E' && !['LAN OCP 3.0', 'Transceiver'].includes(p.component.type)) || (p.component.type === 'RAID' && !p.component.description.match('Модуль')))
-            .reduce((a, b) => a + (b.component.partNumber === 'RTXA20006' ? b.count * 2 : b.count), 0)
+            .filter(p => (p.component?.category === 'PCI-E' && !['LAN OCP 3.0', 'Transceiver'].includes(p.component?.type)) || (p.component?.type === 'RAID' && !p.component?.description.match('Модуль')))
+            .reduce((a, b) => a + (b.component?.partNumber === 'RTXA20006' ? b.count * 2 : b.count), 0)
     })
 
 schema.virtual('pcieMaxCount')
@@ -548,23 +548,23 @@ schema.virtual('pcieMaxCount')
         if (this.chassis.partNumber === 'QSRV-262412-E-R') return this.cpuCount > 1 ? 5 : 3
         if (this.chassis.partNumber.match('-P-R') && this.chassis.units === 2) return this.cpuCount > 1 ? 8 : 3
         if (this.chassis.partNumber.match('-E-R') && this.chassis.units === 2) return this.cpuCount > 1 ? 6 : 3
-        return this.parts.filter(p => p.component.category === 'Riser').reduce((a, b) => a + b.component.riserSlots * b.count, 0) - this.anybayCount
+        return this.parts.filter(p => p.component?.category === 'Riser').reduce((a, b) => a + b.component?.riserSlots * b.count, 0) - this.anybayCount
     })
 
 
 schema.virtual('riserPort12Count')
     .get(function () {
-        return this.parts.filter(p => p.component.category === 'Riser' && p.component.description.match('port 1/2')).reduce((a, b) => a + b.count, 0)
+        return this.parts.filter(p => p.component?.category === 'Riser' && p.component?.description.match('port 1/2')).reduce((a, b) => a + b.count, 0)
     })
 
 schema.virtual('riserPort3Count')
     .get(function () {
-        return this.parts.filter(p => p.component.category === 'Riser' && p.component.descFull.match('port 3')).reduce((a, b) => a + b.count, 0)
+        return this.parts.filter(p => p.component?.category === 'Riser' && p.component?.descFull.match('port 3')).reduce((a, b) => a + b.count, 0)
     })
 
 schema.virtual('riserPort4Count')
     .get(function () {
-        return this.parts.filter(p => p.component.category === 'Riser' && p.component.description.match('port 4')).reduce((a, b) => a + b.count, 0)
+        return this.parts.filter(p => p.component?.category === 'Riser' && p.component?.description.match('port 4')).reduce((a, b) => a + b.count, 0)
     })
 
 schema.virtual('riserMaxCount')
@@ -584,27 +584,27 @@ schema.virtual('cpuMaxCount')
 
 schema.virtual('riserX16Count')
     .get(function () {
-        return this.parts.filter(p => p.component.riserIsX16).reduce((a, b) => a + b.count, 0)
+        return this.parts.filter(p => p.component?.riserIsX16).reduce((a, b) => a + b.count, 0)
     })
 
 schema.virtual('lan100GBCount')
     .get(function () {
-        return this.parts.filter(p => p.component.type === 'LAN' && p.component.description.match('100Gb')).reduce((a, b) => a + b.count, 0)
+        return this.parts.filter(p => p.component?.type === 'LAN' && p.component?.description.match('100Gb')).reduce((a, b) => a + b.count, 0)
     })
 
 schema.virtual('riserPortsAvailable')
     .get(function () {
-        return this.parts.filter(p => p.component.category === 'Riser').reduce((a, b) => a + b.component.riserPortsOnBoard, 0)
+        return this.parts.filter(p => p.component?.category === 'Riser').reduce((a, b) => a + b.component?.riserPortsOnBoard, 0)
     })
 
 schema.virtual('riserPorts')
     .get(function () {
-        return this.parts.filter(p => p.component.category === 'Riser').map(p => p.component.riserForPort)
+        return this.parts.filter(p => p.component?.category === 'Riser').map(p => p.component?.riserForPort)
     })
 
 schema.virtual('riserCount')
     .get(function () {
-        return this.parts.filter(p => p.component.category === 'Riser').reduce((a, b) => a + b.count, 0)
+        return this.parts.filter(p => p.component?.category === 'Riser').reduce((a, b) => a + b.count, 0)
     })
 
 schema.virtual('parts', {

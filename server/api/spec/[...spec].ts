@@ -57,6 +57,25 @@ router.get('/clone/:_id', defineEventHandler(async (event) => {
     spec.name = 'Клон ' + spec.name
     spec.isNew = true;
     spec.createdAt = new Date();
+    const confs = [] as IConf[];
+    for (const c of spec.configurations) {
+        const conf = await Conf.findById(c._id).populate(Conf.getPopulation());
+        if (conf) {
+            const newId = new mongoose.Types.ObjectId;
+            conf._id = newId
+            conf.isNew = true
+            await conf.save()
+            for (const p of conf.parts) {
+                const part = await Part.create({component:p.component, configuration: newId, port: p.port, count:p.count})
+                console.log(part.component)
+            }
+
+            confs.push(conf);
+
+
+        }
+    }
+    spec.configurations = confs
     spec.save()
     return spec.id
 }))
@@ -115,9 +134,9 @@ router.post('/create/:type', defineEventHandler(async (event) => {
     if (!user || !user.isServer) throw createError({statusCode: 403, message: 'Доступ запрещён',})
     const {id} = await readBody(event)
     const {type} = event.context.params as Record<string, string>
-    if(type==='order') {
+    if (type === 'order') {
         return Spec.create({user, name: 'Спецификация от ' + moment().format('YYYY-MM-DD HH:mm'), orders: [id]})
-    }else{
+    } else {
         return Spec.create({user, name: 'Спецификация от ' + moment().format('YYYY-MM-DD HH:mm'), configurations: [id]})
     }
 }))

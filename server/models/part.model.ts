@@ -29,7 +29,7 @@ const schema = new Schema<IPart>({
 
 schema.virtual('price')
     .get(function () {
-        return this.component.price * this.count;
+        return this.component?.price * this.count;
     })
 
 
