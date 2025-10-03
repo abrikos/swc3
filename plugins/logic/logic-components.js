@@ -34,6 +34,9 @@ export default (configuration, components, tab) => {
                     if (configuration.chassis.partNumber.match('-E-R')) {
                         return component.partNumber !== '936124I2GR'
                     }
+                    if (['QSRV-271212-P-R', 'QSRV-271202', 'QSRV-272502', 'QSRV-472402', 'QSRV-473602', 'QSRV-272512-P-R', 'QSRV-472412-P-R', 'QSRV-473612-P-R'].includes(configuration.chassis.partNumber)) {
+                        return component.partNumber !== '967024I8GR'
+                    }
                     if (['QSRV-160402-E-R', 'QSRV-160802-E-R'].includes(configuration.chassis.partNumber)) {
                         return !component.partNumber.match(/^95/)
                     }
@@ -69,7 +72,7 @@ export default (configuration, components, tab) => {
                     if (['QSRV-270802', 'QSRV-270812-P-R'].includes(configuration.chassis.partNumber) && component.partNumber === 'bplnab2u12b') return false
                     if (['QSRV-271202', 'QSRV-271212-P-R'].includes(configuration.chassis.partNumber) && component.partNumber !== 'bplnab2u12b') return false
                     return ['QSRV-171012-P-R', 'QSRV-271212-P-R', 'QSRV-271202', 'QSRV-161002', 'QSRV-1710',
-                        'QSRV-171002','QSRV-161002','QSRV-161002A', 'QSRV-260802', 'QSRV-270802', 'QSRV-270812-P-R',
+                        'QSRV-171002', 'QSRV-161002', 'QSRV-161002A', 'QSRV-260802', 'QSRV-270802', 'QSRV-270812-P-R',
                         'QSRV-260802A', 'QSRV-161002', 'QSRV-260802', 'QSRV-281200'].includes(configuration.chassis.partNumber)
 
                 case 'SSD U.2 NVMe':
