@@ -68,6 +68,9 @@ export default (configuration, tab) => {
         case 'Backplane':
             return [0, 1]
         case 'SSD U.2 NVMe':
+            if (['QSRV-282400'].includes(configuration.chassis.partNumber)) {
+                return Array.from(Array(25).keys())
+            }
             if (['QSRV-260802-E-R'].includes(configuration.chassis.partNumber)) {
                 return [0, 1, 2]
             }
@@ -97,7 +100,6 @@ export default (configuration, tab) => {
             if (['QSRV-281200'].includes(configuration.chassis.partNumber)) {
                 return configuration.cpuCount === 2 ? Array.from(Array(13).keys()) : Array.from(Array(7).keys())
             }
-            console.log('fffff', M2expnvmeCount , configuration.additionalNvmeDisksByBackplane , (configuration.chassis.units === 1 ? 1 : 5))
             return Array.from(Array(M2expnvmeCount + configuration.additionalNvmeDisksByBackplane + (configuration.chassis.units === 1 ? 1 : 5) + 1).keys());
         case 'HDD':
             if (configuration.chassis.partNumber === 'QSRV-260802-E-R') return [0, 1, 2, 3, 4, 5, 6, 7, 8]
