@@ -95,6 +95,8 @@ router.post('/user/create', defineEventHandler(async (event) => {
     if (!user.email.includes('@qtech.ru')) {
         user.role = 'External'
     }
+    const exists = await User.findOne({email:user.email})
+    if (exists) throw createError({statusCode: 400, message: 'Такой юзер уже создан',})
     return User.create(user)
 }))
 
