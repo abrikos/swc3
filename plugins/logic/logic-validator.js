@@ -52,7 +52,7 @@ export default function (configuration) {
         disksAvail = 12
     }
 
-    if(!configuration.diskCount){
+    if(!(configuration.diskCount + configuration.ssdM2Count)){
         result.warnings.push('Необходимо выбрать дисковые накопители')
     }
 
