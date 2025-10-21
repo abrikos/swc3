@@ -33,8 +33,11 @@ export default function (configuration) {
         if(configuration.chassis.platform !== 'G4'){
 
         }else {
-            if (configuration.cpuCount === 1 && configuration.pcieCount > 1) {
-                result.errors.push(`Для 1 процессора доступен только 1 PCI-E слот (занято ${configuration.pcieCount})`)
+            if (configuration.cpuCount === 1) {
+                result.warnings.push(`При установке одного процессора ANYBAY бэкплейн работать не будет, возможность устанавливать в переднюю корзину NVMe диски - отсутствовать`)
+                if(configuration.pcieCount > 1) {
+                    result.errors.push(`Для 1 процессора доступен только 1 PCI-E слот (занято ${configuration.pcieCount})`)
+                }
             }
         }
         if (configuration.cpuCount === 2 && configuration.pcieCount > 3 && configuration.chassis.partNumber === 'QSRV-181000') {
