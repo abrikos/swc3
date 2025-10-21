@@ -5,8 +5,9 @@ import FillPattern from "exceljs/index";
 import Column from "exceljs/index"
 
 export const specToXls = async (spec: ISpec, user: IUser, confidential: boolean, course: number) => {
-    const currName = confidential ? '$' : user.currency
-    const numFmt = `_(* #,##0.00_)"${currName === 'Рубли' ? 'Р' : '$'}"`
+    //const currName = confidential ? '$' : user.currency
+    const currName =  user.currency === 'USD' ? '$' : 'Р';
+    const numFmt = `_(* #,##0.00_)"${currName}"`
     const workbook = new Excel.Workbook();
     const imageId1 = workbook.addImage({
         filename: process.cwd() + '/public/logo.png',
@@ -63,7 +64,7 @@ export const specToXls = async (spec: ISpec, user: IUser, confidential: boolean,
     discountRow.getCell(5).style = {alignment: {vertical: 'middle', horizontal: 'center', wrapText: true}}
     ///console.log(discountRow.number)
 
-    const totalSumRow = worksheet.addRow(['Всего вкл. НДС 20%.' + (confidential ? '$' : user.currency)])
+    const totalSumRow = worksheet.addRow(['Всего вкл. НДС 20%.' + currName])
     const servRow = spec.configurations.length ? servSpec(worksheet, spec, confidential, user, course) : 0
     const netRow = spec.orders.length ? netSpec(worksheet, spec, confidential, user, course) : 0
     const total = []

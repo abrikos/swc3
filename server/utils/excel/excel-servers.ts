@@ -3,8 +3,9 @@ import logic from "~/plugins/logic/logic-validator"
 import FillPattern from "exceljs/index";
 
 export function servSpec(worksheet: Excel.Worksheet, spec: ISpec, confidential: boolean, user: IUser, course: number) {
-    const currName = confidential ? '$' : user.currency
-    const numFmt = `_(* #,##0.00_)"${currName === 'Рубли' ? 'Р' : '$'}"`
+    //const currName = confidential ? '$' : user.currency
+    const currName =  user.currency === 'USD' ? '$' : 'Р';
+    const numFmt = `_(* #,##0.00_)"${currName}"`
 
     const data = [
         "АРТИКУЛ",
@@ -21,9 +22,9 @@ export function servSpec(worksheet: Excel.Worksheet, spec: ISpec, confidential: 
     }
     if (confidential) {
         data.push('')
-        data.push('ЦЕНА FOB, $')
-        data.push('ЦЕНА DDP, $')
-        data.push('СТОИМОСТЬ DDP, $')
+        data.push('ЦЕНА FOB, ' + currName)
+        data.push('ЦЕНА DDP, ' + currName)
+        data.push('СТОИМОСТЬ DDP, ' + currName)
     }
     const redRow = worksheet.addRow(data)
     redRow.height = 40
@@ -65,10 +66,10 @@ export function servSpec(worksheet: Excel.Worksheet, spec: ISpec, confidential: 
             conf.description,
             conf.count,
             conf.price * (user.currency === 'USD' ? 1 : course),
-            conf.priceTotal * (confidential || user.currency === 'USD' ? 1 : course),
+            conf.priceTotal * (user.currency === 'USD' ? 1 : course),
             {formula: '+F18'},
-            conf.price * (confidential || user.currency === 'USD' ? 1 : course),
-            conf.priceTotal * (confidential || user.currency === 'USD' ? 1 : course),
+            conf.price * (user.currency === 'USD' ? 1 : course),
+            conf.priceTotal * (user.currency === 'USD' ? 1 : course),
         ]
         const rowSummary = worksheet.addRow(data)
         summaryRows.push(rowSummary.number)
@@ -97,11 +98,11 @@ export function servSpec(worksheet: Excel.Worksheet, spec: ISpec, confidential: 
         chassisRow.getCell(1).alignment = {vertical: 'middle', horizontal: 'right'}
         if (confidential) {
             rowSummary.getCell(12).value = {formula: `K${rowSummary.number}*C${rowSummary.number}`}
-            chassisRow.getCell(10).value = Math.round((conf.chassis.priceFob) * 100) / 100
+            chassisRow.getCell(10).value = Math.round((conf.chassis.priceFob * (user.currency === 'USD' ? 1 : course)) * 100) / 100
             chassisRow.getCell(10).fill = fill
             chassisRow.getCell(11).fill = fill
             chassisRow.getCell(12).fill = fill
-            chassisRow.getCell(11).value = Math.round((conf.chassis.priceDdp) * 100) / 100
+            chassisRow.getCell(11).value = Math.round((conf.chassis.priceDdp * (user.currency === 'USD' ? 1 : course)) * 100) / 100
             chassisRow.getCell(4).value = {formula: `K${chassisRow.number}/0.85/0.4`}
             chassisRow.getCell(4).font = {color: {argb: gray}}
         }
@@ -122,8 +123,8 @@ export function servSpec(worksheet: Excel.Worksheet, spec: ISpec, confidential: 
                     data.push('')
                     data.push('')
                     data.push('')
-                    data.push(Math.round((part.component.priceFob) * 100) / 100)
-                    data.push(Math.round((part.component.priceDdp) * 100) / 100)
+                    data.push(Math.round((part.component.priceFob*(user.currency === 'USD' ? 1 : course)) * 100) / 100)
+                    data.push(Math.round((part.component.priceDdp*(user.currency === 'USD' ? 1 : course)) * 100) / 100)
                     fob += part.component.price * part.count
                 }
                 const partRow = worksheet.addRow(data)
@@ -153,8 +154,8 @@ export function servSpec(worksheet: Excel.Worksheet, spec: ISpec, confidential: 
                 `SUP-${conf.service.level}-${conf.service.period}Y-${conf.chassis.partNumber}`,
                 conf.service.name,
                 {formula: `+C${rowSummary.number}`},
-                conf.priceService * (confidential || user.currency === 'USD' ? 1 : course),
-                conf.priceService * conf.count * (confidential || user.currency === 'USD' ? 1 : course),
+                conf.priceService * (user.currency === 'USD' ? 1 : course),
+                conf.priceService * conf.count * (user.currency === 'USD' ? 1 : course),
                 {formula: '+F18'},
 
             ]
@@ -183,7 +184,7 @@ export function servSpec(worksheet: Excel.Worksheet, spec: ISpec, confidential: 
                 'SUP-NR-DRIVE',
                 'Невозврат неисправных накопителей',
                 {formula: `+C${rowSummary.number}`},
-                conf.storagePrice * (confidential || user.currency === 'USD' ? 1 : course),
+                conf.storagePrice * (user.currency === 'USD' ? 1 : course),
             ]
             const brokenStorageRow = worksheet.addRow(data)
             brokenStorageRow.getCell(5).value = {formula: `C${brokenStorageRow.number}*D${brokenStorageRow.number}`}
@@ -213,7 +214,7 @@ export function servSpec(worksheet: Excel.Worksheet, spec: ISpec, confidential: 
         formula2.push(`L${row}`)
         formula3.push(`E${row}`)
     }
-    const sumServ = worksheet.addRow(['', 'Итого вкл. НДС 20%. ' + (confidential ? '$' : user.currency)])
+    const sumServ = worksheet.addRow(['', 'Итого вкл. НДС 20%. ' + currName])
 
     sumServ.getCell(5).value = {formula: formula3.join('+')}
     sumServ.getCell(8).value = {formula: formula.join('+')}
