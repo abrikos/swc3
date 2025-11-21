@@ -22,7 +22,7 @@ async function createConfiguration(chassis: any) {
 </script>
 
 <template lang="pug">
-  div.chassis
+  div.chassis(:class="chassis.hidden? 'bg-red-4' : ''")
     div(@click="createConfiguration(chassis)" :title="chassis.descFull")
       div.image
         img(:src="`/upload/chassis/${chassis.partNumber}.jpg?rnd=${rnd}`" onerror="this.src='/icons/server-icon.png'")
