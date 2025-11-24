@@ -1,14 +1,17 @@
 <script setup lang="ts">
 const list = ref()
-async function load(){
+
+async function load() {
   list.value = await useNuxtApp().$GET('/chassis/list')
 }
+
 onMounted(load)
 </script>
 
 <template lang="pug">
-div.flex(v-if="list")
-  ChassisCard(v-for="item in list" :chassis="item")
+
+  div.flex(v-if="list")
+    ChassisCard(v-for="item in list" :chassis="item")
 </template>
 
 <style scoped lang="sass">
