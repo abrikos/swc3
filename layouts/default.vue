@@ -22,8 +22,8 @@ const pagesAdmin = [
   {to: '/admin/specs', label: 'Все спеки', icon: 'mdi-list-box-outline'},
   {to: '/admin/log', label: 'Лог действий', icon: 'mdi-security'},
   {to: '/admin/chassis-list', label: 'Список шасси', icon: 'mdi-server'},
-
 ]
+
 const version = ref()
 onMounted(()=>{
   useNuxtApp().$GET('/git-commit').then((res)=>{
