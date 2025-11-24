@@ -30,6 +30,7 @@ onMounted(()=>{
     version.value = res;
   })
 
+
   pages.value = [
     //{to: '/', label: 'Начало', icon: 'mdi-home'},
     {to: '/new-spec', label: 'Создать спецификацию', icon: 'mdi-new-box', showItem: true},
