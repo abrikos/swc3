@@ -84,10 +84,23 @@ router.get('/check-email/:email', defineEventHandler(async (event) => {
     return {}
 }))
 
+interface MyObject {
+    [key: string]: number; // Index signature
+}
+function emailBody(body: MyObject) {
+    let text = '\n'
+    for (const key in body) {
+        if(key!=='roles') {
+            text += `${key}: ${body[key]}\n`
+        }
+    }
+    return text
+}
 
 router.post('/registration', defineEventHandler(async (event) => {
     const body = await readBody(event)
-    const host = getHeader(event, 'host')
+    //const host = getHeader(event, 'host')
+    const host = 'srvcfg.qtech.ru'
     const exists = await Registration.findOne({email: body.email})
     const existsUser = await User.findOne({email: body.email})
     if (exists || existsUser) return {error: `Заявка на регистрацию "${body.email}" уже существует`}
@@ -96,7 +109,7 @@ router.post('/registration', defineEventHandler(async (event) => {
     const user = await Registration.create(body)
     const users = await User.find().populate('roles')
     const url = `http://${host}${process.env.TEST_PORT ? ':' + process.env.TEST_PORT : ''}/admin/user-confirm?id=${user.id}`
-    const text = `Для подтверждения/отклонения регистрации пройдите по ссылке ${url}\n${JSON.stringify(body)}`
+    const text = `Для подтверждения/отклонения регистрации пройдите по ссылке ${url}\n ${emailBody(body)}`
     const subject = 'Заявка на регистрацию нового пользователя'
     const emails = []
     for (const user of users) {
