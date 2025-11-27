@@ -88,13 +88,14 @@ interface MyObject {
     [key: string]: number; // Index signature
 }
 function emailBody(body: MyObject) {
-    let text = '\n'
-    for (const key in body) {
-        if(key!=='roles') {
-            text += `${key}: ${body[key]}\n`
-        }
-    }
-    return text
+    return `email: ${body['email']}
+ИНН: ${body['inn']}
+Компания: ${body['company']}
+ФИО: ${body['firstName']} ${body['lastName']} ${body['middleName']}
+Телефон: ${body['phone']}
+Пригласивший сотрудник QTECH: ${body['parent']}
+`
+
 }
 
 router.post('/registration', defineEventHandler(async (event) => {
