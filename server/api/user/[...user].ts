@@ -88,7 +88,8 @@ interface MyObject {
     [key: string]: number; // Index signature
 }
 function emailBody(body: MyObject) {
-    return `email: ${body['email']}
+    return `
+email: ${body['email']}
 ИНН: ${body['inn']}
 Компания: ${body['company']}
 ФИО: ${body['firstName']} ${body['lastName']} ${body['middleName']}
