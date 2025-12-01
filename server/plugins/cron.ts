@@ -94,7 +94,7 @@ async function refRoles() {
         try {
             user.save()
         } catch (err) {
-            console.log('zzzzzzzzzzz')
+            //console.log('zzzzzzzzzzz')
             //console.error(err)
         }
     }

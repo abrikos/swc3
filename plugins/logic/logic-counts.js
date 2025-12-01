@@ -12,7 +12,7 @@ export default (configuration, tab) => {
         case 'Memory':
             if (['G3R', 'G4', 'G3'].includes(configuration.chassis.platform)) {
                 if (configuration.cpuCount < 2) {
-                    return [0, 1, 2, 4, 6, 8, 12, 16]
+                    return [0, 1, 2, 4, 8, 12, 16]
                 } else {
                     return [0, 2, 4, 8, 12, 16, 24, 32]
                 }
