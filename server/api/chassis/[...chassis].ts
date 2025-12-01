@@ -7,7 +7,10 @@ const router = createRouter()
 router.get('/list', defineEventHandler(async (event) => {
     const user = event.context.user
     if (!user && !user.isServer) throw createError({statusCode: 403, message: 'Доступ запрещён',})
-    return Chassis.find({}).sort({platform: -1})
+    const list = await Chassis.find({}).sort({platform: -1})
+    return list
+        //.sort((a,b)=>a.platform.localeCompare(b.platform))
+        .sort((a, b) => a.units === b.units ? a.disks - b.disks : a.units - b.units)
 }))
 
 router.put('/hide/:id', defineEventHandler(async (event) => {
