@@ -107,7 +107,7 @@ export default function (configuration) {
         //MEMORY
         if (configuration.memCount > configuration.memMaxCount) {
             result.errors.push(`Выбранное количество модулей памяти (${configuration.memCount}) превышает максимальное (${configuration.memMaxCount})`)
-        } else if ((configuration.cpuCount || configuration.memCount) && configuration.cpuCount < 2 && configuration.memCount > (['G3', 'G3R'].includes(configuration.chassis.platform) ? 16 : 12)) {
+        } else if ((configuration.cpuCount || configuration.memCount) && configuration.cpuCount < 2 && configuration.memCount > (['G3', 'G3R', 'G4'].includes(configuration.chassis.platform) ? 16 : 12)) {
             result.errors.push(`Для выбранного количества модулей памяти (${configuration.memCount}) недостаточно процессоров (${configuration.cpuCount})`)
         }
 

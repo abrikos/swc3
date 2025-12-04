@@ -70,7 +70,6 @@ schema.statics.createCustom = async function (chassisId, user) {
     const chassis = await Chassis.findById(chassisId)
     if (!chassis) return null;
     const service = await Service.findOne({level: 'BAS', period: 3, partNumber:undefined})
-    console.log('zzzzzzz', service)
     const configuration = await this.create({
         chassis,
         service,
