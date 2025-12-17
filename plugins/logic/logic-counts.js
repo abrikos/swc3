@@ -69,7 +69,7 @@ export default (configuration, tab) => {
             return [0, 1]
         case 'SSD U.2 NVMe':
             if (['QSRV-282400'].includes(configuration.chassis.partNumber)) {
-                return Array.from(Array(25).keys())
+                return Array.from(Array(configuration.rearBayCount >1 ? 29:25).keys())
             }
             if (['QSRV-260802-E-R'].includes(configuration.chassis.partNumber)) {
                 return [0, 1, 2]

@@ -257,7 +257,7 @@ export default function (configuration) {
         if (configuration.chassis.isSFF && (configuration.rearBayLFFCount * 2 < configuration.diskLFFCount)) {
             result.errors.push(`Максимальное количество LFF дисков (${configuration.rearBayLFFCount * 2}). Вы пытаетесь установить (${configuration.diskLFFCount}) `)
         }
-        if (configuration.chassis.disks > 11 && !configuration.fcCount && !configuration.raidCount && configuration.diskCount > 12) {
+        if (configuration.chassis.partNumber!=='QSRV-282400' && configuration.chassis.disks > 11 && !configuration.fcCount && !configuration.raidCount && configuration.diskCount > 12) {
             result.errors.push(`Для платформы с количеством дисков более 12 необходим RAID или HBA`)
         }
         if (configuration.isRearBayNeeded) {
@@ -295,7 +295,7 @@ export default function (configuration) {
             && (configuration.ssdU2Count - configuration.additionalNvmeDisksByBackplane > configuration.rearBayU2Count * 2)
             && (configuration.ssdU2Count - configuration.U2expnvmeCount * 2 > 0)
         ) {
-            if (!configuration.chassis.partNumber.match(/02R$/) && !configuration.backplaneCount) {
+            if (configuration.chassis.partNumber!=='QSRV-282400' && !configuration.chassis.partNumber.match(/02R$/) && !configuration.backplaneCount) {
                 result.errors.push(`На каждые дополнительные 2 шт SSD U.2 NVMe (${configuration.ssdU2Count - configuration.additionalNvmeDisksByBackplane - configuration.U2expnvmeCount * 2}) 
                 необходим rear bay rbaySFFU2 (${configuration.rearBayU2Count}) и/или Anybay Backplane`)
             }
