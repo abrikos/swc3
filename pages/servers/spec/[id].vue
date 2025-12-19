@@ -71,7 +71,7 @@ div(v-if="spec")
       q-tooltip Добавить сетевую конфигурацию
     CloneButton(:spec="spec.id")
     ShareButton(:spec="spec.id")
-    DeleteButton(v-if="spec.user.id === loggedUser.id"  :id="spec.id" :name="spec.name" path="/spec" event="spec:reload" )
+    DeleteButton(v-if="spec.user.id === loggedUser.id || loggedUser.isAdmin"  :id="spec.id" :name="spec.name" path="/spec" event="spec:reload" )
 
   div.flex.justify-between.items-center
     div
@@ -108,7 +108,7 @@ div(v-if="spec")
           q-btn(icon="mdi-content-duplicate" @click.stop="cloneConf(conf.id)" round)
             q-tooltip Клонировать
 
-          DeleteButton(v-if="conf.user === loggedUser.id"  :id="conf.id" :name="conf.name" path="/conf/delete" event="spec:reload" )
+          DeleteButton(v-if="conf.user === loggedUser.id|| loggedUser.isAdmin"  :id="conf.id" :name="conf.name" path="/conf/delete" event="spec:reload" )
       //tr.bg-orange-1
         td.text-right(colspan="4") Итого:
         td.text-right.text-weight-bold {{$priceFormat($priceByCurrencyServer(servPrice))}}
