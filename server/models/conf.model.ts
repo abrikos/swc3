@@ -136,6 +136,9 @@ schema.virtual('description')
                 confName.push(part.count + '* ' + part.component?.description)
             }
         }
+        if(this.chassis.descFull.match('2*1GbE LAN')) {
+            confName.push('2*1GbE LAN')
+        }
         confName.push('1G dedicated RJ45 IPMI, Rails')
         confName.push(this.service ? this.service.name : 'Техническая поддержка Base 8х5, 36 месяцев')
         if (this.brokenStorageService) {
