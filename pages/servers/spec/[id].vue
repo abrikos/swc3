@@ -99,7 +99,7 @@ div(v-if="spec")
             q-popup-edit(v-model="conf.name" style="width:450px")
               q-input(v-model="conf.name" autofocus @keyup.prevent="confUpdate(conf)" @focus="(input) => input.target.select()")
 
-        td {{ conf.chassis.descFull }}
+        td {{ conf.description }}
         td
           q-input(v-model="conf.count" type="number" min="1" @update:model-value="saveConf(conf)")
         td.text-right {{$priceFormat($priceByCurrencyServer(conf.price))}}
