@@ -309,7 +309,10 @@ schema.virtual('cableSataCount')
 
 schema.virtual('hbaCount')
     .get(function () {
-        return this.parts.filter(p => p.component?.type === 'RAID' && p.component?.partNumber.match('HBA')).reduce((a, b) => a + b.count, 0)
+        return this.parts
+            .filter(p => p.component?.type === 'RAID' && p.component?.partNumber.match('HBA'))
+            .filter(p => p.component?.partNumber !== '93008EHBA')
+            .reduce((a, b) => a + b.count, 0)
     })
 
 schema.virtual('raid93Count')
