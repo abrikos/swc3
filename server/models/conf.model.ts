@@ -421,7 +421,7 @@ schema.virtual('ssdU2Count')
 
 schema.virtual('raidCount')
     .get(function () {
-        return this.parts.filter(p => !['M2expnvme', 'U2expnvme', 'M2Raid'].includes(p.component?.partNumber) && p.component?.type === 'RAID' && !p.component?.description.match('Модуль')).reduce((a, b) => a + b.count, 0)
+        return this.parts.filter(p => !['M2expnvme', 'U2expnvme', 'M2Raid', '93008EHBA'].includes(p.component?.partNumber) && p.component?.type === 'RAID' && !p.component?.description.match('Модуль')).reduce((a, b) => a + b.count, 0)
     })
 
 schema.virtual('cacheModuleCount')

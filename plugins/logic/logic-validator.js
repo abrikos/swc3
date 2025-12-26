@@ -281,7 +281,9 @@ export default function (configuration) {
         if (configuration.vrocModuleCount > 1) {
             result.errors.push(`Количество модулей VROCSTANMOD не может быть более 1 `)
         }
+        //console.log(configuration.sasDiskCount , configuration.hbaCount , configuration.raidCount)
         if (configuration.sasDiskCount > 0 && (configuration.hbaCount + configuration.raidCount === 0)) {
+
             result.errors.push(`Для использования SAS дисков необходимо установить RAID или HBA контроллер`)
         }
         /*if (configuration.raid94Count && !configuration.cacheModule94Count) {
