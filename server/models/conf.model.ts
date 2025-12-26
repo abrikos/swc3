@@ -125,7 +125,7 @@ schema.virtual('description')
     .get(function () {
         if (!this.chassis) return
         const anyBayBackplane = this.partsSorted.find(c => c.component?.descFull.match('AnyBay'))
-        const confName = [this.chassis.name + ' ' + (anyBayBackplane ? 'AnyBay' : 'SASS/SATA')]
+        const confName = [this.chassis.name + ' ' + (anyBayBackplane ? 'AnyBay' : 'SAS/SATA')]
         for (const part of this.partsSorted.filter(p => p.component?.partNumber !== 'C13-SCH')) {
             if (part.component?.category === 'Power' && this.chassis.lanPort1Gb) {
                 confName.push(this.chassis.lanPort1Gb + '*1GbE LAN')
