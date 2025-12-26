@@ -8,7 +8,7 @@ export default (configuration, components, tab) => {
         .filter(c => !c.deleted)
         .filter(component => {
             if (component.unitFix && (component.unitFix !== configuration.chassis.units)) return
-            if (component.unitMin && (component.unitMin <= configuration.chassis.units)) return
+            if (component.unitMin && (component.unitMin > configuration.chassis.units)) return
             if (!component.platforms.includes(configuration.chassis.platform)) return
             switch (tab.category) {
                 case 'Cables':
