@@ -64,7 +64,7 @@ export const specToXls = async (spec: ISpec, user: IUser, confidential: boolean,
     discountRow.getCell(5).style = {alignment: {vertical: 'middle', horizontal: 'center', wrapText: true}}
     ///console.log(discountRow.number)
 
-    const totalSumRow = worksheet.addRow(['Всего вкл. НДС 20%.' + currName])
+    const totalSumRow = worksheet.addRow(['Всего вкл. НДС 22%.' + currName])
     const servRow = spec.configurations.length ? servSpec(worksheet, spec, confidential, user, course) : 0
     const netRow = spec.orders.length ? netSpec(worksheet, spec, confidential, user, course) : 0
     const total = []

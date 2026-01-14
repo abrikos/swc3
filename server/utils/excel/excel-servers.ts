@@ -214,7 +214,7 @@ export function servSpec(worksheet: Excel.Worksheet, spec: ISpec, confidential: 
         formula2.push(`L${row}`)
         formula3.push(`E${row}`)
     }
-    const sumServ = worksheet.addRow(['', 'Итого вкл. НДС 20%. ' + currName])
+    const sumServ = worksheet.addRow(['', 'Итого вкл. НДС 22%. ' + currName])
 
     sumServ.getCell(5).value = {formula: formula3.join('+')}
     sumServ.getCell(8).value = {formula: formula.join('+')}
