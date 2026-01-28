@@ -267,6 +267,9 @@ function componentData(data:any) {
             data.type = 'SSD m.2'
         } else if (data.params.match('U.2')) {
             data.type = 'SSD U.2 NVMe'
+        } else if (data.descFull.match('NVMe')) {
+            console.log(data)
+            data.type = 'SSD NVMe PCI-E'
         } else {
             data.type = 'SSD 2.5'
         }
