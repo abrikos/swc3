@@ -542,7 +542,11 @@ schema.virtual('backplaneCount')
 schema.virtual('pcieCount')
     .get(function () {
         return this.parts
-            .filter(p => (p.component?.category === 'PCI-E' && !['LAN OCP 3.0', 'Transceiver'].includes(p.component?.type)) || (p.component?.type === 'RAID' && !p.component?.description.match('Модуль')))
+            .filter(p => (p.component?.category === 'PCI-E'
+                && !['LAN OCP 3.0', 'Transceiver'].includes(p.component?.type))
+                || (p.component?.type === 'SSD NVMe PCI-E')
+                || (p.component?.type === 'RAID' && !p.component?.description.match('Модуль'))
+            )
             .reduce((a, b) => a + (b.component?.partNumber === 'RTXA20006' ? b.count * 2 : b.count), 0)
     })
 
