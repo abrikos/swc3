@@ -3,8 +3,10 @@ import {servSpec} from "~/server/utils/excel/excel-servers"
 import {netSpec} from "~/server/utils/excel/excel-net";
 import FillPattern from "exceljs/index";
 import Column from "exceljs/index"
+import fs from "node:fs";
 
 export const specToXls = async (spec: ISpec, user: IUser, confidential: boolean, course: number) => {
+    console.log(course)
     //const currName = confidential ? '$' : user.currency
     const currName =  user.currency === 'USD' ? '$' : 'Р';
     const numFmt = `_(* #,##0.00_)"${currName}"`
@@ -103,3 +105,20 @@ export const specToXls = async (spec: ISpec, user: IUser, confidential: boolean,
     worksheet.addRow(['работе с партнерами компании QTECH. '])
     return workbook.xlsx.writeBuffer();
 }
+
+async function test() {
+    const {devMode} = useRuntimeConfig()
+    if(!devMode) return
+    const id = '6874cb475806edfe1f421ff6'
+    console.log('test excel')
+    console.log(id)
+    const spec = await Spec.findById(id).populate(Spec.getPopulation())
+    const user = await User.findOne({email:'a.filippov@qtech.ru'})
+    const confidential = '1'
+    const settings = await Settings.findOne()
+    const buffer = await specToXls(spec, user,confidential === '1', settings?.course)
+    const fileName = 'output.xlsx';
+    fs.writeFileSync(fileName, buffer);
+}
+
+test();

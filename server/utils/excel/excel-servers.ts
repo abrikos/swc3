@@ -1,6 +1,7 @@
 import Excel from "exceljs";
 import logic from "~/plugins/logic/logic-validator"
 import FillPattern from "exceljs/index";
+import fs from "node:fs";
 
 export function servSpec(worksheet: Excel.Worksheet, spec: ISpec, confidential: boolean, user: IUser, course: number) {
     //const currName = confidential ? '$' : user.currency
@@ -145,7 +146,6 @@ export function servSpec(worksheet: Excel.Worksheet, spec: ISpec, confidential: 
                     partRow.getCell(5).value = {formula: `C${partRow.number}*D${partRow.number}`}
                     partRow.getCell(4).value = {formula: `K${partRow.number}/0.85/0.4`}
                     partRow.getCell(4).font = {color: {argb: gray}}
-                    //partRow.getCell(11).value = {formula: `I${partRow.number} * B${partRow.number}`}
                 }
             }
         }
@@ -196,6 +196,7 @@ export function servSpec(worksheet: Excel.Worksheet, spec: ISpec, confidential: 
                 brokenStorageRow.getCell(10).fill = fill
                 brokenStorageRow.getCell(11).fill = fill
                 brokenStorageRow.getCell(12).fill = fill
+                brokenStorageRow.getCell(12).value = conf.storagePrice * (user.currency === 'USD' ? 1 : course) *0.85 *0.4
             }
             summaryRows.push(brokenStorageRow.number)
         }
@@ -221,7 +222,6 @@ export function servSpec(worksheet: Excel.Worksheet, spec: ISpec, confidential: 
     if(confidential) {
         sumServ.getCell(12).value = {formula: formula2.join('+')}
     }
-    //sumServ.getCell(12).style = {numFmt}
     for (let i = 1; i <= (confidential ? 12 : 9); i++) {
         if(i===9) continue
         sumServ.getCell(i).style = {
@@ -229,10 +229,8 @@ export function servSpec(worksheet: Excel.Worksheet, spec: ISpec, confidential: 
             numFmt
         }
     }
-    //sumServ.getCell(8).style = {numFmt}
-    //sumServ.getCell(5).style = {numFmt}
-
-    //sumServ.fill = {type: 'pattern', pattern: 'solid', bgColor: {argb: 'DDDDDDDD'}, fgColor: {argb: 'DDDDDDDD'}}
     sumServ.height = 20
     return sumServ.number
 }
+
+

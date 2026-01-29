@@ -7,6 +7,7 @@ const {confidential, id, path} = defineProps({
 })
 
 async function download() {
+  console.log(`/api/excel${path}/${id}?confidential=${confidential?1:0}`)
   document.location.href = (`/api/excel${path}/${id}?confidential=${confidential?1:0}`)
 }
 
