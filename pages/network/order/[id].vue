@@ -28,11 +28,10 @@ $listen('order:addDevice', (device: IDevice) => {
 const {loggedUser} = storeToRefs(useCustomStore())
 const route = useRoute()
 const order = ref()
-const showCategories = computed(()=>route.query.cat || route.query.sub)
+const showCategories = computed(() => route.query.cat || route.query.sub)
 
 async function load() {
   order.value = await useNuxtApp().$GET('/order/' + route.params.id)
-  console.log('fffff', order.value.items.length)
   $event('power:check')
 }
 
@@ -67,9 +66,17 @@ async function sortTo(targetItem: IOrderItem, item: IOrderItem, inc: number) {
   await useNuxtApp().$POST('/order/item/sort', {targetItem, item, inc})
   await load()
 }
+
 async function moveTo(toItem: IOrderItem, fromItem: IOrderItem) {
   await useNuxtApp().$POST('/order/item/move', {toItem, fromItem})
   await load()
+}
+
+function wifiLicenseWarn(items) {
+
+  const subs = items.map(i => i.device.name)
+
+  return subs.includes('QWC-WM') && subs.includes('QWC-WMAP') && `Рекомендуется использовать один тип лицензий (QWC-WM или QWC-WMAP)`
 }
 </script>
 
@@ -117,6 +124,7 @@ async function moveTo(toItem: IOrderItem, fromItem: IOrderItem) {
                             q-btn(@click="sub.count = 0;updateSubItem(sub)" icon="mdi-close" color="negative")
                       div.col-2.text-right(style="width:100px") {{$priceFormat($priceByCurrencyNet((sub.device?.price || sub.service.price) * sub.count) )}}
                     small {{sub.device?.description || sub.service.description}}
+                  Banner(color="warning" v-if="wifiLicenseWarn(item.subItems)") {{wifiLicenseWarn(item.subItems)}}
                 div.text-center
                   //q-btn(v-if="route.query.device!==item.id" @click="navigateTo({query:{cat:1, device:item.id}})" :label="`Добавить устройства для ${item.device.name}`" :flat="false" color="blue")
                   q-btn(v-if="item.device.canAdd" @click="navigateTo(`/network/device/${item.id}`)" label="Редактировать комплектацию" :flat="false" color="green")
