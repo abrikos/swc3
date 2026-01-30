@@ -61,9 +61,20 @@ async function addWiFiLicense(item: IOrderItem, device: IDevice) {
   dialogLicense.value = false
 }
 
+const wifiAccessPointsCounts = computed(()=>{
+  return order.value.items.filter((item) => item.device.subcategory.name.match('точки доступа')).reduce((a,b)=>a + b.count, 0)
+})
+
+const wifiServerAccessPointsMax = computed(()=>{
+  return order.value.items.filter((item) => item.device.subcategory.name.match('Серверы для Wi-Fi')).reduce((a,b)=>a + b.device.wiFiServerLimitAPCount, 0)
+})
+
+
 </script>
 
 <template lang="pug">
+  Banner(v-if="wifiAccessPointsCounts > wifiServerAccessPointsMax" color="warning" ) Ресурсы “{{wifiServers[0].name}}” не соответствуют количеству точек доступа (макс. поддерживается: {{wifiServerAccessPointsMax}})
+
   Banner(v-if="wiFiItems.length && !wiFiServersInList.length" color="warning" )
     div.flex.justify-between.items-center.no-wrap
       span Необходимо самостоятельно организовать контроллер на своих вычислительных ресурсах или

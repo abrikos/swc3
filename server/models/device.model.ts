@@ -65,6 +65,12 @@ schema.virtual('isCommutator')
         return !! (this.name.match('QSW') || this.name.match('QSR'))
     })
 
+schema.virtual('wiFiServerLimitAPCount')
+    .get(function () {
+        const match = this.description.match(/до (\d+) точек/)
+        return match && parseInt(match[1]) || 0
+    })
+
 schema.virtual('tabs')
     .get(function () {
         const r = []

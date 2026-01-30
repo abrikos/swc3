@@ -100,7 +100,7 @@ function wifiLicenseWarn(items) {
       div.col-sm-8.q-px-sm
         //q-input(v-model="order.name" @focus="(input) => input.target.select()" label="Название конфигурации")
         q-card.q-mb-sm(v-for="(item, i1) of itemsSorted" :key="item.id" :class="route.query.device===item.id? 'bg-red-4' : i1 % 2 ? 'bg-grey-3':''" )
-          q-card-section
+          q-card-section {{item.device.subcategory.name}}
             div.row
               div.col-sm
                 div.text-white(v-if="route.query.device===item.id") Добавляться будут сюда
