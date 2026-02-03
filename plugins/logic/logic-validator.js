@@ -28,7 +28,7 @@ export default function (configuration) {
         }
 
         if (configuration.cpuCount < configuration.ocpCount) {
-            result.errors.push(`LAN OCP 3.0 возможно установить до ${configuration.cpuCount} шт. (${configuration.ocpCount})`)
+            result.errors.push(`Количество процессоров (${configuration.cpuCount}) меньше LAN OCP 3.0 (${configuration.ocpCount})`)
         }
         if(configuration.chassis.platform !== 'G4'){
 
