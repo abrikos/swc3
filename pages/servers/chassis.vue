@@ -23,11 +23,11 @@ async function load() {
 //watch(()=>route.query.tab, load)
 
 const tabsList = [
-  {label: 'Intel Gen2', name: 'G2'},
+  //{label: 'Intel Gen2', name: 'G2'},
   {label: 'Intel Gen3', name: 'G3'},
   {label: 'AMD', name: 'AMD'},
   {label: 'Дисковые полки (JBOD)', name: 'JBOD'},
-  {label: 'Intel Gen2R', name: 'G2R'},
+  //{label: 'Intel Gen2R', name: 'G2R'},
   {label: 'Intel Gen3R', name: 'G3R'},
   {label: 'Intel Gen4', name: 'G4'},
 ]
