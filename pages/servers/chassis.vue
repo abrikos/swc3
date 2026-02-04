@@ -15,7 +15,7 @@ onMounted(load)
 
 async function load() {
   if (!route.query.platform) {
-    navigateTo({query: {platform: 'G2', ...route.query}})
+    navigateTo({query: {platform: 'G3R', ...route.query}})
   }
   list.value = await useNuxtApp().$GET('/chassis/list') as never[]
 }
