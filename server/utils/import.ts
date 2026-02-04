@@ -193,6 +193,7 @@ export async function parseComponentXLS(file:any) {
             'G2R',
             'G3R',
             'AMD',
+            'AMD4',
             'JBOD',
             'G4',
             'Adisk'
