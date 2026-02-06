@@ -80,7 +80,7 @@ export default (configuration, components, tab) => {
                     if (configuration.additionalNvmeDisksByBackplane) {
                         return true
                     }
-                    return !['QSRV-463612-E-R', 'QSRV-260802-P-R'].includes(configuration.chassis.partNumber)
+                    return !['QSRV-170412-P-R', 'QSRV-463612-E-R', 'QSRV-260802-P-R'].includes(configuration.chassis.partNumber)
 
                 case 'GPU':
                     if (['QSRV-260812-E-R', 'QSRV-261212-E-R', 'QSRV-262412-E-R', 'QSRV-463612-ER'].includes(configuration.chassis.partNumber)) {
