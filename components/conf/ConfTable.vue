@@ -22,6 +22,12 @@ const componentsCurrent = computed(()=> {
       .sort((a, b) => a.riserForPort - b.riserForPort)
 })
 
+const counts = (component:IComponent)=>{
+  if(component.partNumber === 'BEZEL2U') return [0,1]
+  if(component.riserForPort > 2) return [0,1]
+  return componentCount(conf, route.query)
+}
+
 function calcCount(item:any) {
   const part = conf.parts.find(p => p.component.id === item.id)
   return part ? part.count : 0
@@ -42,7 +48,7 @@ const rowClassFn = (row:any)=>row.count>0 ? 'selected' : ''
     template(v-slot:body-cell-count="{row}")
       q-td
         select(v-if="!(row.countDisabled && !calcCount(row))" @change="(e)=>addPart(e,row)")
-          option(v-for="val of componentCount(conf, route.query)" :value="val" :selected="val===calcCount(row)") {{val}}
+          option(v-for="val of counts(row)" :value="val" :selected="val===calcCount(row)") {{val}}
         div(v-else) Можно выбрать только 1 позицию
     template(v-slot:body-cell-price="props")
       q-td {{$priceFormat($priceByCurrencyServer(props.row.price))}}
