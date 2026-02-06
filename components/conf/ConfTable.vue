@@ -16,7 +16,11 @@ const columns = [
   item.name = item.field
   return item
 })
-const componentsCurrent = computed(()=>$confComponents(conf, components, route.query).map((x:any)=>({...x, count:calcCount(x)})))
+const componentsCurrent = computed(()=> {
+  return $confComponents(conf, components, route.query)
+      .map((x: any) => ({...x, count: calcCount(x)}))
+      .sort((a, b) => a.riserForPort - b.riserForPort)
+})
 
 function calcCount(item:any) {
   const part = conf.parts.find(p => p.component.id === item.id)
