@@ -55,6 +55,14 @@ export default function (configuration) {
         disksAvail = 12
     }
 
+    if(configuration.parts.filter(part => part.component.category === 'CPU').length>1){
+        result.errors.push(`Нельзя поставить разные процессоры`)
+    }
+
+    if(configuration.parts.filter(part => part.component.category === 'Memory').length>1){
+        result.errors.push(`Нельзя поставить разную память`)
+    }
+
     if(!(configuration.diskCount + configuration.ssdM2Count)){
         result.warnings.push('Необходимо выбрать дисковые накопители')
     }
