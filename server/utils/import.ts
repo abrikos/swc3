@@ -183,7 +183,7 @@ export async function parseServiceXLS(file:any) {
     return 'Сервисы: ' + count
 }
 
-//db.chassis.find({platform:'G2'}).then(console.log)
+//Component.findOne({pcieSlots:'8'}).then(r=>console.log(r))
 //Парсинг файла номенклатуры
 export async function parseComponentXLS(file:any) {
     try {
@@ -209,9 +209,6 @@ export async function parseComponentXLS(file:any) {
         for (const item of items as any) {
             if(item.Disabled) continue
             const platforms = []
-            if(item.PN?.trim() ==='P8458P') {
-                console.log(item)
-            }
             for (const key of Object.keys(item)) {
                 if (platformNames.includes(key)) {
                     platforms.push(key)
@@ -231,6 +228,7 @@ export async function parseComponentXLS(file:any) {
                 descFull: item.DescFull?.trim(),
                 unitFix: item.UnitFixed || 0,
                 unitMin: item.UnitMin || 0,
+                pcieSlots: item['PCI length'] || 0,
                 deleted: false,
                 platforms,
             }
@@ -245,7 +243,7 @@ export async function parseComponentXLS(file:any) {
             } else {
                 components++
                 const data = componentData(fields)
-                const x = await Component.updateOne({partNumber: data.partNumber}, data, {upsert: true})
+                const x = await Component.findOneAndUpdate({partNumber: data.partNumber}, data, {upsert: true})
             }
         }
         return `Шасси: ${chassis}. Компоненты: ${components}`
@@ -269,7 +267,6 @@ function componentData(data:any) {
         } else if (data.params.match('U.2')) {
             data.type = 'SSD U.2 NVMe'
         } else if (data.descFull.match('NVMe PCIe')) {
-            console.log(data)
             data.type = 'SSD NVMe PCI-E'
         } else {
             data.type = 'SSD 2.5'

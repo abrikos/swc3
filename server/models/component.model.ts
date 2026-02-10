@@ -40,6 +40,7 @@ export interface IComponent extends mongoose.Document {
     riserForPort:number
     riserIsX16:boolean
     riserSlots:number
+    pcieSlots: string
 }
 
 const Schema = mongoose.Schema;
@@ -60,7 +61,8 @@ const schema = new Schema<IComponent>({
     priceCost: {type: Number, default: 0},
     unitMin: {type: Number, default: 0},
     unitFix: {type: Number, default: 0},
-    deleted: {type: Boolean, default: false}
+    deleted: {type: Boolean, default: false},
+    pcieSlots: {type: String},
 
 }, {
     timestamps: {createdAt: 'createdAt'},
