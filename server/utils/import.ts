@@ -228,7 +228,7 @@ export async function parseComponentXLS(file:any) {
                 descFull: item.DescFull?.trim(),
                 unitFix: item.UnitFixed || 0,
                 unitMin: item.UnitMin || 0,
-                pcieSlots: item['PCI length'] || 0,
+                pcieSlots: item['PCI length'] || '',
                 deleted: false,
                 platforms,
             }

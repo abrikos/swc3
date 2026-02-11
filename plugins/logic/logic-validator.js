@@ -17,6 +17,45 @@ export default function (configuration) {
             result.errors.push('Необходим третий слот x16')
         }
     }
+
+    if(configuration.pcieComponentSlots.length) {
+        let comp16 = 0
+        let comp8 = 0
+        for(const comp of configuration.pcieComponentSlots) {
+            if(comp.slots === '16') {
+                comp16 += comp.count
+            }
+            if(comp.slots === '8') {
+                comp8 += comp.count
+            }
+        }
+        let riser8 = 0
+        let riser16 = 0
+        const riserCapacities = []
+        for(const riser of configuration.pcieRiserSlots){
+            const slots = riser.slots.split('|')
+            riserCapacities.push(riser.slots)
+            for(const slot of slots) {
+                const counts = slot.split('x')
+                if(counts[1]==='16'){
+                    riser16 += counts[0] * 1 * riser.count
+                }
+                if(counts[1]==='8'){
+                    riser8 += counts[0] * 1 * riser.count
+                }
+            }
+        }
+
+        const free16 = riser16 - comp8 - comp16
+        const free8 = riser8 - comp8 - comp16
+        console.log(riserCapacities)
+        if(free16<0){
+            result.errors.push(`Количество PCI-E устройств длинной 8:(${comp8}) и длинной 16:(${comp16}) превышает вместимость слотов на райзерах  (${riserCapacities.join(', ')})`)
+        }
+
+    }
+
+
     if (configuration.chassis.platform === 'G4') {
         if (['QSRV-281200'].includes(configuration.chassis.partNumber)) {
             if (configuration.cpuCount <= 1 && configuration.ssdU2Count > 6) {

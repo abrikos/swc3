@@ -33,6 +33,8 @@ export interface IConf extends mongoose.Document {
     priceService: number
     storagePrice: number
     powerCoefficient: number
+    pcieComponentSlots: string
+    pcieRiserSlots: string
 
 }
 
@@ -120,6 +122,16 @@ schema.statics.createCustom = async function (chassisId, user) {
     }
     return configuration
 }
+
+schema.virtual('pcieRiserSlots')
+    .get(function (){
+        return  this.partsSorted.filter(c => c.component?.pcieSlots && c.component.category === 'Riser').map(c=>({count:c.count, slots:c.component.pcieSlots}))
+    })
+
+schema.virtual('pcieComponentSlots')
+    .get(function (){
+        return  this.partsSorted.filter(c => c.component?.pcieSlots && c.component.category !== 'Riser').map(c=>({count:c.count, slots:c.component.pcieSlots}))
+    })
 
 schema.virtual('description')
     .get(function () {
