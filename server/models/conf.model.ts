@@ -567,7 +567,7 @@ schema.virtual('pcieMaxCount')
         if (this.chassis.partNumber === 'QSRV-181000') return this.cpuCount > 1 ? 5 : 3
         if (this.chassis.partNumber === 'QSRV-463612-E-R') return this.cpuCount > 1 ? 5 : 3
         if (this.chassis.partNumber === 'QSRV-262412-E-R') return this.cpuCount > 1 ? 5 : 3
-        if (this.chassis.partNumber.match('-P-R') && this.chassis.units === 2) return this.cpuCount > 1 ? 8 : 3
+        //if (this.chassis.partNumber.match('-P-R') && this.chassis.units === 2) return this.cpuCount > 1 ? 8 : 3
         if (this.chassis.partNumber.match('-E-R') && this.chassis.units === 2) return this.cpuCount > 1 ? 6 : 3
         return this.parts.filter(p => p.component?.category === 'Riser').reduce((a, b) => a + b.component?.riserSlots * b.count, 0) - this.anybayCount
     })
