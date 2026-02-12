@@ -77,9 +77,9 @@ schema.virtual('basketOrder')
             case 'CPU':
                 return 1
             case 'Memory':
-                return 2
-            case 'Storage':
                 return 3
+            case 'Storage':
+                return 2
             case 'Riser':
                 return 4
             case 'PCI-E':
