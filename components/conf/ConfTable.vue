@@ -12,7 +12,6 @@ const columns = [
   { field: 'description', label: 'Наименование'},
   { field: 'price', label: 'Цена'},
   { field: 'count', label: 'Количество', width: 25},
-  { field: 'pcieSlots', label: 'pcieSlots', width: 25},
 ].map(item => {
   item.name = item.field
   return item
