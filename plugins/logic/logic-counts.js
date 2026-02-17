@@ -10,6 +10,13 @@ export default (configuration, tab) => {
             return modules > 12 ? [0, 2] : [0, 1, 2]
         }*/
         case 'Memory':
+            if (['AMD4'].includes(configuration.chassis.platform)) {
+                if (configuration.cpuCount < 2) {
+                    return [0, 1, 2, 4, 8, 12]
+                } else {
+                    return [0, 2, 4, 8, 12, 16, 24]
+                }
+            }
             if (['G3R', 'G4', 'G3'].includes(configuration.chassis.platform)) {
                 if (configuration.cpuCount < 2) {
                     return [0, 1, 2, 4, 8, 12, 16]
