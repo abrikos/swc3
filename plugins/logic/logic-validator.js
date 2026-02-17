@@ -7,9 +7,23 @@ export default function (configuration) {
         result.warnings.push('VROC не может быть загрузочным (boot) диском.')
     }
     if (configuration.parts.find(p => p.component.partNumber === 'bplnab2u12b')) {
-        if (configuration.cpuCount === 1) {
-            result.errors.push('Необходимо 2 процессора')
+        // if (configuration.cpuCount < 2) {
+        //     result.errors.push('Для  bplnab2u12b необходимо 2 процессора')
+        // }
+        //anybayCount
+        if (configuration.ssdU2Count >4 && configuration.ssdU2Count <=8 ) {
+            result.warnings.push('нужен ретаймер, который занимает один слот x16')
         }
+        if (configuration.ssdU2Count >8 && configuration.ssdU2Count <=12 ) {
+            result.warnings.push('нужно 2 ретаймера, которые занимают 2x16 слота')
+        }
+        if (configuration.ssdU2Count >12 && configuration.ssdU2Count <=14 ) {
+            result.warnings.push('нужна 1х rbaySFFU2 обязательно и на выбор :  3х16 слота который будут заняты ретаймерами или 2 ретаймера х16 и RAID Trimode')
+        }
+        if (configuration.ssdU2Count >14 && configuration.ssdU2Count <=16 ) {
+            result.warnings.push('нужна 2х rbaySFFU2 обязательно и на выбор :  3х16 слота который будут заняты ретаймерами или 2 ретаймера х16 и RAID Trimode')
+        }
+
         if (configuration.riserX16Count && configuration.anybayCount === 2) {
             result.errors.push('Ошибка количества RiserX16 и AnyBay')
         }

@@ -26,7 +26,6 @@ export default (configuration, components, tab) => {
                     }
                     if (configuration.chassis.units < component.riserUnit) return false
                     if (configuration.chassis.partNumber === 'QSRV-463612-E-R') return false
-                    if (configuration.chassis.units < component.riserUnit) return false
                     if (configuration.chassis.platform === 'G2R' && configuration.chassis.units === 2) return false
                     break
             }
