@@ -17,10 +17,10 @@ export default function (configuration) {
         if (configuration.ssdU2Count >8 && configuration.ssdU2Count <=12 ) {
             result.warnings.push('нужно 2 ретаймера, которые занимают 2x16 слота')
         }
-        if (configuration.ssdU2Count >12 && configuration.ssdU2Count <=14 ) {
+        if (configuration.ssdU2Count >12 && configuration.ssdU2Count <=14 && configuration.rearBayU2Count < 1 ) {
             result.warnings.push('нужна 1х rbaySFFU2 обязательно и на выбор :  3х16 слота который будут заняты ретаймерами или 2 ретаймера х16 и RAID Trimode')
         }
-        if (configuration.ssdU2Count >14 && configuration.ssdU2Count <=16 ) {
+        if (configuration.ssdU2Count >14 && configuration.ssdU2Count <=16 && configuration.rearBayU2Count < 2) {
             result.warnings.push('нужна 2х rbaySFFU2 обязательно и на выбор :  3х16 слота который будут заняты ретаймерами или 2 ретаймера х16 и RAID Trimode')
         }
 
