@@ -10,6 +10,7 @@ export default (configuration, components, tab) => {
             if (component.unitFix && (component.unitFix !== configuration.chassis.units)) return
             if (component.unitMin && (component.unitMin > configuration.chassis.units)) return
             if (!component.platforms.includes(configuration.chassis.platform)) return
+
             switch (tab.category) {
                 case 'Cables':
                     return component.forUnitInPN ? configuration.chassis.units === component.forUnitInPN : true
@@ -70,6 +71,7 @@ export default (configuration, components, tab) => {
                     }
                     return true;
                 case 'Backplane':
+                    if(configuration.chassis.platform === 'AMD4') return true
                     if (['QSRV-270802', 'QSRV-270812-P-R'].includes(configuration.chassis.partNumber) && component.partNumber === 'bplnab2u12b') return false
                     if (['QSRV-271202', 'QSRV-271212-P-R'].includes(configuration.chassis.partNumber) && component.partNumber !== 'bplnab2u12b') return false
                     return ['QSRV-171012-P-R', 'QSRV-271212-P-R', 'QSRV-271202', 'QSRV-161002', 'QSRV-1710',
