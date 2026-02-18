@@ -38,7 +38,7 @@ export default function (configuration) {
         result.errors.push(`Нужно добавить Anybay бекплейн или Rear Bay 2*SFF NVMe`)
     }
     if(configuration.nvmeRearBayCount && configuration.ssdU2Count>2){
-        result.errors.push(`Для Rear Bay 2*SFF NVMe возможно только 2 накопителя`)
+        result.errors.push(`Для Rear Bay 2*SFF NVMe количество U2 накопителей не более 2х`)
     }
 
     if(configuration.pcieComponentSlots.length) {
