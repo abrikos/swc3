@@ -11,25 +11,28 @@ export default function (configuration) {
         //     result.errors.push('Для  bplnab2u12b необходимо 2 процессора')
         // }
         //anybayCount
-        if (configuration.ssdU2Count >4 && configuration.ssdU2Count <=8 ) {
-            result.warnings.push('нужен ретаймер, который занимает один слот x16')
+        if (configuration.ssdU2Count) {
+            result.warnings.push('Для создания рейда из U2 накопителей , добавьте VROC или RAID Trimode. Для консультации свяжитесь с менеджером')
         }
-        if (configuration.ssdU2Count >8 && configuration.ssdU2Count <=12 ) {
-            result.warnings.push('нужно 2 ретаймера, которые занимают 2x16 слота')
-        }
-        if (configuration.ssdU2Count >12 && configuration.ssdU2Count <=14 && configuration.rearBayU2Count < 1 ) {
-            result.warnings.push('нужна 1х rbaySFFU2 обязательно и на выбор :  3х16 слота который будут заняты ретаймерами или 2 ретаймера х16 и RAID Trimode')
-        }
-        if (configuration.ssdU2Count >14 && configuration.ssdU2Count <=16 && configuration.rearBayU2Count < 2) {
-            result.warnings.push('нужна 2х rbaySFFU2 обязательно и на выбор :  3х16 слота который будут заняты ретаймерами или 2 ретаймера х16 и RAID Trimode')
-        }
-
-        if (configuration.riserX16Count && configuration.anybayCount === 2) {
-            result.errors.push('Ошибка количества RiserX16 и AnyBay')
-        }
-        if (configuration.nvmeRearBayCount) {
-            result.errors.push('Необходим третий слот x16')
-        }
+        // if (configuration.ssdU2Count >4 && configuration.ssdU2Count <=8 ) {
+        //     result.warnings.push('нужен ретаймер, который занимает один слот x16')
+        // }
+        // if (configuration.ssdU2Count >8 && configuration.ssdU2Count <=12 ) {
+        //     result.warnings.push('нужно 2 ретаймера, которые занимают 2x16 слота')
+        // }
+        // if (configuration.ssdU2Count >12 && configuration.ssdU2Count <=14 && configuration.rearBayU2Count < 1 ) {
+        //     result.warnings.push('нужна 1х rbaySFFU2 обязательно и на выбор :  3х16 слота который будут заняты ретаймерами или 2 ретаймера х16 и RAID Trimode')
+        // }
+        // if (configuration.ssdU2Count >14 && configuration.ssdU2Count <=16 && configuration.rearBayU2Count < 2) {
+        //     result.warnings.push('нужна 2х rbaySFFU2 обязательно и на выбор :  3х16 слота который будут заняты ретаймерами или 2 ретаймера х16 и RAID Trimode')
+        // }
+        //
+        // if (configuration.riserX16Count && configuration.anybayCount === 2) {
+        //     result.errors.push('Ошибка количества RiserX16 и AnyBay')
+        // }
+        // if (configuration.nvmeRearBayCount) {
+        //     result.errors.push('Необходим третий слот x16')
+        // }
     }
 
     if(configuration.pcieComponentSlots.length) {
