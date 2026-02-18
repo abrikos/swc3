@@ -34,6 +34,12 @@ export default function (configuration) {
         //     result.errors.push('Необходим третий слот x16')
         // }
     }
+    if(!configuration.anybayCount && !configuration.nvmeRearBayCount && configuration.ssdU2Count){
+        result.errors.push(`Нужно добавить Anybay бекплейн или Rear Bay 2*SFF NVMe`)
+    }
+    if(configuration.nvmeRearBayCount && configuration.ssdU2Count>2){
+        result.errors.push(`Для Rear Bay 2*SFF NVMe возможно только 2 накопителя`)
+    }
 
     if(configuration.pcieComponentSlots.length) {
         let comp16 = 0
