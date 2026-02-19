@@ -73,7 +73,7 @@ export default (configuration, components, tab) => {
                     if(configuration.chassis.platform === 'AMD4') return true
                     if (['QSRV-270802', 'QSRV-270812-P-R'].includes(configuration.chassis.partNumber) && component.partNumber === 'bplnab2u12b') return false
                     if (['QSRV-271202', 'QSRV-271212-P-R'].includes(configuration.chassis.partNumber) && component.partNumber !== 'bplnab2u12b') return false
-                    return ['QSRV-171012-P-R', 'QSRV-271212-P-R', 'QSRV-271202', 'QSRV-161002', 'QSRV-1710',
+                    return ['QSRV-181000', 'QSRV-171012-P-R', 'QSRV-271212-P-R', 'QSRV-271202', 'QSRV-161002', 'QSRV-1710',
                         'QSRV-171002', 'QSRV-161002', 'QSRV-161002A', 'QSRV-260802', 'QSRV-270802', 'QSRV-270812-P-R',
                         'QSRV-260802A', 'QSRV-161002', 'QSRV-260802', 'QSRV-281200'].includes(configuration.chassis.partNumber)
 
