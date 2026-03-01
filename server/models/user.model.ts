@@ -42,8 +42,15 @@ interface IUserModel extends mongoose.Model<IUser> {
 
 
 const Schema = mongoose.Schema;
-export const validateEmail = function (email: string) {
-    return /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,4})+$/.test(email);
+export const validateEmail = (email: string) => {
+    return String(email)
+        .toLowerCase()
+        .match(
+            /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+        );
+};
+export const validateEmailBak = function (email: string) {
+    return /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,14})+$/.test(email);
 };
 
 
@@ -72,7 +79,6 @@ const schema = new Schema<IUser>({
         unique: true,
         required: true,
         validate: [validateEmail, 'Please fill a valid email address'],
-        match: [/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,4})+$/, 'Please fill a valid email address']
     },
     logged: Number,
     course: {type: Number, default: 1},
