@@ -11,7 +11,7 @@ export default function (configuration) {
         //     result.errors.push('Для  bplnab2u12b необходимо 2 процессора')
         // }
         //anybayCount
-        if (configuration.ssdU2Count && !(configuration.vrocModuleCount || configuration.trimod16ICount)) {
+        if (configuration.ssdU2Count) {
             result.warnings.push('Для создания рейда из U2 накопителей , добавьте VROC или RAID Trimode. Для консультации свяжитесь с менеджером')
         }
         // if (configuration.ssdU2Count >4 && configuration.ssdU2Count <=8 ) {
