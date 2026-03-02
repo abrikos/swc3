@@ -313,6 +313,7 @@ export default function (configuration) {
             result.errors.push(`Необходимо использовать HBA/RAID контроллер с 16i линиями`)
         }
 
+        console.log(configuration.chassis.disks, configuration.diskSsdHddCount, configuration.raidCount)
         if (configuration.chassis.disks > 11 && configuration.diskSsdHddCount && !configuration.raidCount) {
             result.errors.push(`Для подключения дисков необходимо установить RAID или HBA контроллер`)
         }
