@@ -313,7 +313,7 @@ export default function (configuration) {
             result.errors.push(`Необходимо использовать HBA/RAID контроллер с 16i линиями`)
         }
 
-        if (configuration.chassis.disks > 11 && (configuration.diskSsdHddCount && !configuration.raidCount)) {
+        if (configuration.chassis.disks > 11 && (configuration.diskSsdHddCount && !configuration.raidCount) && (configuration.sataDiskCount > configuration.rearBayCount*2)) {
             result.errors.push(`Для подключения SSD/HDD дисков необходимо установить RAID или HBA контроллер`)
         }
         /*
