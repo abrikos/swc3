@@ -11,7 +11,7 @@ export default function (configuration) {
         //     result.errors.push('Для  bplnab2u12b необходимо 2 процессора')
         // }
         //anybayCount
-        if (configuration.ssdU2Count) {
+        if (configuration.ssdU2Count && !(configuration.vrocModuleCount || configuration.raidTrimodeCount)) {
             result.warnings.push('Для создания рейда из U2 накопителей , добавьте VROC или RAID Trimode. Для консультации свяжитесь с менеджером')
         }
         // if (configuration.ssdU2Count >4 && configuration.ssdU2Count <=8 ) {
@@ -313,8 +313,8 @@ export default function (configuration) {
             result.errors.push(`Необходимо использовать HBA/RAID контроллер с 16i линиями`)
         }
 
-        if (configuration.chassis.disks > 11 && configuration.diskSsdHddCount && !configuration.raidCount) {
-            result.errors.push(`Для подключения дисков необходимо установить RAID или HBA контроллер`)
+        if (configuration.chassis.disks > 11 && (configuration.diskSsdHddCount && !configuration.raidCount)) {
+            result.errors.push(`Для подключения SSD/HDD дисков необходимо установить RAID или HBA контроллер`)
         }
         /*
         Закомментировано тк в LFF корзину можно установить SFF диски
