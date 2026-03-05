@@ -92,7 +92,7 @@ div(v-if="spec")
           span Серверные
         td.text-right.text-weight-bold {{$priceFormat($priceByCurrencyServer(servPrice))}}
         td
-      tr(v-for="conf of spec.configurations" :key="conf.id")
+      tr(v-for="conf of spec.configurations.sort((a,b)=>a.name.localeCompare(b.name))" :key="conf.id")
         td
           router-link(:to="`/servers/conf/${conf.id}?category=CPU`") {{conf.name}}
           q-btn(icon="mdi-pencil" size="sm")
