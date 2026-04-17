@@ -43,8 +43,8 @@ export default function (configuration) {
     const a4 = configuration.parts.find(p => p.component.partNumber === 'bplnab2u12b')//?.count * 12
     const abCapacity = a1 ? a1.count * 12 : 0 + a2 ? a2.count * 10 : 0 + a3 ? a3.count * 8 : 0 + a4 ? a4.count * 12 : 0
 
-    if (configuration.ssdU2Count && configuration.nvmeRearBayCount * 2 + abCapacity < configuration.ssdU2Count) {
-        result.errors.push(`Количество U2 накопителей (${configuration.ssdU2Count}) больше чем количество Rear bay (${configuration.nvmeRearBayCount}) * 2`)
+    if (configuration.ssdU2Count && configuration.rearBayCount * 2 + abCapacity < configuration.ssdU2Count) {
+        result.errors.push(`Количество U2 накопителей (${configuration.ssdU2Count}) больше чем количество Rear bay (${configuration.rearBayCount}) * 2 + anybay (${abCapacity})`)
     }
 
     if (configuration.pcieComponentSlots.length) {
