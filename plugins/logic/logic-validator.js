@@ -1,7 +1,6 @@
 export default function (configuration) {
     const result = {
-        errors: [],
-        warnings: [],
+        errors: [], warnings: [],
     };
     if (configuration.parts.find(p => p.component.partNumber === 'VROCSTANMOD')) {
         result.warnings.push('VROC не может быть загрузочным (boot) диском.')
@@ -113,12 +112,7 @@ export default function (configuration) {
         }
 
     }
-    let disksAvail = configuration.chassis.disks
-        + (
-            configuration.chassis.units > 1 ?
-                configuration.rearBayAllSFFCount * 2 + configuration.rearBayLFFCount * 2 + configuration.additionalNvmeDisksByBackplane
-                : 0
-        )
+    let disksAvail = configuration.chassis.disks + (configuration.chassis.units > 1 ? configuration.rearBayAllSFFCount * 2 + configuration.rearBayLFFCount * 2 + configuration.additionalNvmeDisksByBackplane : 0)
     if (configuration.chassis.partNumber === 'QSRV-260802-E-R') {
         disksAvail = 12
     }
@@ -136,14 +130,8 @@ export default function (configuration) {
     }
 
     //console.log(configuration.chassis.disks, configuration.rearBayAllSFFCount * 2 , configuration.rearBayLFFCount * 2 , configuration.additionalNvmeDisksByBackplane)
-    if (configuration.diskCount > disksAvail) {
-        if (configuration.chassis.partNumber === 'QSRV-463612-E-R') {
-            if (configuration.diskSsd25Count > 2) {
-                result.errors.push(`Нельзя поставить дисков более (${disksAvail + 2}). Вы пытаетесь поставить (${configuration.diskCount})`)
-            }
-        } else {
-            result.errors.push(`Нельзя поставить дисков более (${disksAvail}). Вы пытаетесь поставить (${configuration.diskCount})`)
-        }
+    if (configuration.diskCount > disksAvail && configuration.diskSsd25Count > 2) {
+        result.errors.push(`Нельзя поставить дисков более (${disksAvail + (configuration.chassis.partNumber === 'QSRV-463612-E-R' ? 2 : 0)}). Вы пытаетесь поставить (${configuration.diskCount})`)
     }
 
     if (configuration.units > 1 && configuration.sasRearBayCount * 2 < ((configuration.sasDiskCount > configuration.chassis.disks) ? configuration.sasDiskCount - configuration.chassis.disks : configuration.sasDiskCount)) {
@@ -308,14 +296,10 @@ export default function (configuration) {
             result.warnings.push('Без RAID функционала. Для организации RAID на накопителях M.2 NVMe необходимо выбрать M2Raid PCI-E Card for 2*M.2 NVMe RAID 0, 1')
         }
         if (configuration.chassis.isSFF && configuration.diskLFFCount && !configuration.rearBayCount) {
-            const text = configuration.chassis.units === 1 ?
-                'В данной платформе нельзя установить LFF диски'
-                :
-                `Для установки LFF дисков нужно добавить заднюю корзину Rear Bay 2*LFF SAS (rbayLFFSAS)`
+            const text = configuration.chassis.units === 1 ? 'В данной платформе нельзя установить LFF диски' : `Для установки LFF дисков нужно добавить заднюю корзину Rear Bay 2*LFF SAS (rbayLFFSAS)`
             result.errors.push(text)
         }
-        if (!configuration.raid16ICount && (['QSRV-161002', 'QSRV-171002', 'QSRV-260802', 'QSRV-270802', 'QSRV-270812-P-R'].includes(configuration.chassis.partNumber)
-            && (configuration.sasDiskCount === configuration.diskCount && configuration.diskCount > 8))) {
+        if (!configuration.raid16ICount && (['QSRV-161002', 'QSRV-171002', 'QSRV-260802', 'QSRV-270802', 'QSRV-270812-P-R'].includes(configuration.chassis.partNumber) && (configuration.sasDiskCount === configuration.diskCount && configuration.diskCount > 8))) {
             result.errors.push(`Необходимо использовать HBA/RAID контроллер с 16i линиями`)
         }
 
@@ -368,11 +352,7 @@ export default function (configuration) {
         /*if ((configuration.raid94Count + configuration.raid93Count) && configuration.raidTrimodeCount) {
             result.errors.push(`RAID контроллер Trimode 9440 Raid 8i (1,0,10,5,6,50,60) (PN 94008IR) не совместим с модулями защиты. Модули защиты к нему добавлять нельзя`)
         }*/
-        if (configuration.chassis.units > 1
-            && configuration.ssdU2Count > configuration.additionalNvmeDisksByBackplane
-            && (configuration.ssdU2Count - configuration.additionalNvmeDisksByBackplane > configuration.rearBayU2Count * 2)
-            && (configuration.ssdU2Count - configuration.U2expnvmeCount * 2 > 0)
-        ) {
+        if (configuration.chassis.units > 1 && configuration.ssdU2Count > configuration.additionalNvmeDisksByBackplane && (configuration.ssdU2Count - configuration.additionalNvmeDisksByBackplane > configuration.rearBayU2Count * 2) && (configuration.ssdU2Count - configuration.U2expnvmeCount * 2 > 0)) {
             if (configuration.chassis.partNumber !== 'QSRV-282400' && !configuration.chassis.partNumber.match(/02R$/) && !configuration.backplaneCount) {
                 result.errors.push(`На каждые дополнительные 2 шт SSD U.2 NVMe (${configuration.ssdU2Count - configuration.additionalNvmeDisksByBackplane - configuration.U2expnvmeCount * 2}) 
                 необходим rear bay rbaySFFU2 (${configuration.rearBayU2Count}) и/или Anybay Backplane`)
@@ -425,20 +405,16 @@ export default function (configuration) {
             if (['QSRV-261202-E-R_Active_BP_wth_4_U2', 'QSRV-262402R_active_BP_wth_4_U2']
                 .map(c => c.toLowerCase())
                 .includes(configuration.chassis.partNumber.toLowerCase())) {
-                if (configuration.ssdU2Count > 4)
-                    result.errors.push(`Превышено допустимое (4) количество SSD U.2 NVMe ${configuration.ssdU2Count}`)
-                if (!configuration.raidTrimodeCount)
-                    result.errors.push(`Необходимо подключение контроллера Trimode`)
+                if (configuration.ssdU2Count > 4) result.errors.push(`Превышено допустимое (4) количество SSD U.2 NVMe ${configuration.ssdU2Count}`)
+                if (!configuration.raidTrimodeCount) result.errors.push(`Необходимо подключение контроллера Trimode`)
                 if (configuration.cable8643Count < 5) {
                     //result.errors.push(`Необходимы кабели для подключения 8643 на 8643 ${5 - configuration.cable8643Count} штук`)
                 }
             }
             if (['QSRV-361602R_Active_BP', 'QSRV-463602R_Active_BP', 'QSRV-261202-E-R_Active_BP', 'QSRV-262402R_active_BP']
                 .map(c => c.toLowerCase())
-                .includes(configuration.chassis.partNumber.toLowerCase())
-            ) {
-                if (!!configuration.sasRaidCount)
-                    result.errors.push(`Необходимо подключение контроллера SAS HBA или SAS RAID`)
+                .includes(configuration.chassis.partNumber.toLowerCase())) {
+                if (!!configuration.sasRaidCount) result.errors.push(`Необходимо подключение контроллера SAS HBA или SAS RAID`)
                 const maxCount = 'QSRV-463602R' === configuration.chassis.partnumber ? 4 : 2
                 if (configuration.cable8643Count < maxCount) {
                     //result.errors.push(`Необходимы кабели для подключения 8643 на 8643 ${maxCount - configuration.cable8643Count} штук`)
@@ -474,12 +450,9 @@ export default function (configuration) {
             }*/
             if (['QSRV-160402-E-R', 'QSRV-160802-E-R']
                 .map(c => c.toLowerCase())
-                .includes(configuration.chassis.partNumber.toLowerCase())
-            ) {
-                if (configuration.sataM2DiskCount > 1)
-                    result.errors.push(`Только 1 SSD m.2 SATA диск может быть установлен (${configuration.sataM2DiskCount})`)
-                if (configuration.nvmeM2DiskCount > 1 && !configuration.M2expnvmeCount)
-                    result.errors.push(`Только 1 SSD m.2 NVMe диск может быть установлен (${configuration.nvmeM2DiskCount})`)
+                .includes(configuration.chassis.partNumber.toLowerCase())) {
+                if (configuration.sataM2DiskCount > 1) result.errors.push(`Только 1 SSD m.2 SATA диск может быть установлен (${configuration.sataM2DiskCount})`)
+                if (configuration.nvmeM2DiskCount > 1 && !configuration.M2expnvmeCount) result.errors.push(`Только 1 SSD m.2 NVMe диск может быть установлен (${configuration.nvmeM2DiskCount})`)
             }
             if (configuration.chassis.partNumber === 'QSRV-463612-E-R') {
                 if (!configuration.raidCount) result.errors.push(`Выберите RAID контроллер`)
