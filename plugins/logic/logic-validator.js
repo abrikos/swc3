@@ -38,7 +38,7 @@ export default function (configuration) {
         result.errors.push(`Нужно добавить Anybay бекплейн или Rear Bay 2*SFF NVMe`)
     }
 
-    if(configuration.ssdU2Count && configuration.nvmeRearBayCount *2 < configuration.ssdU2Count){
+    if(configuration.ssdU2Count && configuration.nvmeRearBayCount * 2 + configuration.anybayCount < configuration.ssdU2Count){
         result.errors.push(`Количество U2 накопителей (${configuration.ssdU2Count}) больше чем количество Rear bay (${configuration.nvmeRearBayCount}) * 2`)
     }
 
