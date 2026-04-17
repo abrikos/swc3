@@ -34,42 +34,42 @@ export default function (configuration) {
         //     result.errors.push('Необходим третий слот x16')
         // }
     }
-    if(!configuration.anybayCount && !configuration.nvmeRearBayCount && configuration.ssdU2Count){
+    if (!configuration.anybayCount && !configuration.nvmeRearBayCount && configuration.ssdU2Count) {
         result.errors.push(`Нужно добавить Anybay бекплейн или Rear Bay 2*SFF NVMe`)
     }
-    const anybayU2count = configuration.parts.find(p => p.component.partNumber === 'bplnab2u12bG4') ? 12
-        : configuration.parts.find(p => p.component.partNumber === 'bplnab1u') ? 10
-        : configuration.parts.find(p => p.component.partNumber === 'bplnab2u8b') ? 8
-        : configuration.parts.find(p => p.component.partNumber === 'bplnab2u12b') ? 12
-                : 0
+    const a1 = configuration.parts.find(p => p.component.partNumber === 'bplnab2u12bG4')//?.count * 12
+    const a2 = configuration.parts.find(p => p.component.partNumber === 'bplnab1u')//?.count * 10
+    const a3 = configuration.parts.find(p => p.component.partNumber === 'bplnab2u8b')//?.count * 8
+    const a4 = configuration.parts.find(p => p.component.partNumber === 'bplnab2u12b')//?.count * 12
+    const abCapacity = a1 ? a1.count * 12 : 0 + a2 ? a2.count * 10 : 0 + a3 ? a3.count * 8 : 0 + a4 ? a4.count * 12 : 0
 
-    if(configuration.ssdU2Count && configuration.nvmeRearBayCount * 2 + configuration.anybayCount * anybayU2count < configuration.ssdU2Count){
+    if (configuration.ssdU2Count && configuration.nvmeRearBayCount * 2 + abCapacity < configuration.ssdU2Count) {
         result.errors.push(`Количество U2 накопителей (${configuration.ssdU2Count}) больше чем количество Rear bay (${configuration.nvmeRearBayCount}) * 2`)
     }
 
-    if(configuration.pcieComponentSlots.length) {
+    if (configuration.pcieComponentSlots.length) {
         let comp16 = 0
         let comp8 = 0
-        for(const comp of configuration.pcieComponentSlots) {
-            if(comp.slots === '16') {
+        for (const comp of configuration.pcieComponentSlots) {
+            if (comp.slots === '16') {
                 comp16 += comp.count
             }
-            if(comp.slots === '8') {
+            if (comp.slots === '8') {
                 comp8 += comp.count
             }
         }
         let riser8 = 0
         let riser16 = 0
         const riserCapacities = []
-        for(const riser of configuration.pcieRiserSlots){
+        for (const riser of configuration.pcieRiserSlots) {
             const slots = riser.slots.split('|')
             riserCapacities.push(riser.slots)
-            for(const slot of slots) {
+            for (const slot of slots) {
                 const counts = slot.split('x')
-                if(counts[1]==='16'){
+                if (counts[1] === '16') {
                     riser16 += counts[0] * 1 * riser.count
                 }
-                if(counts[1]==='8'){
+                if (counts[1] === '8') {
                     riser8 += counts[0] * 1 * riser.count
                 }
             }
@@ -78,7 +78,7 @@ export default function (configuration) {
         const free16 = riser16 - comp8 - comp16
         const free8 = riser8 - comp8 - comp16
         console.log(riserCapacities)
-        if(free16<0){
+        if (free16 < 0) {
             result.errors.push(`Количество PCI-E устройств длинной 8:(${comp8}) и длинной 16:(${comp16}) превышает вместимость слотов на райзерах  (${riserCapacities.join(', ')})`)
         }
 
@@ -98,12 +98,12 @@ export default function (configuration) {
         if (configuration.cpuCount < configuration.ocpCount) {
             result.errors.push(`Количество процессоров (${configuration.cpuCount}) меньше LAN OCP 3.0 (${configuration.ocpCount})`)
         }
-        if(configuration.chassis.platform !== 'G4'){
+        if (configuration.chassis.platform !== 'G4') {
 
-        }else {
+        } else {
             if (configuration.cpuCount === 1) {
                 result.warnings.push(`При установке одного процессора ANYBAY бэкплейн работать не будет, возможность устанавливать в переднюю корзину NVMe диски - отсутствовать`)
-                if(configuration.pcieCount > 1) {
+                if (configuration.pcieCount > 1) {
                     result.errors.push(`Для 1 процессора доступен только 1 PCI-E слот (занято ${configuration.pcieCount})`)
                 }
             }
@@ -123,15 +123,15 @@ export default function (configuration) {
         disksAvail = 12
     }
 
-    if(configuration.parts.filter(part => part.component.category === 'CPU').length>1){
+    if (configuration.parts.filter(part => part.component.category === 'CPU').length > 1) {
         result.errors.push(`Нельзя поставить разные процессоры`)
     }
 
-    if(configuration.parts.filter(part => part.component.category === 'Memory').length>1){
+    if (configuration.parts.filter(part => part.component.category === 'Memory').length > 1) {
         result.errors.push(`Нельзя поставить разную память`)
     }
 
-    if(!(configuration.diskCount + configuration.ssdM2Count)){
+    if (!(configuration.diskCount + configuration.ssdM2Count)) {
         result.warnings.push('Необходимо выбрать дисковые накопители')
     }
 
@@ -161,16 +161,16 @@ export default function (configuration) {
     }
 
 
-    if (configuration.powerConsumption > configuration.power && configuration.chassis.platform!=='JBOD') {
+    if (configuration.powerConsumption > configuration.power && configuration.chassis.platform !== 'JBOD') {
         result.errors.push(`Недостаточно мощности PSU`)
     }
-    if(configuration.chassis.platform==='G4'){
-        if(!configuration.ocpCount && !configuration.fcCount && !configuration.lanCount){
+    if (configuration.chassis.platform === 'G4') {
+        if (!configuration.ocpCount && !configuration.fcCount && !configuration.lanCount) {
             result.warnings.push('В данной конфигурации нет возможности подключить оборудование к сети передачи данных, для подключения к сети добавьте NIC или FC HBA')
         }
     }
     if (configuration.chassis.platform !== 'JBOD') {
-        if(!configuration.power ){
+        if (!configuration.power) {
             result.errors.push(`Выберите блок питания`)
         }
 
@@ -243,7 +243,7 @@ export default function (configuration) {
                 }
         */
         if (configuration.raidCount > configuration.riserPortsAvailable && configuration.chassis.platform !== 'G2R') {
-            if(!(configuration.chassis.units>1 && ['G3','G3R'].includes(configuration.chassis.platform))) {
+            if (!(configuration.chassis.units > 1 && ['G3', 'G3R'].includes(configuration.chassis.platform))) {
                 result.errors.push(`Количество выбранных RAID (${configuration.raidCount}) превышает количество слотов на всех RISER (${configuration.riserPortsAvailable})`)
             }
         }
@@ -304,7 +304,7 @@ export default function (configuration) {
         }
 
         //STORAGE
-        if (['G2','G2R'].includes(configuration.chassis.platform) && configuration.vrocModuleCount && configuration.ssdM2Count >= 2 && !configuration.m2raidCount) {
+        if (['G2', 'G2R'].includes(configuration.chassis.platform) && configuration.vrocModuleCount && configuration.ssdM2Count >= 2 && !configuration.m2raidCount) {
             result.warnings.push('Без RAID функционала. Для организации RAID на накопителях M.2 NVMe необходимо выбрать M2Raid PCI-E Card for 2*M.2 NVMe RAID 0, 1')
         }
         if (configuration.chassis.isSFF && configuration.diskLFFCount && !configuration.rearBayCount) {
@@ -319,7 +319,7 @@ export default function (configuration) {
             result.errors.push(`Необходимо использовать HBA/RAID контроллер с 16i линиями`)
         }
 
-        if (configuration.chassis.disks > 11 && (configuration.diskSsdHddCount && !configuration.raidCount) && (configuration.sataDiskCount > configuration.rearBayCount*2)) {
+        if (configuration.chassis.disks > 11 && (configuration.diskSsdHddCount && !configuration.raidCount) && (configuration.sataDiskCount > configuration.rearBayCount * 2)) {
             result.errors.push(`Для подключения SSD/HDD дисков необходимо установить RAID или HBA контроллер`)
         }
         /*
@@ -333,7 +333,7 @@ export default function (configuration) {
         if (configuration.chassis.isSFF && (configuration.rearBayLFFCount * 2 < configuration.diskLFFCount)) {
             result.errors.push(`Максимальное количество LFF дисков (${configuration.rearBayLFFCount * 2}). Вы пытаетесь установить (${configuration.diskLFFCount}) `)
         }
-        if (configuration.chassis.partNumber!=='QSRV-282400' && configuration.chassis.disks > 11 && !configuration.fcCount && !configuration.raidCount && configuration.diskCount > 12) {
+        if (configuration.chassis.partNumber !== 'QSRV-282400' && configuration.chassis.disks > 11 && !configuration.fcCount && !configuration.raidCount && configuration.diskCount > 12) {
             result.errors.push(`Для платформы с количеством дисков более 12 необходим RAID или HBA`)
         }
         if (configuration.isRearBayNeeded) {
@@ -373,7 +373,7 @@ export default function (configuration) {
             && (configuration.ssdU2Count - configuration.additionalNvmeDisksByBackplane > configuration.rearBayU2Count * 2)
             && (configuration.ssdU2Count - configuration.U2expnvmeCount * 2 > 0)
         ) {
-            if (configuration.chassis.partNumber!=='QSRV-282400' && !configuration.chassis.partNumber.match(/02R$/) && !configuration.backplaneCount) {
+            if (configuration.chassis.partNumber !== 'QSRV-282400' && !configuration.chassis.partNumber.match(/02R$/) && !configuration.backplaneCount) {
                 result.errors.push(`На каждые дополнительные 2 шт SSD U.2 NVMe (${configuration.ssdU2Count - configuration.additionalNvmeDisksByBackplane - configuration.U2expnvmeCount * 2}) 
                 необходим rear bay rbaySFFU2 (${configuration.rearBayU2Count}) и/или Anybay Backplane`)
             }
@@ -397,14 +397,14 @@ export default function (configuration) {
         }
 
 
-        if (['260802','270802','270812-P-R', '171012-P-R', '161002', '171002'].map(p=>'QSRV-'+p).includes(configuration.chassis.partNumber)) {
-            if(configuration.backplaneCount && !configuration.riserX16Count){
+        if (['260802', '270802', '270812-P-R', '171012-P-R', '161002', '171002'].map(p => 'QSRV-' + p).includes(configuration.chassis.partNumber)) {
+            if (configuration.backplaneCount && !configuration.riserX16Count) {
                 result.errors.push(`Необходимо добавить райзер x16`)
             }
         }
 
         if (configuration.chassis.platform === 'G3R') {
-            if(configuration.raidCount > configuration.riserCount){
+            if (configuration.raidCount > configuration.riserCount) {
                 result.errors.push(`Количество RAID (${configuration.raidCount}) превышает количество RISER (${configuration.riserCount})`)
             }
         }
