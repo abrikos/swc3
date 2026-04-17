@@ -105,7 +105,7 @@ export default (configuration, tab) => {
             }
 
             if (['QSRV-281200'].includes(configuration.chassis.partNumber)) {
-                return configuration.cpuCount === 2 ? Array.from(Array(13).keys()) : Array.from(Array(7).keys())
+                return configuration.cpuCount === 2 ? Array.from(Array(17).keys()) : Array.from(Array(7).keys())
             }
             return Array.from(Array(M2expnvmeCount + configuration.additionalNvmeDisksByBackplane + (configuration.chassis.units === 1 ? 1 : 5) + 1).keys());
         case 'HDD':

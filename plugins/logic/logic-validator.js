@@ -86,14 +86,14 @@ export default function (configuration) {
 
 
     if (configuration.chassis.platform === 'G4') {
-        if (['QSRV-281200'].includes(configuration.chassis.partNumber)) {
-            if (configuration.cpuCount <= 1 && configuration.ssdU2Count > 6) {
-                result.errors.push(`SSD U.2 NVMe возможно установить до 6 шт. (${configuration.ssdU2Count})`)
-            }
-            if (configuration.cpuCount === 2 && configuration.ssdU2Count > 12) {
-                result.errors.push(`SSD U.2 NVMe возможно установить до 12 шт. (${configuration.ssdU2Count})`)
-            }
-        }
+        // if (['QSRV-281200'].includes(configuration.chassis.partNumber)) {
+        //     if (configuration.cpuCount <= 1 && configuration.ssdU2Count > 6) {
+        //         result.errors.push(`SSD U.2 NVMe возможно установить до 6 шт. (${configuration.ssdU2Count})`)
+        //     }
+        //     if (configuration.cpuCount === 2 && configuration.ssdU2Count > 12) {
+        //         result.errors.push(`SSD U.2 NVMe возможно установить до 12 шт. (${configuration.ssdU2Count})`)
+        //     }
+        // }
 
         if (configuration.cpuCount < configuration.ocpCount) {
             result.errors.push(`Количество процессоров (${configuration.cpuCount}) меньше LAN OCP 3.0 (${configuration.ocpCount})`)
