@@ -37,8 +37,13 @@ export default function (configuration) {
     if(!configuration.anybayCount && !configuration.nvmeRearBayCount && configuration.ssdU2Count){
         result.errors.push(`Нужно добавить Anybay бекплейн или Rear Bay 2*SFF NVMe`)
     }
+    const anybayU2count = configuration.parts.find(p => p.component.partNumber === 'bplnab2u12bG4') ? 12
+        : configuration.parts.find(p => p.component.partNumber === 'bplnab1u') ? 10
+        : configuration.parts.find(p => p.component.partNumber === 'bplnab2u8b') ? 8
+        : configuration.parts.find(p => p.component.partNumber === 'bplnab2u12b') ? 12
+                : 0
 
-    if(configuration.ssdU2Count && configuration.nvmeRearBayCount * 2 + configuration.anybayCount < configuration.ssdU2Count){
+    if(configuration.ssdU2Count && configuration.nvmeRearBayCount * 2 + configuration.anybayCount * anybayU2count < configuration.ssdU2Count){
         result.errors.push(`Количество U2 накопителей (${configuration.ssdU2Count}) больше чем количество Rear bay (${configuration.nvmeRearBayCount}) * 2`)
     }
 
