@@ -88,6 +88,13 @@ export default (configuration, tab) => {
                     return Array.from(Array(9).keys())
                 }
             }
+            if (['281202A'].map(p=>'QSRV-'+p).includes(configuration.chassis.partNumber)) {
+                if(configuration.backplaneCount){
+                    return Array.from(Array(15).keys())
+                }else{
+                    return Array.from(Array(13).keys())
+                }
+            }
             if (['261202','271202','271212-P-R'].map(p=>'QSRV-'+p).includes(configuration.chassis.partNumber)) {
                 if(configuration.backplaneCount){
                     return Array.from(Array(17).keys())
