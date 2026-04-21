@@ -33,8 +33,10 @@ export default function (configuration) {
         //     result.errors.push('Необходим третий слот x16')
         // }
     }
-    if (!configuration.anybayCount && !configuration.nvmeRearBayCount && configuration.ssdU2Count) {
-        result.errors.push(`Нужно добавить Anybay бекплейн или Rear Bay 2*SFF NVMe`)
+    if(configuration.chassis.partNumber !== 'QSRV-282400') {
+        if (!configuration.anybayCount && !configuration.nvmeRearBayCount && configuration.ssdU2Count) {
+            result.errors.push(`Нужно добавить Anybay бекплейн или Rear Bay 2*SFF NVMe`)
+        }
     }
     const a1 = configuration.parts.find(p => p.component.partNumber === 'bplnab2u12bG4')//?.count * 12
     const a2 = configuration.parts.find(p => p.component.partNumber === 'bplnab1u')//?.count * 10
