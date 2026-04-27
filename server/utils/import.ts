@@ -236,14 +236,17 @@ export async function parseComponentXLS(file:any) {
             if (!fields.partNumber) continue
             if (!fields.descFull) fields.descFull = fields.params
             if (fields.category === 'Chassis') {
+                // if(fields.partNumber === 'QSRV-281200'){
+                //     console.log(fields)
+                // }
                 chassis++
                 const data = chassisData(fields)
 
-                const x= await Chassis.updateOne({partNumber: data.partNumber}, data, {upsert: true})
+                const x= await Chassis.findOneAndUpdate({partNumber: data.partNumber}, {$set: data}, {upsert: true})
             } else {
                 components++
                 const data = componentData(fields)
-                const x = await Component.findOneAndUpdate({partNumber: data.partNumber}, data, {upsert: true})
+                const x = await Component.findOneAndUpdate({partNumber: data.partNumber}, {$set: data}, {upsert: true})
             }
         }
         return `Шасси: ${chassis}. Компоненты: ${components}`

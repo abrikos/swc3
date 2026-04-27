@@ -139,8 +139,6 @@ schema.virtual('description')
         const anyBayBackplane = this.partsSorted.find(c => c.component?.descFull.match('AnyBay'))
 
         const confName = [this.chassis.name ]
-        console.log(this.chassis.name)
-        console.log(confName)
         for (const part of this.partsSorted.filter(p => p.component?.partNumber !== 'C13-SCH')) {
             if (part.component?.category === 'Power' && this.chassis.lanPort1Gb) {
                 confName.push(this.chassis.lanPort1Gb + '*1GbE LAN')
