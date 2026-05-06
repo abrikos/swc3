@@ -18,11 +18,16 @@ async function load() {
     navigateTo({query: {platform: 'G3R', ...route.query}})
   }
   list.value = await useNuxtApp().$GET('/chassis/list') as never[]
+  if(loggedUser.value.isAdmin) {
+    tabsList.value.push({label: 'GPU servers', name: 'GPU_SERV'})
+    console.log(tabsList)
+  }
+
 }
 
 //watch(()=>route.query.tab, load)
 
-const tabsList = [
+const tabsList = ref([
   //{label: 'Intel Gen2', name: 'G2'},
   {label: 'Intel Gen3R', name: 'G3R'},
   {label: 'Intel Gen3', name: 'G3'},
@@ -30,10 +35,7 @@ const tabsList = [
   {label: 'AMD Gen3', name: 'AMD'},
   {label: 'AMD Gen4', name: 'AMD4'},
   {label: 'Дисковые полки (JBOD)', name: 'JBOD'},
-  //{label: 'Intel Gen2R', name: 'G2R'},
-
-
-]
+])
 
 const listByPlatform = computed(() => list.value?.filter((i: any) => i.platform === (route.query.platform || 'G2')))
 
