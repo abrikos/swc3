@@ -99,7 +99,7 @@ schema.statics.createCustom = async function (chassisId, user) {
         await Part.create({component: riser1, configuration, count: 1})
         await Part.create({component: riser2, configuration, count: 1})
     }
-    if (['QSRV-281200', 'QSRV-282400'].includes(chassis.partNumber)) {
+    if (['QSRV-281200'].includes(chassis.partNumber)) {
         //const riser1 = await Component.findOne({partNumber: 'x16x8riser2U5.0'})
         const riser2 = await Component.findOne({partNumber: '2x16riser2U5.0'})
         const riser3 = await Component.findOne({partNumber: '3x16riser2U5.0'})
