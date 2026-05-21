@@ -92,9 +92,6 @@ onMounted(()=>{
           q-item-section
             i Настройки
         ThemeSwitch
-      small.text-caption(v-if="loggedUser?.isAdmin")
-        div Last update:
-        div {{version}}
     q-page-container(:class="themeWidth?'page-wrapper':''" )
       q-page
         slot
