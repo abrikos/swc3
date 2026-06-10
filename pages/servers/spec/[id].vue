@@ -54,6 +54,14 @@ async function orderUpdate(conf:IOrder) {
 }
 const editConf = ref()
 const editOrder = ref()
+
+function sortConfs(a,b){
+  const orderA = a.name.match(/(\d+)\./)
+  const orderB = b.name.match(/(\d+)\./)
+  if (!orderA || !orderB) return 0
+  return orderA[1] - orderB[1]
+}
+
 </script>
 
 <template lang="pug">
@@ -92,7 +100,7 @@ div(v-if="spec")
           span Серверные
         td.text-right.text-weight-bold {{$priceFormat($priceByCurrencyServer(servPrice))}}
         td
-      tr(v-for="conf of spec.configurations.sort((a,b)=>a.name.localeCompare(b.name))" :key="conf.id")
+      tr(v-for="conf of spec.configurations.sort(sortConfs)" :key="conf.id")
         td
           router-link(:to="`/servers/conf/${conf.id}?category=CPU`") {{conf.name}}
           q-btn(icon="mdi-pencil" size="sm")
