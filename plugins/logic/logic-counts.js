@@ -38,7 +38,7 @@ export default (configuration, tab) => {
             ) {
                 return [0, 1]
             }
-            if(configuration.chassis.platform === 'G4' && configuration.chassis.units === 1) {
+            if (configuration.chassis.platform === 'G4' && configuration.chassis.units === 1) {
                 return [0, 1]
             }
             return [0, 1, 2]
@@ -53,12 +53,16 @@ export default (configuration, tab) => {
         case 'Transceiver':
             return Array.from(Array(17).keys())
         case 'GPU':
-            return [0, 1, 2]
+            if (configuration.chassis.units >= 2) {
+                return [0, 1, 2, 3, 4, 5, 6]
+            } else {
+                return [0, 1, 2]
+            }
         case 'SSD m.2':
             if (configuration.M2expnvmeCount) return Array.from(Array(configuration.M2expnvmeCount * 2 + 1).keys())
             if (configuration.chassis.platform === 'G2R') {
-                return[0,1]
-                return configuration.M2RaidCount ? Array.from(Array(configuration.M2RaidCount * 2 + 2).keys()):[0, 1]
+                return [0, 1]
+                return configuration.M2RaidCount ? Array.from(Array(configuration.M2RaidCount * 2 + 2).keys()) : [0, 1]
             }
             return [0, 1, 2]
         case 'Rear bay':
@@ -76,29 +80,29 @@ export default (configuration, tab) => {
             return [0, 1]
         case 'SSD U.2 NVMe':
             if (['QSRV-282400'].includes(configuration.chassis.partNumber)) {
-                return Array.from(Array(configuration.rearBayCount >1 ? 29:25).keys())
+                return Array.from(Array(configuration.rearBayCount > 1 ? 29 : 25).keys())
             }
             if (['QSRV-260802-E-R'].includes(configuration.chassis.partNumber)) {
                 return [0, 1, 2]
             }
-            if (['260802','270802','270812-P-R'].map(p=>'QSRV-'+p).includes(configuration.chassis.partNumber)) {
-                if(configuration.backplaneCount){
+            if (['260802', '270802', '270812-P-R'].map(p => 'QSRV-' + p).includes(configuration.chassis.partNumber)) {
+                if (configuration.backplaneCount) {
                     return Array.from(Array(13).keys())
-                }else{
+                } else {
                     return Array.from(Array(9).keys())
                 }
             }
-            if (['281202A'].map(p=>'QSRV-'+p).includes(configuration.chassis.partNumber)) {
-                if(configuration.backplaneCount){
+            if (['281202A'].map(p => 'QSRV-' + p).includes(configuration.chassis.partNumber)) {
+                if (configuration.backplaneCount) {
                     return Array.from(Array(15).keys())
-                }else{
+                } else {
                     return Array.from(Array(13).keys())
                 }
             }
-            if (['261202','271202','271212-P-R'].map(p=>'QSRV-'+p).includes(configuration.chassis.partNumber)) {
-                if(configuration.backplaneCount){
+            if (['261202', '271202', '271212-P-R'].map(p => 'QSRV-' + p).includes(configuration.chassis.partNumber)) {
+                if (configuration.backplaneCount) {
                     return Array.from(Array(17).keys())
-                }else{
+                } else {
                     return Array.from(Array(5).keys())
                 }
             }
