@@ -131,6 +131,10 @@ export default function (configuration) {
         result.warnings.push('Необходимо выбрать дисковые накопители')
     }
 
+    if (configuration.chassis.disks === 12 &&  configuration.diskCount > 12) {
+        result.errors.push(`Количество выбранных дисков (${configuration.diskCount}) превышает 12 `)
+    }
+
     //console.log(configuration.chassis.disks, configuration.rearBayAllSFFCount * 2 , configuration.rearBayLFFCount * 2 , configuration.additionalNvmeDisksByBackplane)
     if (configuration.diskCount > disksAvail && configuration.diskSsd25Count > 2) {
         result.errors.push(`Нельзя поставить дисков более (${disksAvail + (configuration.chassis.partNumber === 'QSRV-463612-E-R' ? 2 : 0)}). Вы пытаетесь поставить (${configuration.diskCount})`)
