@@ -24,7 +24,11 @@ const componentsCurrent = computed(()=> {
 
 const counts = (component:IComponent)=>{
   if(component.partNumber === 'BEZEL2U') return [0,1]
-  if(component.riserForPort > 2) return [0,1]
+  if(component.riserForPort > 2) {
+    if(conf.chassis.partNumber === 'QSRV-281200') return [0,1,2]
+    if(conf.chassis.partNumber === 'QSRV-282400') return [0,1,2]
+    return [0, 1]
+  }
   return componentCount(conf, route.query)
 }
 
