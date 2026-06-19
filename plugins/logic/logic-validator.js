@@ -214,7 +214,7 @@ export default function (configuration) {
         const sum = configuration.gpuCount + configuration.lanCount100;
         const needed = sum - configuration.riserX16Count
         if (sum > 2 && needed > 0) {
-            result.errors.push(`Сумма LAN 100GbE и GPU не может быть более двух`)
+            result.errors.push(`Сумма LAN 100GbE и GPU не может быть более PCI-E слотов (${configuration.riserX16Count})`)
         }
         if (configuration.riserCount > configuration.chassis.units * 2) {
             result.errors.push(`Райзеров нельзя установить более ${configuration.chassis.units * 2} шт`)
@@ -267,12 +267,12 @@ export default function (configuration) {
             }
         }
 
-        if (configuration.riserPort3Count > 1) {
-            result.errors.push(`Количество выбранных Riser port 3 (${configuration.riserPort3Count}) не может быть более одного`)
-        }
-        if (configuration.riserPort4Count > 1) {
-            result.errors.push(`Количество выбранных Riser port 4 (${configuration.riserPort4Count}) не может быть более одного`)
-        }
+        // if (configuration.riserPort3Count > 1) {
+        //     result.errors.push(`Количество выбранных Riser port 3 (${configuration.riserPort3Count}) не может быть более одного`)
+        // }
+        // if (configuration.riserPort4Count > 1) {
+        //     result.errors.push(`Количество выбранных Riser port 4 (${configuration.riserPort4Count}) не может быть более одного`)
+        // }
         if (configuration.riserPort12Count + configuration.rearBayLFFCount > 2) {
             result.errors.push(`Сумма Riser порта 1/2 (${configuration.riserPort12Count}) и RearBay LFF (${configuration.rearBayLFFCount}) не может быть более двух`)
         }
