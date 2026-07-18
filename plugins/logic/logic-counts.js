@@ -111,12 +111,17 @@ export default (configuration, tab) => {
             const trimode16Adds = configuration.raidTrimode16iCount * 4
             //return Array.from(Array(5 + trimode8Adds + trimode16Adds).keys());
             const M2expnvmeCount = configuration.M2expnvmeCount * 2
-            if (['QSRV-181000'].includes(configuration.chassis.partNumber)) {
-                return Array.from(Array(11).keys())
-            }
 
-            if (['QSRV-281200'].includes(configuration.chassis.partNumber)) {
-                return configuration.cpuCount === 2 ? Array.from(Array(17).keys()) : Array.from(Array(7).keys())
+            // if (['QSRV-181000'].includes(configuration.chassis.partNumber)) {
+            //     return Array.from(Array(11).keys())
+            // }
+            //
+            // if (['QSRV-281200'].includes(configuration.chassis.partNumber)) {
+            //     return configuration.cpuCount === 2 ? Array.from(Array(17).keys()) : Array.from(Array(7).keys())
+            // }
+            if (configuration.chassis.platform === 'G4') {
+                console.log(configuration.additionalNvmeDisksByBackplane)
+                return Array.from(Array(configuration.additionalNvmeDisksByBackplane + configuration.nvmeRearBayCount + 2 ).keys())
             }
             return Array.from(Array(M2expnvmeCount + configuration.additionalNvmeDisksByBackplane + (configuration.chassis.units === 1 ? 1 : 5) + 1).keys());
         case 'HDD':

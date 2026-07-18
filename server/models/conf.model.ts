@@ -259,6 +259,14 @@ schema.virtual('raidTrimodeCount')
 
 schema.virtual('additionalNvmeDisksByBackplane')
     .get(function () {
+        if(this.chassis.platform === 'G4'){
+            const backplane = this.parts.find(p => ['bplnab2u12bG4'].includes(p.component?.partNumber))
+            if (backplane) {
+                return 12
+            }else{
+                return 0
+            }
+        }
         const backplaneCanAddDisks = this.parts.find(p => ['bplnab2u', 'bplnab1u'].includes(p.component?.partNumber))
         if (!backplaneCanAddDisks) return 0;
         //Искусственное ограничение от Бондаренко П.
