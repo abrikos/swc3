@@ -116,6 +116,10 @@ schema.statics.createCustom = async function (chassisId, user) {
         const bpl = await Component.findOne({partNumber: 'rbaySFFSAS'})
         await Part.create({component: bpl, configuration, count: 1})
     }
+    if (chassis.platform === 'G4' && chassis.units === 2) {
+        const bpl = await Component.findOne({partNumber: 'bplnab2u12bG4'})
+        await Part.create({component: bpl, configuration, count: 1})
+    }
     if (['QSRV-161002', 'QSRV-1710', 'QSRV-161002A', 'QSRV-260802', 'QSRV-270802', 'QSRV-260802A'].includes(chassis.partNumber)) {
         const componentBackplane = await Component.findOne({partNumber: 'bplnss'})
         await Part.create({component: componentBackplane, configuration, count: 1})
