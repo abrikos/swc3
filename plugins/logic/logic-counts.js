@@ -121,7 +121,7 @@ export default (configuration, tab) => {
             // }
             if (configuration.chassis.platform === 'G4') {
                 console.log(configuration.additionalNvmeDisksByBackplane)
-                return Array.from(Array(configuration.additionalNvmeDisksByBackplane + configuration.nvmeRearBayCount + 2 ).keys())
+                return Array.from(Array(configuration.additionalNvmeDisksByBackplane + configuration.nvmeRearBayCount + 1 ).keys())
             }
             return Array.from(Array(M2expnvmeCount + configuration.additionalNvmeDisksByBackplane + (configuration.chassis.units === 1 ? 1 : 5) + 1).keys());
         case 'HDD':
