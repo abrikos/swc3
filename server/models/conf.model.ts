@@ -116,12 +116,16 @@ schema.statics.createCustom = async function (chassisId, user) {
         const bpl = await Component.findOne({partNumber: 'rbaySFFSAS'})
         await Part.create({component: bpl, configuration, count: 1})
     }
-    if (chassis.platform === 'G4' && chassis.units === 2) {
-        const bpl = await Component.findOne({partNumber: 'bplnab2u12bG4'})
-        await Part.create({component: bpl, configuration, count: 1})
-    }
     if (['QSRV-161002', 'QSRV-1710', 'QSRV-161002A', 'QSRV-260802', 'QSRV-270802', 'QSRV-260802A'].includes(chassis.partNumber)) {
         const componentBackplane = await Component.findOne({partNumber: 'bplnss'})
+        await Part.create({component: componentBackplane, configuration, count: 1})
+    }
+    if (['QSRV-281200', 'QSRV-281200-G-R'].includes(chassis.partNumber)) {
+        const componentBackplane = await Component.findOne({partNumber: 'bplnab2u12bG4'})
+        await Part.create({component: componentBackplane, configuration, count: 1})
+    }
+    if (['QSRV-282400'].includes(chassis.partNumber)) {
+        const componentBackplane = await Component.findOne({partNumber: 'bplnab2u24bG4'})
         await Part.create({component: componentBackplane, configuration, count: 1})
     }
     return configuration
@@ -260,12 +264,8 @@ schema.virtual('raidTrimodeCount')
 schema.virtual('additionalNvmeDisksByBackplane')
     .get(function () {
         if(this.chassis.platform === 'G4'){
-            const backplane = this.parts.find(p => ['bplnab2u12bG4'].includes(p.component?.partNumber))
-            if (backplane) {
-                return 12
-            }else{
-                return 0
-            }
+            if( this.parts.find(p => ['bplnab2u12bG4','bplnab2u12b'].includes(p.component?.partNumber))) return 12
+            if( this.parts.find(p => ['bplnab2u24bG4'].includes(p.component?.partNumber))) return 24
         }
         const backplaneCanAddDisks = this.parts.find(p => ['bplnab2u', 'bplnab1u'].includes(p.component?.partNumber))
         if (!backplaneCanAddDisks) return 0;

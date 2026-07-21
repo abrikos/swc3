@@ -79,9 +79,9 @@ export default (configuration, tab) => {
         case 'Backplane':
             return [0, 1]
         case 'SSD U.2 NVMe':
-            if (['QSRV-282400'].includes(configuration.chassis.partNumber)) {
-                return Array.from(Array(configuration.rearBayCount > 1 ? 29 : 25).keys())
-            }
+            // if (['QSRV-282400'].includes(configuration.chassis.partNumber)) {
+            //     return Array.from(Array(configuration.rearBayCount > 1 ? 29 : 25).keys())
+            // }
             if (['QSRV-260802-E-R'].includes(configuration.chassis.partNumber)) {
                 return [0, 1, 2]
             }
@@ -119,6 +119,7 @@ export default (configuration, tab) => {
             // if (['QSRV-281200'].includes(configuration.chassis.partNumber)) {
             //     return configuration.cpuCount === 2 ? Array.from(Array(17).keys()) : Array.from(Array(7).keys())
             // }
+            console.log('zzzzzz')
             if (configuration.chassis.platform === 'G4') {
                 console.log(configuration.additionalNvmeDisksByBackplane)
                 return Array.from(Array(configuration.additionalNvmeDisksByBackplane + configuration.nvmeRearBayCount + 1 ).keys())
