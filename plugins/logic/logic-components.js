@@ -71,9 +71,10 @@ export default (configuration, components, tab) => {
                     return true;
                 case 'Backplane':
                     if(configuration.chassis.platform === 'AMD4') return true
-                    if (['QSRV-270802', 'QSRV-270812-P-R'].includes(configuration.chassis.partNumber) && component.partNumber === 'bplnab2u12b') return false
+                    if (['QSRV-282500-G-R'].includes(configuration.chassis.partNumber) && component.partNumber === 'bplnab2u24bG4') return true
+                    if (['QSRV-281200', 'QSRV-281200-G-R'].includes(configuration.chassis.partNumber) && component.partNumber === 'bplnab2u24bG4') return false
+                    if (['QSRV-270802', 'QSRV-270812-P-R', 'QSRV-282400'].includes(configuration.chassis.partNumber) && component.partNumber === 'bplnab2u12bG4') return false
                     if (['QSRV-271202', 'QSRV-271212-P-R'].includes(configuration.chassis.partNumber) && component.partNumber !== 'bplnab2u12b') return false
-                    console.log('zzzzz',configuration.chassis.partNumber)
                     return ['QSRV-181000', 'QSRV-171012-P-R', 'QSRV-271212-P-R', 'QSRV-271202', 'QSRV-161002', 'QSRV-1710',
                         'QSRV-171002', 'QSRV-161002', 'QSRV-161002A', 'QSRV-260802', 'QSRV-270802', 'QSRV-270812-P-R',
                         'QSRV-260802A', 'QSRV-161002', 'QSRV-260802', 'QSRV-281200', 'QSRV-281200-G-R', 'QSRV-282400'].includes(configuration.chassis.partNumber)
