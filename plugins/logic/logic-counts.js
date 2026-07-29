@@ -72,8 +72,8 @@ export default (configuration, tab) => {
             return [0, 1, 2]
         //return [0, 1, 2]
         case 'LAN OCP 3.0':
-            if (configuration.chassis.platform === 'G4') {
-                return [0, 1, 2]
+            if (['G4','G4R'].includes(configuration.chassis.platform)) {
+                return Array.from(Array(configuration.cpuCount + 1).keys())
             }
             return [0, 1]
         case 'Backplane':
@@ -119,9 +119,7 @@ export default (configuration, tab) => {
             // if (['QSRV-281200'].includes(configuration.chassis.partNumber)) {
             //     return configuration.cpuCount === 2 ? Array.from(Array(17).keys()) : Array.from(Array(7).keys())
             // }
-            console.log('zzzzzz')
             if (configuration.chassis.platform === 'G4') {
-                console.log(configuration.additionalNvmeDisksByBackplane)
                 return Array.from(Array(configuration.additionalNvmeDisksByBackplane + configuration.nvmeRearBayCount + 1 ).keys())
             }
             return Array.from(Array(M2expnvmeCount + configuration.additionalNvmeDisksByBackplane + (configuration.chassis.units === 1 ? 1 : 5) + 1).keys());
