@@ -44,6 +44,7 @@ export default (configuration, components, tab) => {
                     return true
                 case 'HDD':
                     if (configuration.chassis.isSFF) return component.isSFF
+                    if (['QSRV-282500-G-R'].includes(configuration.chassis.partNumber)) return component.partNumber.match(/2.5$/)
                     if (['QSRV-171012-P-R', 'QSRV-272512-P-R', 'QSRV-282400', 'QSRV-181000'].includes(configuration.chassis.partNumber)) return !component.isLFF
 
                     if (['QSRV-160812-E-R', 'QSRV-160802-E-R', 'QSRV-160802-P-R', 'QSRV-262402-P-R', 'QSRV-262412-P-R'].includes(configuration.chassis.partNumber)) {
