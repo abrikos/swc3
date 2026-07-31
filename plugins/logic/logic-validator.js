@@ -289,7 +289,7 @@ export default function (configuration) {
             //result.errors.push(`На каждые дополнительные 2 шт. SSD U.2 NVMe (2) необходим Rear Bay 2*SFF NVMe [rbaySFFU2] (0)`)
         }
 
-        if (configuration.pcieCount > configuration.pcieMaxCount && !['QSRV-260802-E-R'].includes(configuration.chassis.partNumber)) {
+        if (configuration.pcieCount > configuration.pcieMaxCount && !['QSRV-260802-E-R'].includes(configuration.chassis.partNumber)&& !['G4','G4R'].includes(configuration.chassis.platform)) {
             result.errors.push(`Недостаточно PCI-E слотов (${configuration.pcieMaxCount}) для выбранного количества PCI-E устройств (${configuration.pcieCount}) и AnyBay backplane(${configuration.anybayCount})`)
         }
 
