@@ -24,6 +24,9 @@ export default (configuration, tab) => {
                     return [0, 2, 4, 8, 12, 16, 24, 32]
                 }
             }
+            if (['G4R'].includes(configuration.chassis.platform)) {
+                    return [0, 2, 4, 8, 12, 16, 24, 32]
+            }
             if (configuration.chassis.partNumber.match('-E-R')) {
                 return Array.from(Array(17).keys()).filter(i => !(i % 2))
             }
@@ -118,6 +121,9 @@ export default (configuration, tab) => {
             //
             if (['QSRV-281200-G-R'].includes(configuration.chassis.partNumber)) {
                 return Array.from(Array(13).keys())
+            }
+            if (['QSRV-282500-G-R'].includes(configuration.chassis.partNumber)) {
+                return Array.from(Array(25).keys())
             }
             if (['G4'].includes(configuration.chassis.platform)) {
                 return Array.from(Array(configuration.additionalNvmeDisksByBackplane + configuration.nvmeRearBayCount + 1 ).keys())
