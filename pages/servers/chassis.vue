@@ -20,7 +20,6 @@ async function load() {
   list.value = await useNuxtApp().$GET('/chassis/list') as never[]
   if(loggedUser.value.isAdmin) {
     tabsList.value.push({label: 'GPU servers', name: 'GPU_SERV'})
-    tabsList.value.push({label: 'Intel Gen4 Реестр', name: 'G4R'})
     console.log(tabsList)
   }
 
@@ -33,7 +32,7 @@ const tabsList = ref([
   {label: 'Intel Gen3 Реестр', name: 'G3R'},
   {label: 'Intel Gen3', name: 'G3'},
   {label: 'Intel Gen4', name: 'G4'},
-  //{label: 'Intel Gen4 Реестр', name: 'G4R'},
+  {label: 'Intel Gen4 Реестр', name: 'G4R'},
   //{label: 'AMD Gen3', name: 'AMD'},
   {label: 'AMD Gen4', name: 'AMD4'},
   {label: 'Дисковые полки (JBOD)', name: 'JBOD'},
