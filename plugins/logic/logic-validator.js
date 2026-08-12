@@ -38,10 +38,12 @@ export default function (configuration) {
             result.errors.push(`Нужно добавить Anybay бекплейн или Rear Bay 2*SFF NVMe`)
         }
     }
-    const a1 = configuration.parts.find(p => p.component.partNumber === 'bplnab2u12bG4')//?.count * 12
+    const a1 = configuration.parts.find(p => ['bplnab2u12bG4','bplnab2u24bG4'].includes(p.component.partNumber))//?.count * 12
     const a2 = configuration.parts.find(p => p.component.partNumber === 'bplnab1u')//?.count * 10
     const a3 = configuration.parts.find(p => p.component.partNumber === 'bplnab2u8b')//?.count * 8
     const a4 = configuration.parts.find(p => p.component.partNumber === 'bplnab2u12b')//?.count * 12
+
+
     const abCapacity = a1 ? a1.count * 12 : 0 + a2 ? a2.count * 10 : 0 + a3 ? a3.count * 8 : 0 + a4 ? a4.count * 12 : 0
 
     if (configuration.ssdU2Count && configuration.rearBayCount * 2 + abCapacity < configuration.ssdU2Count) {
