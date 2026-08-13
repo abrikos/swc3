@@ -131,8 +131,9 @@ export default (configuration, components, tab) => {
             if (configuration.cablesCount && c.category === 'Cables') {
                 //c.countDisabled = true
             }
+
             if (configuration.ocpCount && c.type === 'LAN OCP 3.0') {
-                if (configuration.chassis.platform !== 'G4') {
+                if (!['G4', 'G4R'].includes(configuration.chassis.platform)) {
                     c.countDisabled = true
                 }
             }
