@@ -38,13 +38,12 @@ export default function (configuration) {
             result.errors.push(`Нужно добавить Anybay бекплейн или Rear Bay 2*SFF NVMe`)
         }
     }
-    const a1 = configuration.parts.find(p => ['bplnab2u12bG4','bplnab2u24bG4'].includes(p.component.partNumber))//?.count * 12
-    const a2 = configuration.parts.find(p => p.component.partNumber === 'bplnab1u')//?.count * 10
-    const a3 = configuration.parts.find(p => p.component.partNumber === 'bplnab2u8b')//?.count * 8
-    const a4 = configuration.parts.find(p => p.component.partNumber === 'bplnab2u12b')//?.count * 12
-
-
-    const abCapacity = a1 ? a1.count * 12 : 0 + a2 ? a2.count * 10 : 0 + a3 ? a3.count * 8 : 0 + a4 ? a4.count * 12 : 0
+    const a1 = configuration.parts.filter(p => ['bplnab2u12bG4'].includes(p.component.partNumber)).reduce((a, b) => a + b.count, 0) * 12 //?.count * 12
+    const a2 = configuration.parts.filter(p => p.component.partNumber === 'bplnab1u').reduce((a, b) => a + b.count, 0) * 10//?.count * 10
+    const a3 = configuration.parts.filter(p => p.component.partNumber === 'bplnab2u8b').reduce((a, b) => a + b.count, 0) * 8//?.count * 8
+    const a4 = configuration.parts.filter(p => p.component.partNumber === 'bplnab2u12b').reduce((a, b) => a + b.count, 0) * 12//?.count * 12
+    const a5 = configuration.parts.filter(p => ['bplnab2u24bG4'].includes(p.component.partNumber)).reduce((a, b) => a + b.count, 0) * 24
+    const abCapacity = a1 +a2 + a3 + a4 + a5
 
     if (configuration.ssdU2Count && configuration.rearBayCount * 2 + abCapacity < configuration.ssdU2Count) {
         result.errors.push(`Количество U2 накопителей (${configuration.ssdU2Count}) больше чем количество Rear bay (${configuration.rearBayCount}) * 2 + anybay (${abCapacity})`)
