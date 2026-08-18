@@ -58,7 +58,7 @@ const search = ref('')
     template(v-slot:body-cell-controls="{row}")
       q-td
         ExcelButton(:id="row.id" path="/spec" )
-        ExcelButton(:id="row.id" :confidential="true" path="/spec" )
+        ExcelButton(:id="row.id" :confidential="true" path="/spec" v-if="loggedUser.isAdmin")
         CloneButton(:spec="row.id")
         DeleteButton(:id="row.id" path="/spec" :name="row.name" event="specs:reload" )
 

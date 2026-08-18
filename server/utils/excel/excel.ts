@@ -6,8 +6,6 @@ import Column from "exceljs/index"
 import fs from "node:fs";
 
 export const specToXls = async (spec: ISpec, user: IUser, confidential: boolean, course: number) => {
-    console.log(course)
-    //const currName = confidential ? '$' : user.currency
     const currName =  user.currency === 'USD' ? '$' : 'Р';
     const numFmt = `_(* #,##0.00_)"${currName}"`
     const workbook = new Excel.Workbook();
