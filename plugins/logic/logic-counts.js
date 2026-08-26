@@ -80,6 +80,9 @@ export default (configuration, tab) => {
             }
             return [0, 1]
         case 'Backplane':
+            if (['G4R'].includes(configuration.chassis.platform)) {
+                return [1]
+            }
             return [0, 1]
         case 'SSD U.2 NVMe':
             // if (['QSRV-282400'].includes(configuration.chassis.partNumber)) {
