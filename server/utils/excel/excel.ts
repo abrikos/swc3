@@ -107,7 +107,7 @@ export const specToXls = async (spec: ISpec, user: IUser, confidential: boolean,
 async function test() {
     const {devMode} = useRuntimeConfig()
     if(!devMode) return
-    const id = '6874cb475806edfe1f421ff6'
+    const id = '6a9b8879ca1f5c156f3a7c65'
     console.log('test excel')
     console.log(id)
     const spec = await Spec.findById(id).populate(Spec.getPopulation())
