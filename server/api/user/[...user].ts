@@ -126,9 +126,8 @@ router.post('/registration', defineEventHandler(async (event) => {
             text
         })
 
-    } catch (err) {
-        console.error(err)
-        //return {error: `Заявка на регистрацию "${body.email}" уже существует`}
+    } catch (error) {
+        return {error}
     }
     return {ok: 200}
 }))

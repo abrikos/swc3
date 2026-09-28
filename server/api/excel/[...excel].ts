@@ -18,7 +18,6 @@ router.get('/spec/:_id', defineEventHandler(async (event) => {
     event.node.res.setHeader('Content-Type', 'application/vnd.openxmlformats');
     event.node.res.setHeader("Content-Disposition", "attachment; filename=" + encodeURIComponent(spec.name) + (confidential !== '0' ? '-confidential' : '') + ".xlsx");
     const settings = await Settings.findOne()
-    console.log('zzzzzzzz', user.isAdmin && confidential !== '0')
     return specToXls(spec, user, user.isAdmin && confidential !== '0', settings?.course || 0)
 }))
 

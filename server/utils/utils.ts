@@ -14,11 +14,7 @@ const transporterQ = nodemailer.createTransport({
     auth: {
         user: mailUserQ,
         pass: mailPasswordQ,
-    },
-    tls: {
-        ciphers: 'SSLv3'
     }
-
 });
 
 const transporter = nodemailer.createTransport({
