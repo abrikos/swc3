@@ -33,7 +33,7 @@ export default function (configuration) {
         //     result.errors.push('Необходим третий слот x16')
         // }
     }
-    if(configuration.chassis.partNumber !== 'QSRV-282400') {
+    if (configuration.chassis.partNumber !== 'QSRV-282400') {
         if (!configuration.anybayCount && !configuration.nvmeRearBayCount && configuration.ssdU2Count) {
             result.errors.push(`Нужно добавить Anybay бекплейн или Rear Bay 2*SFF NVMe`)
         }
@@ -43,7 +43,7 @@ export default function (configuration) {
     const a3 = configuration.parts.filter(p => p.component.partNumber === 'bplnab2u8b').reduce((a, b) => a + b.count, 0) * 8//?.count * 8
     const a4 = configuration.parts.filter(p => p.component.partNumber === 'bplnab2u12b').reduce((a, b) => a + b.count, 0) * 12//?.count * 12
     const a5 = configuration.parts.filter(p => ['bplnab2u24bG4'].includes(p.component.partNumber)).reduce((a, b) => a + b.count, 0) * 24
-    const abCapacity = a1 +a2 + a3 + a4 + a5
+    const abCapacity = a1 + a2 + a3 + a4 + a5
 
     if (configuration.ssdU2Count && configuration.rearBayCount * 2 + abCapacity < configuration.ssdU2Count) {
         result.errors.push(`Количество U2 накопителей (${configuration.ssdU2Count}) больше чем количество Rear bay (${configuration.rearBayCount}) * 2 + anybay (${abCapacity})`)
@@ -132,8 +132,8 @@ export default function (configuration) {
         result.warnings.push('Необходимо выбрать дисковые накопители')
     }
 
-    if (configuration.chassis.disks === 12 &&  configuration.diskCount > 12) {
-        result.errors.push(`Количество выбранных дисков (${configuration.diskCount}) превышает 12 `)
+    if (configuration.chassis.disks + configuration.rearBayCount * 2 < configuration.diskCount) {
+        result.errors.push(`Количество выбранных дисков (${configuration.diskCount}) превышает ${configuration.chassis.disks + configuration.rearBayCount * 2} `)
     }
 
     //console.log(configuration.chassis.disks, configuration.rearBayAllSFFCount * 2 , configuration.rearBayLFFCount * 2 , configuration.additionalNvmeDisksByBackplane)
@@ -290,7 +290,7 @@ export default function (configuration) {
             //result.errors.push(`На каждые дополнительные 2 шт. SSD U.2 NVMe (2) необходим Rear Bay 2*SFF NVMe [rbaySFFU2] (0)`)
         }
 
-        if (configuration.pcieCount > configuration.pcieMaxCount && !['QSRV-260802-E-R'].includes(configuration.chassis.partNumber)&& !['G4','G4R'].includes(configuration.chassis.platform)) {
+        if (configuration.pcieCount > configuration.pcieMaxCount && !['QSRV-260802-E-R'].includes(configuration.chassis.partNumber) && !['G4', 'G4R'].includes(configuration.chassis.platform)) {
             result.errors.push(`Недостаточно PCI-E слотов (${configuration.pcieMaxCount}) для выбранного количества PCI-E устройств (${configuration.pcieCount}) и AnyBay backplane(${configuration.anybayCount})`)
         }
 
