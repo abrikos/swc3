@@ -361,7 +361,7 @@ schema.virtual('raid94Count')
     .get(function () {
         return this.parts.filter(p =>
             p.component?.type === 'RAID'
-            && p.component?.partNumber.match(/94|95/)
+            && p.component?.partNumber.match(/94|95|967024I8GR/)
             && p.component?.description.match(/(\d)GB/)
         )
             .reduce((a, b) => a + b.count, 0)

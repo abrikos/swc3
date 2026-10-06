@@ -336,6 +336,7 @@ export default function (configuration) {
         if (configuration.cacheModule93Count && (configuration.raid93Count < configuration.cacheModule93Count)) {
             result.errors.push(`Количество модулей защиты (${configuration.cacheModule93Count}) не соответствует количеству RAID 93хх (${configuration.raid93Count})`)
         }
+        console.log(configuration.raid94Count , configuration.cacheModule94Count)
         if (configuration.cacheModule94Count && (configuration.raid94Count < configuration.cacheModule94Count)) {
             result.errors.push(`Количество модулей защиты (${configuration.cacheModule94Count}) не соответствует количеству RAID 94хх (${configuration.raid94Count})`)
         }
