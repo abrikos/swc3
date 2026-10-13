@@ -11,6 +11,7 @@ const route = useRoute()
 const columns = computed(() => {
   const headers = [
     {label: 'ИД', field: 'id', style: 'width:80px!important'},
+    {label: 'Автор', field: 'author', style: 'width:80px!important'},
     {label: 'Дата', field: 'date', style: 'width:150px!important'},
     {label: 'Название', field: 'name', style: 'width:150px!important'},
     {label: 'От кого', field: 'user', style: ''},

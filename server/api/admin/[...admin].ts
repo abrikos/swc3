@@ -32,7 +32,7 @@ function checkAdmin(user: IUser) {
 
 router.get('/list-all', defineEventHandler(async (event) => {
     checkAdmin(event.context.user)
-    return User.find({}, '-passwordHash').populate(User.getPopulation())
+    return User.find({}, '-passwordHash').sort({email:1}).populate(User.getPopulation())
 }))
 
 router.delete('/user/delete/:_id', defineEventHandler(async (event) => {

@@ -12,6 +12,7 @@ export interface ISpec extends mongoose.Document {
     configurations: IConf[],
     orders: IOrder[],
     user: IUser
+    manager: IUser
     createdAt: Date
     priceNet: number
     priceServer: number
@@ -28,6 +29,7 @@ const schema = new Schema<ISpec>({
     name: {type: String},
     shared: {type: mongoose.Schema.Types.ObjectId, ref: 'user'},
     user: {type: mongoose.Schema.Types.ObjectId, ref: 'user'},
+    manager: {type: mongoose.Schema.Types.ObjectId, ref: 'user'},
     project: {type: mongoose.Schema.Types.ObjectId, ref: 'project'},
     configurations: [{type: mongoose.Schema.Types.ObjectId, ref: 'configuration'}],
     orders: [{type: mongoose.Schema.Types.ObjectId, ref: 'order'}],
@@ -42,6 +44,7 @@ schema.statics.getPopulation = ()=>[
     {path: 'orders', populate: Order.getPopulation()},
     {path: 'shared', select: {email: 1}},
     {path: 'project', populate: 'manager'},
+    {path: 'user'},
 
 ]
 

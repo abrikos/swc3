@@ -11,9 +11,11 @@ import EditField from "~/components/EditField.vue";
 const {loggedUser} = storeToRefs(useCustomStore())
 const route = useRoute()
 const error404 = ref()
-const spec = ref()
+const spec = ref<ISpec>()
+const users = ref<IUser[]>()
 async function load() {
   spec.value = await useNuxtApp().$GET(`/spec/${route.params.id}`)
+  users.value = await useNuxtApp().$GET(`/admin/list-all`)
   if (!spec.value) {
     navigateTo('/servers/spec/list')
   }
@@ -62,6 +64,18 @@ function sortConfs(a,b){
   return orderA[1] - orderB[1]
 }
 
+
+const usersFiltered = computed(()=>users.value?.filter(v=> {
+  return v.email.toLowerCase().includes(userFind.value)
+}))
+
+const userFind = ref('')
+function usersFilter(val, update){
+  update(()=>{
+    userFind.value = val.toLowerCase()
+  })
+}
+
 </script>
 
 <template lang="pug">
@@ -69,6 +83,8 @@ div(v-if="spec")
   q-toolbar
     q-toolbar-title.cursor-pointer {{spec.name}}
       EditField(v-model="spec.name" :update="save")
+    q-space
+    q-select(v-model="spec.manager" :options="usersFiltered" option-value="id" option-label="email" emit-value map-options @update:model-value="save" label="Менеджер" dense use-input @filter="usersFilter")
     q-space
     strong {{$priceFormat($priceByCurrencyServer(servPrice) + $priceByCurrencyNet(netPrice))}}
     ExcelButton(:id="spec.id" path="/spec" )

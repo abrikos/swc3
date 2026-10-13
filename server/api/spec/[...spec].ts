@@ -66,7 +66,12 @@ router.get('/clone/:_id', defineEventHandler(async (event) => {
             conf.isNew = true
             await conf.save()
             for (const p of conf.parts) {
-                const part = await Part.create({component:p.component, configuration: newId, port: p.port, count:p.count})
+                const part = await Part.create({
+                    component: p.component,
+                    configuration: newId,
+                    port: p.port,
+                    count: p.count
+                })
                 console.log(part.component)
             }
 
@@ -91,7 +96,8 @@ router.post('/:_id', defineEventHandler(async (event) => {
     const user = event.context.user
     if (!user || !user.isServer) throw createError({statusCode: 403, message: 'Доступ запрещён',})
     const {_id} = event.context.params as Record<string, string>
-    return Spec.updateOne({_id, user}, await readBody(event))
+    const filter = user.isAdmin ? {_id} : {_id, user}
+    return Spec.updateOne(filter, await readBody(event))
 }))
 
 router.get('/:id/excel', defineEventHandler(async (event) => {
@@ -117,7 +123,11 @@ router.get('/list', defineEventHandler(async (event) => {
     const res = await Spec.find({user})
         .sort({createdAt: -1})
         .populate(Spec.getPopulation())
-    return res.map(r => ({
+    const res2 = await Spec.find({manager: user.id})
+        .sort({createdAt: -1})
+        .populate(Spec.getPopulation())
+    console.log(res2)
+    return [...res2, ...res].map(r => ({
         id: r._id,
         name: r.name,
         configurations: r.configurations.length,
@@ -126,6 +136,7 @@ router.get('/list', defineEventHandler(async (event) => {
         priceNet: r.priceNet,
         date: r.date,
         user: r.shared?.email,
+        author: r.user.email,
     }))
 }))
 
