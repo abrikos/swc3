@@ -324,7 +324,7 @@ export default function (configuration) {
         if (configuration.chassis.isSFF && (configuration.rearBayLFFCount * 2 < configuration.diskLFFCount)) {
             result.errors.push(`Максимальное количество LFF дисков (${configuration.rearBayLFFCount * 2}). Вы пытаетесь установить (${configuration.diskLFFCount}) `)
         }
-        if (configuration.chassis.partNumber !== 'QSRV-282400' && configuration.chassis.disks > 11 && !configuration.fcCount && !configuration.raidCount && configuration.diskCount > 12) {
+        if (!['QSRV-282400', 'QSRV-282500-G-R'].includes(configuration.chassis.partNumber) && configuration.chassis.disks > 11 && !configuration.fcCount && !configuration.raidCount && configuration.diskCount > 12) {
             result.errors.push(`Для платформы с количеством дисков более 12 необходим RAID или HBA`)
         }
         if (configuration.isRearBayNeeded) {
